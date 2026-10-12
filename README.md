@@ -56,14 +56,19 @@ To compare a model's answer with the ground truth:
 - Treat yes/no and true/false as the same answer.
 - Compare numbers with a tolerance, not exact string match.
 
-The full grader is in the code repo: <GITHUB_LINK>.
-
 ## Known issues
 
 - `risk-079`: the prompt is ambiguous about whether the 15% volatility is the position's or
   the S&P's.
 - `risk-053`: the answer may be swapped. This is not resolved yet.
 - `risk-013`: assumes a 256-day trading year, which is a US convention.
+- `risk-019`: the return range [-1, inf) is not validated.
+- `risk-046`: the task has two conflicting HPR values.
+- `risk-048`: the ground truth was rewritten.
+
+The `pass_rate_excluding_known_data_issues` field in each `results/` grade file leaves out
+these six tasks. `task_annotations.csv` also has `qa_flags` and `qa_note` columns, which mark
+smaller metadata problems such as missing flag fields or difficulty totals that don't add up.
 
 ## Reference results
 
