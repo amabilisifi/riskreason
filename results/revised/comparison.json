@@ -27,7 +27,7 @@
     "risk (112)": "4.5%"
   },
   {
-    "Model": "gemini-3.1-pro-preview_gemini_partial_reviewed",
+    "Model": "gemini-3.1-pro-preview_partial_reviewed",
     "Ran": 205,
     "Pass (all)": "80.0%",
     "Common (197)": "81.2%",
@@ -36,7 +36,7 @@
     "risk (112)": "83.0%"
   },
   {
-    "Model": "gemini-3.8-flash_gemini_partial_reviewed",
+    "Model": "gemini-3.8-flash_partial_reviewed",
     "Ran": 205,
     "Pass (all)": "82.9%",
     "Common (197)": "84.3%",
@@ -45,7 +45,7 @@
     "risk (112)": "83.9%"
   },
   {
-    "Model": "gpt-6-astra_openai_partial_reviewed",
+    "Model": "gpt-6-astra_partial_reviewed",
     "Ran": 204,
     "Pass (all)": "88.2%",
     "Common (197)": "88.8%",
@@ -54,7 +54,7 @@
     "risk (112)": "89.3%"
   },
   {
-    "Model": "gpt-6-luna_gapgpt_partial_reviewed",
+    "Model": "gpt-6-luna_partial_reviewed",
     "Ran": 205,
     "Pass (all)": "84.9%",
     "Common (197)": "85.8%",
@@ -63,7 +63,7 @@
     "risk (112)": "85.7%"
   },
   {
-    "Model": "gpt-6-sol_openai_partial_reviewed",
+    "Model": "gpt-6-sol_partial_reviewed",
     "Ran": 204,
     "Pass (all)": "87.3%",
     "Common (197)": "87.8%",

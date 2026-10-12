@@ -63,7 +63,7 @@
     "risk (112)": "4.5%"
   },
   {
-    "Model": "gemini-3.1-pro-preview_gemini",
+    "Model": "gemini-3.1-pro-preview",
     "Ran": 205,
     "Pass (all)": "80.0%",
     "Common (197)": "81.2%",
@@ -72,7 +72,7 @@
     "risk (112)": "83.0%"
   },
   {
-    "Model": "gemini-3.8-flash_gemini",
+    "Model": "gemini-3.8-flash",
     "Ran": 205,
     "Pass (all)": "82.9%",
     "Common (197)": "84.3%",

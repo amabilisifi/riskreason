@@ -1,43 +1,43 @@
 {
   "summary": {
-    "graded": 204,
+    "graded": 205,
     "by_status": {
-      "pass": 180,
-      "partial": 15,
-      "fail": 4,
+      "pass": 174,
+      "fail": 8,
+      "partial": 18,
       "near": 5
     },
-    "pass_rate": 0.8824,
-    "pass_rate_excluding_known_data_issues": 0.8794,
-    "schema_ok": "197/197",
+    "pass_rate": 0.8488,
+    "pass_rate_excluding_known_data_issues": 0.845,
+    "schema_ok": "197/198",
     "by_set": {
       "risk": {
-        "graded": 119,
+        "graded": 120,
         "by_status": {
-          "pass": 105,
-          "partial": 6,
-          "fail": 4,
+          "pass": 101,
+          "fail": 8,
+          "partial": 7,
           "near": 4
         },
-        "pass_rate": 0.8824,
-        "pass_rate_excluding_known_data_issues": 0.8772,
-        "schema_ok": "113/113"
+        "pass_rate": 0.8417,
+        "pass_rate_excluding_known_data_issues": 0.8348,
+        "schema_ok": "113/114"
       },
       "probe": {
         "graded": 55,
         "by_status": {
-          "pass": 48,
-          "partial": 7
+          "pass": 46,
+          "partial": 9
         },
-        "pass_rate": 0.8727,
-        "pass_rate_excluding_known_data_issues": 0.8727,
+        "pass_rate": 0.8364,
+        "pass_rate_excluding_known_data_issues": 0.8364,
         "schema_ok": "54/54"
       },
       "long": {
         "graded": 30,
         "by_status": {
-          "partial": 2,
           "pass": 27,
+          "partial": 2,
           "near": 1
         },
         "pass_rate": 0.9,
@@ -55,17 +55,17 @@
       "gt_precision_cap_rel": 0.01
     },
     "partial_adjudication": {
-      "model": "gpt-6-astra",
-      "original_partial": 16,
+      "model": "gpt-6-luna",
+      "original_partial": 19,
       "incidental_downgraded_to_fail": 1,
-      "substantive_partial": 3,
-      "outcome_correct_partial": 12,
-      "basis": "Task-by-task reading of prompts, source report ground truths and raw model response objects, including final text and intermediate explanation; match counts are supporting evidence rather than a scoring rule.",
-      "review_scope": "Only original partial grades. Original pass, near and fail entries untouched; no pass promotions performed.",
-      "caveat": "Ground-truth/convention flags on ACT day-count year, Jarque–Bera p-values, implied capital multiplier, and mark-to-market equity treatment require separate review.",
-      "source_report": "report_gpt-6-astra_openai.json"
+      "substantive_partial": 5,
+      "outcome_correct_partial": 13,
+      "basis": "Case-by-case reading of task prompt, report ground truth, raw answer and reasoning text, plus grader matched/missed fields; incidental matches do not earn partial credit.",
+      "review_scope": "Original partial grades only; pass, near and original fail entries unchanged.",
+      "caveat": "No full-pass promotions during this partial-only review. Ground-truth questions on population median, missing capital multiplier, VAR/ATR conventions, numerical tests, and intermediate rounding require separate benchmark-wide adjudication.",
+      "source_report": "report_gpt-6-luna.json"
     },
-    "grading_note": "Partial adjudication: incidental matches downgraded to fail; substantive and outcome-correct partials classified separately. Existing matched and schema_ok fields unchanged."
+    "grading_note": "Partial adjudication: incidental matching downgraded; substantive and outcome-correct partials classified separately; existing counts/schema compliance fields preserved."
   },
   "grades": {
     "risk-001": {
@@ -93,37 +93,41 @@
       "schema_ok": true
     },
     "risk-004": {
-      "status": "pass",
-      "matched": 1,
-      "matched_loose": 1,
+      "status": "fail",
+      "matched": 0,
+      "matched_loose": 0,
       "expected": 1,
-      "mode": "keyed",
-      "schema_ok": true
-    },
-    "risk-005": {
-      "status": "pass",
-      "matched": 3,
-      "matched_loose": 3,
-      "expected": 3,
-      "mode": "keyed",
-      "schema_ok": true
-    },
-    "risk-007": {
-      "status": "partial",
-      "matched": 5,
-      "matched_loose": 5,
-      "expected": 6,
       "mode": "keyed",
       "schema_ok": true,
       "missed": [
-        "daily_simple_returns.arithmetic_mean.seed_as_s0"
+        "return_pct"
+      ]
+    },
+    "risk-005": {
+      "status": "partial",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "median"
       ],
-      "partial_type": "substantive",
+      "partial_type": "outcome_correct",
       "error_tags": [
-        "calculation_error",
-        "propagation_error"
+        "ground_truth_review",
+        "incomplete_output"
       ],
-      "review_note": "Correct final EWMA values under first-observation and mean-as-s1 initialization for both price levels and returns. Both mean-as-s0 values are wrong: price 323.009243 versus reference 323.050659, returns 0.001210486 versus 0.001162575. The price mistake is masked by relative tolerance at a ~323 price level; a different initialization expression drives the errors."
+      "review_note": "Correct mean $154.50 and mode $200. The response explains correctly that the population median is non-unique, with any value in [$130,$200] valid, but outputs null instead of an allowed numeric median. The reference $165 is one permissible convention, not a unique solution.",
+      "ground_truth_review_flag": true
+    },
+    "risk-007": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true
     },
     "risk-008": {
       "status": "pass",
@@ -247,24 +251,12 @@
       "schema_ok": true
     },
     "risk-023": {
-      "status": "partial",
-      "matched": 4,
-      "matched_loose": 4,
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
       "expected": 8,
       "mode": "keyed",
-      "schema_ok": true,
-      "missed": [
-        "A",
-        "C",
-        "F",
-        "H"
-      ],
-      "partial_type": "substantive",
-      "error_tags": [
-        "rule_threshold_error",
-        "calculation_error"
-      ],
-      "review_note": "Correctly finds the $100 Dutch-auction clearing price, the winning bidder set A/C/F/H, excludes all below-clearing bidders and allocates exactly 150,000 shares. However, it prorates all winning bids (A 18,750; C 46,875; F 9,375; H 75,000) rather than fully allocating higher bids and rationing only the marginal $100 bidder (A 10,000; C 50,000; F 10,000; H 80,000)."
+      "schema_ok": true
     },
     "risk-024": {
       "status": "pass",
@@ -331,14 +323,6 @@
       "schema_ok": true
     },
     "risk-032": {
-      "status": "pass",
-      "matched": 2,
-      "matched_loose": 2,
-      "expected": 2,
-      "mode": "keyed",
-      "schema_ok": true
-    },
-    "risk-033": {
       "status": "fail",
       "matched": 0,
       "matched_loose": 0,
@@ -346,9 +330,17 @@
       "mode": "keyed",
       "schema_ok": true,
       "missed": [
-        "annualized_mwr_decimal",
-        "annualized_mwr_percentage"
+        "investor_deposit_required",
+        "rounded_price_threshold"
       ]
+    },
+    "risk-033": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
     },
     "risk-034": {
       "status": "pass",
@@ -375,23 +367,17 @@
       "schema_ok": true
     },
     "risk-037": {
-      "status": "partial",
-      "matched": 1,
-      "matched_loose": 1,
+      "status": "fail",
+      "matched": 0,
+      "matched_loose": 0,
       "expected": 3,
       "mode": "keyed",
-      "schema_ok": true,
+      "schema_ok": false,
       "missed": [
         "ACT/360",
-        "ACT/365"
-      ],
-      "partial_type": "outcome_correct",
-      "error_tags": [
-        "incomplete_output",
-        "ground_truth_review"
-      ],
-      "review_note": "Correctly computes the 30/360 charge ($145,527.78) in JSON. In full_text it also gives the reference non-leap-year ACT/360 ($146,388.89) and ACT/365 ($144,383.56) values and the leap-year alternatives, but fills the two ACT JSON fields with null. The source question specifies February 17 to August 6 without a year, so the reference implicitly assumes a non-leap year; review that convention separately.",
-      "ground_truth_review_flag": true
+        "ACT/365",
+        "30/360"
+      ]
     },
     "risk-038": {
       "status": "pass",
@@ -572,7 +558,7 @@
       "error_tags": [
         "output_format_error"
       ],
-      "review_note": "Correctly tracks oldest-first payments, gives February 1 as 31 days late and March 1 as 59 days in a non-leap year (60 in a leap year), and identifies May 30 as the first 90-DPD date for the surviving March 1 installment. The JSON answer uses decomposed alternative keys instead of the original ground-truth status strings."
+      "review_note": "Feb 1 is 31 days overdue, March 1 is 59 days overdue for the January bill in a common year (60 in a leap year), and the March installment reaches 90 days overdue on May 30. All substantive dates are correct; the response uses a different JSON representation."
     },
     "risk-060": {
       "status": "pass",
@@ -694,16 +680,22 @@
       "schema_ok": true
     },
     "risk-074": {
-      "status": "pass",
-      "matched": 4,
-      "matched_loose": 4,
+      "status": "fail",
+      "matched": 0,
+      "matched_loose": 0,
       "expected": 4,
       "mode": "keyed",
-      "schema_ok": true
+      "schema_ok": true,
+      "missed": [
+        "portfolio_variance",
+        "portfolio_variance_pct",
+        "portfolio_std_dev",
+        "portfolio_std_dev_pct"
+      ]
     },
     "risk-075": {
-      "status": "pass",
-      "matched": 1,
+      "status": "near",
+      "matched": 0,
       "matched_loose": 1,
       "expected": 1,
       "mode": "keyed",
@@ -812,14 +804,6 @@
       "schema_ok": true
     },
     "risk-089": {
-      "status": "pass",
-      "matched": 2,
-      "matched_loose": 2,
-      "expected": 2,
-      "mode": "keyed",
-      "schema_ok": true
-    },
-    "risk-090": {
       "status": "partial",
       "matched": 1,
       "matched_loose": 1,
@@ -827,13 +811,21 @@
       "mode": "keyed",
       "schema_ok": true,
       "missed": [
-        "value_exact"
+        "result"
       ],
       "partial_type": "outcome_correct",
       "error_tags": [
         "output_format_error"
       ],
-      "review_note": "Correctly identifies square-root-of-time scaling and calculates $500,000 × sqrt(10) = $1,581,138.83; the exact expression appears as a string in value_exact and the unrounded-to-dollar amount is assigned to value_rounded (versus reference whole-dollar 1,581,139). Financial result is correct but fails the numeric field requirement."
+      "review_note": "Correctly identifies the market-risk-premium error and calculates the corrected CAPM rate of 0.142 (14.2%). The result field contains an error-code string and result_percent contains the decimal return, contrary to the requested schema."
+    },
+    "risk-090": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
     },
     "risk-091": {
       "status": "pass",
@@ -1032,28 +1024,68 @@
       "schema_ok": true
     },
     "risk-116": {
-      "status": "pass",
-      "matched": 9,
-      "matched_loose": 9,
+      "status": "partial",
+      "matched": 6,
+      "matched_loose": 6,
       "expected": 9,
       "mode": "keyed",
-      "schema_ok": true
+      "schema_ok": true,
+      "missed": [
+        "2026-10-12.ATR",
+        "2026-10-28.ATR",
+        "2026-10-15.ATR"
+      ],
+      "partial_type": "substantive",
+      "error_tags": [
+        "financial_convention_error",
+        "calculation_error"
+      ],
+      "review_note": "All three overnight gaps and high–low ranges match. The model treats each single-day true range as ATR and does not use the conventional 14-session ATR; all three ATR outputs differ from the reference, including two that lack sufficient history."
     },
     "risk-117": {
       "status": "near",
-      "matched": 12,
+      "matched": 8,
       "matched_loose": 16,
       "expected": 16,
       "mode": "keyed",
       "schema_ok": true
     },
     "risk-118": {
-      "status": "pass",
-      "matched": 4,
-      "matched_loose": 4,
+      "status": "partial",
+      "matched": 2,
+      "matched_loose": 2,
       "expected": 4,
       "mode": "keyed",
-      "schema_ok": true
+      "schema_ok": true,
+      "missed": [
+        "const.t_value",
+        "SYN_NASDAQ.t_value"
+      ],
+      "partial_type": "substantive",
+      "error_tags": [
+        "calculation_error"
+      ],
+      "review_note": "Both OLS coefficients are close to the reference but both corresponding t-statistics are materially inaccurate (51.64 vs 48.59; 66.43 vs 62.43). The core regression inference is incomplete."
+    },
+    "risk-119": {
+      "status": "partial",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "unconstrained.SYN_SP500",
+        "unconstrained.SYN_NASDAQ",
+        "unconstrained.SYN_RUSSELL2000",
+        "unconstrained.SYN_RUSSELL1000"
+      ],
+      "partial_type": "substantive",
+      "error_tags": [
+        "calculation_error",
+        "constraint_handling_error"
+      ],
+      "review_note": "Correctly reports the four long-only minimum-variance weights (100% SYN_SP500). However, it incorrectly gives the same corner solution for the unconstrained optimization instead of allowing short weights."
     },
     "risk-120": {
       "status": "fail",
@@ -1083,19 +1115,21 @@
       "previous_status": "partial",
       "partial_type": "incidental",
       "error_tags": [
-        "incomplete_reasoning"
+        "incomplete_reasoning",
+        "financial_convention_error"
       ],
-      "review_note": "All eight matched fields merely repeat the supplied lag labels (0, 1, 2, 3) for price and return models. All 16 AIC/BIC statistics are null and no optimal lag selection is computed; no numerical VAR-selection stage is completed."
+      "review_note": "The eight matched fields are only the lag indices 0–3 supplied in the task. All 16 required AIC/BIC statistics are null and neither optimal lag selection is computed; no meaningful fitted-model stage is completed."
     },
     "risk-125": {
       "status": "partial",
       "matched": 4,
-      "matched_loose": 5,
+      "matched_loose": 4,
       "expected": 8,
       "mode": "keyed",
       "schema_ok": true,
       "missed": [
         "SYN_SP500.p_value",
+        "SYN_NASDAQ.p_value",
         "SYN_RUSSELL2000.p_value",
         "SYN_RUSSELL1000.p_value"
       ],
@@ -1105,16 +1139,26 @@
         "calculation_error",
         "ground_truth_review"
       ],
-      "review_note": "All four conclusions of failing to reject normality at 1% significance match the reference, but the four computed Jarque–Bera p-values (0.7795, 0.7962, 0.7004, 0.7743) differ from the reference (0.7335, 0.7844, 0.7669, 0.7325). The grade already marks the ground truth as needs_rerun; numerical adjudication is pending.",
+      "review_note": "All four 1% normality decisions agree with the reference, but all four numerical p-values are incorrect (around 0.50 vs around 0.73–0.78). The original grade marks this item needs_rerun; verify numerical ground truth and raw calculations before final grading.",
       "ground_truth_review_flag": true
     },
     "risk-126": {
-      "status": "near",
-      "matched": 4,
-      "matched_loose": 8,
+      "status": "fail",
+      "matched": 0,
+      "matched_loose": 0,
       "expected": 8,
       "mode": "keyed",
       "schema_ok": true,
+      "missed": [
+        "SYN_SP500.skewness",
+        "SYN_SP500.excess_kurtosis",
+        "SYN_NASDAQ.skewness",
+        "SYN_NASDAQ.excess_kurtosis",
+        "SYN_RUSSELL2000.skewness",
+        "SYN_RUSSELL2000.excess_kurtosis",
+        "SYN_RUSSELL1000.skewness",
+        "SYN_RUSSELL1000.excess_kurtosis"
+      ],
       "ground_truth": "needs_rerun"
     },
     "probe-001": {
@@ -1142,7 +1186,7 @@
       "error_tags": [
         "output_format_error"
       ],
-      "review_note": "Every collateral, equity, preliminary leverage, 35% haircut, secured repayment, emergency draw, final cash, final debt, and final leverage amount is correct. Correctly identifies the secured-borrowing and cash-buffer conditions as cured/maintained and leverage as breached. Only the names of two constraint labels differ from the reference."
+      "review_note": "All collateral, CET1-equity, leverage, secured borrowing, cash draw, and final debt quantities are correct. All cured/breached constraints are identified correctly, using descriptive synonyms rather than the exact reference identifiers."
     },
     "probe-003": {
       "status": "pass",
@@ -1161,14 +1205,15 @@
       "mode": "keyed",
       "schema_ok": true,
       "missed": [
-        "step_2_claim_evaluations.3.claim"
+        "step_2_claim_evaluations.0.status"
       ],
       "pass_condition": "Must compute 9.1667% pre-raise, reject the memo's pre-raise claims, then compute 10.8333% post-raise and allow lending only after remediation.",
-      "partial_type": "outcome_correct",
+      "partial_type": "substantive",
       "error_tags": [
-        "output_format_error"
+        "decision_error",
+        "inconsistent_reasoning"
       ],
-      "review_note": "All 13 numerical/Boolean/classification fields and all four invalid management-claim judgments are correct. The fourth claim is paraphrased as \"Lending can resume immediately before a raise\" rather than the reference wording; lending is correctly allowed only after capital raising."
+      "review_note": "All pre- and post-raise CET1 calculations and final lending decision are correct, but step_2_claim_evaluations[0].status says valid for the organic-capital-strengthening claim. The model’s own prose rejects that claim, creating an internally inconsistent audit output."
     },
     "probe-005": {
       "status": "pass",
@@ -1202,11 +1247,11 @@
       "pass_condition": "Must report total EL $200k, capital range about $3.531M–$4.311M, indeterminate adequacy, and threshold ρ≈0.2889.",
       "partial_type": "substantive",
       "error_tags": [
-        "incomplete_reasoning",
-        "financial_convention_error",
+        "calculation_error",
+        "decision_error",
         "ground_truth_review"
       ],
-      "review_note": "All three expected-loss figures and both standalone unexpected-loss values are correct, but Astra leaves both portfolio capital bounds and the implied 4M correlation threshold null. It explicitly declines to assume a capital confidence multiplier or identify asset correlation with loss correlation. The ground-truth capital bounds are approximately four times the unscaled portfolio standard deviation; review the implicit convention before deciding whether the model was required to infer it.",
+      "review_note": "All expected losses and stand-alone unexpected losses are correct. Luna then computes the unscaled diversified UL range (~$0.883M–$1.243M), claims the $4M buffer is definitely sufficient, and infers an out-of-range correlation; the reference reports $3.531M–$4.311M and indeterminate sufficiency. The reference appears to embed a capital multiplier not stated in the prompt, so independently review this task before attributing all divergence to the model.",
       "ground_truth_review_flag": true
     },
     "probe-009": {
@@ -1238,12 +1283,13 @@
     },
     "probe-012": {
       "status": "partial",
-      "matched": 18,
-      "matched_loose": 18,
+      "matched": 17,
+      "matched_loose": 17,
       "expected": 19,
       "mode": "keyed",
       "schema_ok": true,
       "missed": [
+        "base_state.final_status",
         "downside_state.final_status"
       ],
       "pass_condition": "Must keep base and downside states separate, propagate the 6.5% coupon only in downside, apply the cure, and still declare default because leverage remains above 4.0×.",
@@ -1251,7 +1297,7 @@
       "error_tags": [
         "output_format_error"
       ],
-      "review_note": "All base/downside leverage, coupon step-up, annual interest, coverage, 20M cure, post-cure re-test and default decision are correct. The only recorded discrepancy is \"default\" versus \"In Default\" for the downside final_status, a semantic equivalent."
+      "review_note": "Every financial metric, coupon switch, cash interest, triggered cure, and ultimate downside default is correct. The only graded mismatches are final_status strings no_default/default versus Compliant/In Default."
     },
     "probe-013": {
       "status": "pass",
@@ -1272,13 +1318,21 @@
       "pass_condition": "Must exclude the Apr 20 refinancing, use $230M/$64M=3.59375×, trigger the 50 bp step-up, and compute $1.15M annualized incremental interest."
     },
     "probe-015": {
-      "status": "pass",
-      "matched": 7,
-      "matched_loose": 7,
+      "status": "partial",
+      "matched": 6,
+      "matched_loose": 6,
       "expected": 7,
       "mode": "keyed",
       "schema_ok": true,
-      "pass_condition": "Must choose B and explicitly discard A before ranking returns."
+      "missed": [
+        "Investment_B.status"
+      ],
+      "pass_condition": "Must choose B and explicitly discard A before ranking returns.",
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "output_format_error"
+      ],
+      "review_note": "Correctly discards investment A and selects eligible investment B. The response uses status selected rather than Eligible for B and an underscored selected-investment identifier; the requested selection is correct."
     },
     "probe-016": {
       "status": "pass",
@@ -1358,7 +1412,7 @@
       "error_tags": [
         "output_format_error"
       ],
-      "review_note": "All three expected-loss/PD-stress calculations and correctness judgments match. The response explicitly finds no incorrect step. The model uses the shorter first-step label \"Expected loss\" rather than \"Base expected loss\" and represents no error as the string \"none\"."
+      "review_note": "Correctly verifies every EL/stress step and identifies that there is no incorrect step. The first-step description uses expected_loss_usd instead of Base expected loss, and none appears as a string rather than JSON null."
     },
     "probe-024": {
       "status": "pass",
@@ -1406,13 +1460,24 @@
       "pass_condition": "Must use 40% haircut and solve x≈$10.2128M with the 5% sale-impact feedback included."
     },
     "probe-030": {
-      "status": "pass",
-      "matched": 8,
-      "matched_loose": 8,
+      "status": "partial",
+      "matched": 4,
+      "matched_loose": 5,
       "expected": 8,
       "mode": "keyed",
       "schema_ok": true,
-      "pass_condition": "Must obtain net EAD $73M, credit EL $481,800, total $1.0818M, and escalate."
+      "missed": [
+        "collateral_discounted_usd",
+        "net_ead_usd",
+        "expected_credit_loss_usd"
+      ],
+      "pass_condition": "Must obtain net EAD $73M, credit EL $481,800, total $1.0818M, and escalate.",
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "unit_conversion_error",
+        "propagation_error"
+      ],
+      "review_note": "Correctly converts the euro gross exposure to $88M, correctly retains the operational loss, and correctly escalates above $1M. But the model mistakenly reconverts $20M USD collateral as if it were euros, producing $16.5M rather than $15M after haircut; this propagates to net EAD ($71.5M vs $73M), credit EL ($471,900 vs $481,800), and the total loss ($1.0719M vs $1.0818M). The binary outcome is correct despite incorrect supporting amounts."
     },
     "probe-031": {
       "status": "pass",
@@ -1515,22 +1580,22 @@
     },
     "probe-045": {
       "status": "partial",
-      "matched": 9,
-      "matched_loose": 9,
+      "matched": 11,
+      "matched_loose": 11,
       "expected": 12,
       "mode": "keyed",
       "schema_ok": true,
       "missed": [
-        "step_classifications.step_1",
-        "step_classifications.step_3",
         "step_classifications.step_4"
       ],
       "pass_condition": "Must identify Step 4 as the first independent error, preserve Steps 1–3, and mark Step 5 as downstream-invalid rather than a separate independent error.",
       "partial_type": "outcome_correct",
       "error_tags": [
-        "output_format_error"
+        "output_format_error",
+        "ground_truth_review"
       ],
-      "review_note": "Correctly identifies Step 4 as the first independent error, preserves Steps 1–3, marks Step 5 downstream-invalid, and calculates stress add-on 0.8388M and buffer 14.1018M. The three nonmatching entries are classification synonyms (\"given input\", \"correct within rounding\", \"independently incorrect\") rather than a different diagnosis."
+      "review_note": "Correctly finds Step 4 as the first independent error, preserves Steps 1–3, marks Step 5 downstream invalid, and recalculates the $0.8388M add-on. The model labels step 4 independently_incorrect instead of first_independently_incorrect. Its final buffer uses the unrounded 10-day VaR (~$14.1013925M) rather than the reference’s rounded $13.263M input ($14.1018M); review the rounding convention.",
+      "ground_truth_review_flag": true
     },
     "probe-046": {
       "status": "partial",
@@ -1547,7 +1612,7 @@
       "error_tags": [
         "output_format_error"
       ],
-      "review_note": "Correctly retains market capital at $5M and liquidity shortfall at zero, identifies the independent error as omission of the BB PD floor, corrects credit EL to $0.8M and total to $5.8M, and treats reported total as downstream-invalid. Credit status \"PD floor omitted\" is more specific but semantically equivalent to \"independent_error\"."
+      "review_note": "Market $5M, corrected credit $0.80M, liquidity shortfall $0, and corrected total $5.80M are all accurate. Credit status error is a semantic synonym of the reference independent_error label; downstream total error is correctly identified."
     },
     "probe-047": {
       "status": "pass",
@@ -1676,22 +1741,12 @@
       "pass_condition": "Must report ROE 8%→10%, CET1≈9.239% with $24M shortfall, LCR=110% with $100M HQLA shortfall, and reject the overall-risk-improved claim."
     },
     "long-001": {
-      "status": "partial",
-      "matched": 7,
-      "matched_loose": 7,
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
       "expected": 8,
       "mode": "keyed",
-      "schema_ok": true,
-      "missed": [
-        "post_draw_debt_equity_ratio"
-      ],
-      "partial_type": "outcome_correct",
-      "error_tags": [
-        "financial_convention_error",
-        "ground_truth_review"
-      ],
-      "review_note": "Correct bond loss 3.744M, collateral 56.256M, margin call 3.744M, cash 0.256M, emergency draw 1.244M, and both liquidity/leverage decisions. Model uses equity after recognizing the 3.744M loss (16.256M), making leverage 80.744/16.256≈4.967, while reference uses unchanged $20M and returns 4.0372; benchmark should clarify whether the bond loss must reduce equity.",
-      "ground_truth_review_flag": true
+      "schema_ok": true
     },
     "long-002": {
       "status": "pass",
@@ -1702,12 +1757,20 @@
       "schema_ok": true
     },
     "long-003": {
-      "status": "pass",
-      "matched": 8,
-      "matched_loose": 8,
+      "status": "partial",
+      "matched": 7,
+      "matched_loose": 7,
       "expected": 8,
       "mode": "keyed",
-      "schema_ok": true
+      "schema_ok": true,
+      "missed": [
+        "lending_decision"
+      ],
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "output_format_error"
+      ],
+      "review_note": "All seven reported numerical/Boolean capital, EL, RWA, CET1, and threshold fields are correct. The lending outcome frozen matches the reference Freeze new lending semantically."
     },
     "long-004": {
       "status": "pass",
@@ -1879,20 +1942,22 @@
     },
     "long-025": {
       "status": "partial",
-      "matched": 41,
-      "matched_loose": 41,
+      "matched": 39,
+      "matched_loose": 39,
       "expected": 43,
       "mode": "keyed",
       "schema_ok": true,
       "missed": [
+        "sequence.0.event",
         "sequence.2.event",
+        "sequence.3.event",
         "sequence.5.event"
       ],
       "partial_type": "outcome_correct",
       "error_tags": [
         "output_format_error"
       ],
-      "review_note": "All 41 numeric, index and decision fields match across all eight borrowing-base/cash/revolver states, including first unremedied liquidity breach at step 4, cure at step 5, 3.2M headroom and final $2.2M headroom. Two event descriptions are paraphrases rather than the exact reference labels."
+      "review_note": "Every borrowing-base, revolver, and cash amount at all eight steps is correct; first cash-floor breach, recovery, headroom, and final state also match. Four event descriptions are semantically equivalent to the reference but not verbatim."
     },
     "long-026": {
       "status": "pass",

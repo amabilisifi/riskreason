@@ -63,7 +63,7 @@
       "basis": "Case-by-case reading of task prompt, source report ground truth, raw answer and reasoning text, plus grader matched/missed fields; incidental matches do not earn partial credit.",
       "review_scope": "Original partial grades only; pass, near and original fail entries unchanged.",
       "caveat": "No full-pass promotions made during this partial-only review. Alternative median conventions, equity accounting and implied capital multiplier need benchmark-wide reference adjudication.",
-      "source_report": "report_gpt-6-sol_openai.json"
+      "source_report": "report_gpt-6-sol.json"
     },
     "grading_note": "Partial adjudication: incidental matching downgraded; meaningful and outcome-correct partials classified separately; original matched counts and schema_ok retained."
   },
