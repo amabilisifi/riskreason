@@ -1,0 +1,110 @@
+[
+  {
+    "Model": "DeepSeek-R1-Distill-Qwen-32B-Q8_0",
+    "Ran": 205,
+    "Pass (all)": "44.9%",
+    "Common (197)": "45.7%",
+    "long (30)": "16.7%",
+    "probe (55)": "54.5%",
+    "risk (112)": "49.1%"
+  },
+  {
+    "Model": "DianJin-R1-7B-Q8_0",
+    "Ran": 205,
+    "Pass (all)": "1.5%",
+    "Common (197)": "1.5%",
+    "long (30)": "0.0%",
+    "probe (55)": "3.6%",
+    "risk (112)": "0.9%"
+  },
+  {
+    "Model": "DianJin-R1-7B-Q8_0_corrected",
+    "Ran": 205,
+    "Pass (all)": "6.8%",
+    "Common (197)": "7.1%",
+    "long (30)": "0.0%",
+    "probe (55)": "14.5%",
+    "risk (112)": "5.4%"
+  },
+  {
+    "Model": "Fin-o1-8B-Q8_0",
+    "Ran": 205,
+    "Pass (all)": "28.8%",
+    "Common (197)": "28.9%",
+    "long (30)": "3.3%",
+    "probe (55)": "38.2%",
+    "risk (112)": "31.2%"
+  },
+  {
+    "Model": "Phi-4-reasoning-plus-BF16",
+    "Ran": 205,
+    "Pass (all)": "44.9%",
+    "Common (197)": "45.7%",
+    "long (30)": "33.3%",
+    "probe (55)": "56.4%",
+    "risk (112)": "43.8%"
+  },
+  {
+    "Model": "Qwen2.5-7B-Instruct-Q8_0",
+    "Ran": 205,
+    "Pass (all)": "2.0%",
+    "Common (197)": "2.0%",
+    "long (30)": "0.0%",
+    "probe (55)": "5.5%",
+    "risk (112)": "0.9%"
+  },
+  {
+    "Model": "Qwen2.5-7B-Instruct-Q8_0_corrected",
+    "Ran": 205,
+    "Pass (all)": "6.3%",
+    "Common (197)": "6.6%",
+    "long (30)": "0.0%",
+    "probe (55)": "14.5%",
+    "risk (112)": "4.5%"
+  },
+  {
+    "Model": "gemini-3.1-pro-preview_gemini",
+    "Ran": 205,
+    "Pass (all)": "80.0%",
+    "Common (197)": "81.2%",
+    "long (30)": "70.0%",
+    "probe (55)": "83.6%",
+    "risk (112)": "83.0%"
+  },
+  {
+    "Model": "gemini-3.8-flash_gemini",
+    "Ran": 205,
+    "Pass (all)": "82.9%",
+    "Common (197)": "84.3%",
+    "long (30)": "86.7%",
+    "probe (55)": "83.6%",
+    "risk (112)": "83.9%"
+  },
+  {
+    "Model": "gpt-6-astra",
+    "Ran": 204,
+    "Pass (all)": "88.2%",
+    "Common (197)": "88.8%",
+    "long (30)": "90.0%",
+    "probe (55)": "87.3%",
+    "risk (112)": "89.3%"
+  },
+  {
+    "Model": "gpt-6-luna",
+    "Ran": 205,
+    "Pass (all)": "83.4%",
+    "Common (197)": "84.3%",
+    "long (30)": "90.0%",
+    "probe (55)": "83.6%",
+    "risk (112)": "83.0%"
+  },
+  {
+    "Model": "gpt-6-sol",
+    "Ran": 204,
+    "Pass (all)": "87.3%",
+    "Common (197)": "87.8%",
+    "long (30)": "86.7%",
+    "probe (55)": "83.6%",
+    "risk (112)": "90.2%"
+  }
+]

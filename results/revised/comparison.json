@@ -1,0 +1,74 @@
+[
+  {
+    "Model": "DianJin-R1-7B-Q8_0_partial_reviewed",
+    "Ran": 205,
+    "Pass (all)": "6.8%",
+    "Common (197)": "7.1%",
+    "long (30)": "0.0%",
+    "probe (55)": "14.5%",
+    "risk (112)": "5.4%"
+  },
+  {
+    "Model": "Phi-4-reasoning-plus-BF16_partial_reviewed",
+    "Ran": 205,
+    "Pass (all)": "46.8%",
+    "Common (197)": "47.7%",
+    "long (30)": "36.7%",
+    "probe (55)": "58.2%",
+    "risk (112)": "45.5%"
+  },
+  {
+    "Model": "Qwen2.5-7B-Instruct-Q8_0_partial_reviewed",
+    "Ran": 205,
+    "Pass (all)": "6.3%",
+    "Common (197)": "6.6%",
+    "long (30)": "0.0%",
+    "probe (55)": "14.5%",
+    "risk (112)": "4.5%"
+  },
+  {
+    "Model": "gemini-3.1-pro-preview_gemini_partial_reviewed",
+    "Ran": 205,
+    "Pass (all)": "80.0%",
+    "Common (197)": "81.2%",
+    "long (30)": "70.0%",
+    "probe (55)": "83.6%",
+    "risk (112)": "83.0%"
+  },
+  {
+    "Model": "gemini-3.8-flash_gemini_partial_reviewed",
+    "Ran": 205,
+    "Pass (all)": "82.9%",
+    "Common (197)": "84.3%",
+    "long (30)": "86.7%",
+    "probe (55)": "83.6%",
+    "risk (112)": "83.9%"
+  },
+  {
+    "Model": "gpt-6-astra_openai_partial_reviewed",
+    "Ran": 204,
+    "Pass (all)": "88.2%",
+    "Common (197)": "88.8%",
+    "long (30)": "90.0%",
+    "probe (55)": "87.3%",
+    "risk (112)": "89.3%"
+  },
+  {
+    "Model": "gpt-6-luna_gapgpt_partial_reviewed",
+    "Ran": 205,
+    "Pass (all)": "84.9%",
+    "Common (197)": "85.8%",
+    "long (30)": "90.0%",
+    "probe (55)": "83.6%",
+    "risk (112)": "85.7%"
+  },
+  {
+    "Model": "gpt-6-sol_openai_partial_reviewed",
+    "Ran": 204,
+    "Pass (all)": "87.3%",
+    "Common (197)": "87.8%",
+    "long (30)": "86.7%",
+    "probe (55)": "83.6%",
+    "risk (112)": "90.2%"
+  }
+]

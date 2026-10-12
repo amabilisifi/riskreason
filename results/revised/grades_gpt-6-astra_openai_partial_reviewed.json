@@ -1,0 +1,1938 @@
+{
+  "summary": {
+    "graded": 204,
+    "by_status": {
+      "pass": 180,
+      "partial": 15,
+      "fail": 4,
+      "near": 5
+    },
+    "pass_rate": 0.8824,
+    "pass_rate_excluding_known_data_issues": 0.8794,
+    "schema_ok": "197/197",
+    "by_set": {
+      "risk": {
+        "graded": 119,
+        "by_status": {
+          "pass": 105,
+          "partial": 6,
+          "fail": 4,
+          "near": 4
+        },
+        "pass_rate": 0.8824,
+        "pass_rate_excluding_known_data_issues": 0.8772,
+        "schema_ok": "113/113"
+      },
+      "probe": {
+        "graded": 55,
+        "by_status": {
+          "pass": 48,
+          "partial": 7
+        },
+        "pass_rate": 0.8727,
+        "pass_rate_excluding_known_data_issues": 0.8727,
+        "schema_ok": "54/54"
+      },
+      "long": {
+        "graded": 30,
+        "by_status": {
+          "partial": 2,
+          "pass": 27,
+          "near": 1
+        },
+        "pass_rate": 0.9,
+        "pass_rate_excluding_known_data_issues": 0.9,
+        "schema_ok": "30/30"
+      }
+    },
+    "needs_rerun": [
+      "risk-125",
+      "risk-126"
+    ],
+    "tolerance": {
+      "strict_rel": 0.002,
+      "loose_rel": 0.02,
+      "gt_precision_cap_rel": 0.01
+    },
+    "partial_adjudication": {
+      "model": "gpt-6-astra",
+      "original_partial": 16,
+      "incidental_downgraded_to_fail": 1,
+      "substantive_partial": 3,
+      "outcome_correct_partial": 12,
+      "basis": "Task-by-task reading of prompts, source report ground truths and raw model response objects, including final text and intermediate explanation; match counts are supporting evidence rather than a scoring rule.",
+      "review_scope": "Only original partial grades. Original pass, near and fail entries untouched; no pass promotions performed.",
+      "caveat": "Ground-truth/convention flags on ACT day-count year, Jarque–Bera p-values, implied capital multiplier, and mark-to-market equity treatment require separate review.",
+      "source_report": "report_gpt-6-astra_openai.json"
+    },
+    "grading_note": "Partial adjudication: incidental matches downgraded to fail; substantive and outcome-correct partials classified separately. Existing matched and schema_ok fields unchanged."
+  },
+  "grades": {
+    "risk-001": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-002": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-003": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-004": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-005": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-007": {
+      "status": "partial",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "daily_simple_returns.arithmetic_mean.seed_as_s0"
+      ],
+      "partial_type": "substantive",
+      "error_tags": [
+        "calculation_error",
+        "propagation_error"
+      ],
+      "review_note": "Correct final EWMA values under first-observation and mean-as-s1 initialization for both price levels and returns. Both mean-as-s0 values are wrong: price 323.009243 versus reference 323.050659, returns 0.001210486 versus 0.001162575. The price mistake is masked by relative tolerance at a ~323 price level; a different initialization expression drives the errors."
+    },
+    "risk-008": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-009": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-010": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-011": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-012": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-013": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true,
+      "ground_truth": "updated",
+      "data_issue": "256-day year is US-specific"
+    },
+    "risk-014": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-015": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-016": {
+      "status": "pass",
+      "matched": 10,
+      "matched_loose": 10,
+      "expected": 10,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-017": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-018": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-019": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true,
+      "data_issue": "return range [-1, inf) unvalidated"
+    },
+    "risk-020": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2
+    },
+    "risk-021": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-022": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-023": {
+      "status": "partial",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "A",
+        "C",
+        "F",
+        "H"
+      ],
+      "partial_type": "substantive",
+      "error_tags": [
+        "rule_threshold_error",
+        "calculation_error"
+      ],
+      "review_note": "Correctly finds the $100 Dutch-auction clearing price, the winning bidder set A/C/F/H, excludes all below-clearing bidders and allocates exactly 150,000 shares. However, it prorates all winning bids (A 18,750; C 46,875; F 9,375; H 75,000) rather than fully allocating higher bids and rationing only the marginal $100 bidder (A 10,000; C 50,000; F 10,000; H 80,000)."
+    },
+    "risk-024": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-025": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-026": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-027": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-028": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-029": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-030": {
+      "status": "pass",
+      "matched": 96,
+      "matched_loose": 96,
+      "expected": 96,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-031": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-032": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-033": {
+      "status": "fail",
+      "matched": 0,
+      "matched_loose": 0,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "annualized_mwr_decimal",
+        "annualized_mwr_percentage"
+      ]
+    },
+    "risk-034": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-035": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-036": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-037": {
+      "status": "partial",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "ACT/360",
+        "ACT/365"
+      ],
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "incomplete_output",
+        "ground_truth_review"
+      ],
+      "review_note": "Correctly computes the 30/360 charge ($145,527.78) in JSON. In full_text it also gives the reference non-leap-year ACT/360 ($146,388.89) and ACT/365 ($144,383.56) values and the leap-year alternatives, but fills the two ACT JSON fields with null. The source question specifies February 17 to August 6 without a year, so the reference implicitly assumes a non-leap year; review that convention separately.",
+      "ground_truth_review_flag": true
+    },
+    "risk-038": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-039": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-040": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-041": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-042": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-043": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-044": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-045": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-046": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "data_issue": "two conflicting HPR values"
+    },
+    "risk-047": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-048": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true,
+      "data_issue": "ground truth rewritten"
+    },
+    "risk-049": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-050": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-051": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-052": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-053": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true,
+      "data_issue": "possible answer swap"
+    },
+    "risk-054": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-055": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-056": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-057": {
+      "status": "pass",
+      "matched": 15,
+      "matched_loose": 15,
+      "expected": 15,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-058": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-059": {
+      "status": "partial",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 4,
+      "ground_truth": "updated",
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "output_format_error"
+      ],
+      "review_note": "Correctly tracks oldest-first payments, gives February 1 as 31 days late and March 1 as 59 days in a non-leap year (60 in a leap year), and identifies May 30 as the first 90-DPD date for the surviving March 1 installment. The JSON answer uses decomposed alternative keys instead of the original ground-truth status strings."
+    },
+    "risk-060": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-061": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-062": {
+      "status": "near",
+      "matched": 1,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-063": {
+      "status": "fail",
+      "matched": 0,
+      "matched_loose": 0,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "executed_trades.0.action",
+        "executed_trades.0.price",
+        "executed_trades.0.shares",
+        "executed_trades.0.fee",
+        "final_portfolio_value"
+      ]
+    },
+    "risk-064": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-065": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-066": {
+      "status": "pass",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 7,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-067": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-068": {
+      "status": "pass",
+      "matched": 12,
+      "matched_loose": 12,
+      "expected": 12,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-069": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-070": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-071": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-072": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-073": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-074": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-075": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-076": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-077": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-078": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-079": {
+      "status": "fail",
+      "matched": 0,
+      "matched_loose": 0,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "var_zero_drift.dollar_amount",
+        "var_zero_drift.percentage",
+        "var_with_drift.dollar_amount",
+        "var_with_drift.percentage"
+      ]
+    },
+    "risk-080": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-081": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-082": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-083": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-085": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-086": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-087": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-088": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-089": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-090": {
+      "status": "partial",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "value_exact"
+      ],
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "output_format_error"
+      ],
+      "review_note": "Correctly identifies square-root-of-time scaling and calculates $500,000 × sqrt(10) = $1,581,138.83; the exact expression appears as a string in value_exact and the unrounded-to-dollar amount is assigned to value_rounded (versus reference whole-dollar 1,581,139). Financial result is correct but fails the numeric field requirement."
+    },
+    "risk-091": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-092": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true,
+      "ground_truth": "updated"
+    },
+    "risk-093": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "ground_truth": "updated"
+    },
+    "risk-094": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-095": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-096": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-097": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1
+    },
+    "risk-098": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-099": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-100": {
+      "status": "near",
+      "matched": 2,
+      "matched_loose": 3,
+      "expected": 3
+    },
+    "risk-101": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-102": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-103": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-104": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-105": {
+      "status": "pass",
+      "matched": 41,
+      "matched_loose": 41,
+      "expected": 41,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-106": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-107": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-108": {
+      "status": "pass",
+      "matched": 20,
+      "matched_loose": 20,
+      "expected": 20,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-109": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-110": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-111": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-112": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-113": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-114": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-115": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-116": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-117": {
+      "status": "near",
+      "matched": 12,
+      "matched_loose": 16,
+      "expected": 16,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-118": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-120": {
+      "status": "fail",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 24,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "price_levels.0.AIC",
+        "price_levels.0.BIC",
+        "price_levels.1.AIC",
+        "price_levels.1.BIC",
+        "price_levels.2.AIC",
+        "price_levels.2.BIC",
+        "price_levels.3.AIC",
+        "price_levels.3.BIC",
+        "returns.0.AIC",
+        "returns.0.BIC",
+        "returns.1.AIC",
+        "returns.1.BIC",
+        "returns.2.AIC",
+        "returns.2.BIC",
+        "returns.3.AIC",
+        "returns.3.BIC"
+      ],
+      "previous_status": "partial",
+      "partial_type": "incidental",
+      "error_tags": [
+        "incomplete_reasoning"
+      ],
+      "review_note": "All eight matched fields merely repeat the supplied lag labels (0, 1, 2, 3) for price and return models. All 16 AIC/BIC statistics are null and no optimal lag selection is computed; no numerical VAR-selection stage is completed."
+    },
+    "risk-125": {
+      "status": "partial",
+      "matched": 4,
+      "matched_loose": 5,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "SYN_SP500.p_value",
+        "SYN_RUSSELL2000.p_value",
+        "SYN_RUSSELL1000.p_value"
+      ],
+      "ground_truth": "needs_rerun",
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "calculation_error",
+        "ground_truth_review"
+      ],
+      "review_note": "All four conclusions of failing to reject normality at 1% significance match the reference, but the four computed Jarque–Bera p-values (0.7795, 0.7962, 0.7004, 0.7743) differ from the reference (0.7335, 0.7844, 0.7669, 0.7325). The grade already marks the ground truth as needs_rerun; numerical adjudication is pending.",
+      "ground_truth_review_flag": true
+    },
+    "risk-126": {
+      "status": "near",
+      "matched": 4,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "ground_truth": "needs_rerun"
+    },
+    "probe-001": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report both 111.11% and 93.33%, explicitly replace the eligibility rule after the downgrade, and classify only the post-downgrade state as breached."
+    },
+    "probe-002": {
+      "status": "partial",
+      "matched": 10,
+      "matched_loose": 10,
+      "expected": 12,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "constraints_cured.0",
+        "constraints_breached.0"
+      ],
+      "pass_condition": "Must explicitly compute preliminary leverage before selecting the final haircut, then recompute repayment and final leverage under the 35% regime.",
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "output_format_error"
+      ],
+      "review_note": "Every collateral, equity, preliminary leverage, 35% haircut, secured repayment, emergency draw, final cash, final debt, and final leverage amount is correct. Correctly identifies the secured-borrowing and cash-buffer conditions as cured/maintained and leverage as breached. Only the names of two constraint labels differ from the reference."
+    },
+    "probe-003": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must reject the analyst's conclusion even though the numerator rises; both ratios and the direction of change must be correct."
+    },
+    "probe-004": {
+      "status": "partial",
+      "matched": 13,
+      "matched_loose": 13,
+      "expected": 14,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "step_2_claim_evaluations.3.claim"
+      ],
+      "pass_condition": "Must compute 9.1667% pre-raise, reject the memo's pre-raise claims, then compute 10.8333% post-raise and allow lending only after remediation.",
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "output_format_error"
+      ],
+      "review_note": "All 13 numerical/Boolean/classification fields and all four invalid management-claim judgments are correct. The fourth claim is paraphrased as \"Lending can resume immediately before a raise\" rather than the reference wording; lending is correctly allowed only after capital raising."
+    },
+    "probe-005": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "ground_truth": "updated",
+      "pass_condition": "Must produce both volatilities and explicitly attribute the increase to the covariance/correlation term rather than claiming standalone risk changed."
+    },
+    "probe-007": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must compute both standalone VaRs and the $0–$559,200 portfolio range; a fabricated point correlation or blanket 'cannot answer' both fail."
+    },
+    "probe-008": {
+      "status": "partial",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "capital_requirement_range.min_capital_rho_0",
+        "capital_requirement_range.max_capital_rho_0_5",
+        "exact_correlation_for_4M_buffer"
+      ],
+      "pass_condition": "Must report total EL $200k, capital range about $3.531M–$4.311M, indeterminate adequacy, and threshold ρ≈0.2889.",
+      "partial_type": "substantive",
+      "error_tags": [
+        "incomplete_reasoning",
+        "financial_convention_error",
+        "ground_truth_review"
+      ],
+      "review_note": "All three expected-loss figures and both standalone unexpected-loss values are correct, but Astra leaves both portfolio capital bounds and the implied 4M correlation threshold null. It explicitly declines to assume a capital confidence multiplier or identify asset correlation with loss correlation. The ground-truth capital bounds are approximately four times the unscaled portfolio standard deviation; review the implicit convention before deciding whether the model was required to infer it.",
+      "ground_truth_review_flag": true
+    },
+    "probe-009": {
+      "status": "pass",
+      "matched": 11,
+      "matched_loose": 11,
+      "expected": 11,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must classify 10.4996% as a breach despite displaying as 10.50%, and compute the $2,000 cure exactly."
+    },
+    "probe-010": {
+      "status": "pass",
+      "matched": 10,
+      "matched_loose": 10,
+      "expected": 10,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must use 3.5001333× to trigger the 7% coupon and propagate that branch through the Q2 coverage/paydown calculations."
+    },
+    "probe-011": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must compute 4.4% first, then use that result to change the staging rule and multiply the ECL; applying the multiplier before the trigger is evaluated fails."
+    },
+    "probe-012": {
+      "status": "partial",
+      "matched": 18,
+      "matched_loose": 18,
+      "expected": 19,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "downside_state.final_status"
+      ],
+      "pass_condition": "Must keep base and downside states separate, propagate the 6.5% coupon only in downside, apply the cure, and still declare default because leverage remains above 4.0×.",
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "output_format_error"
+      ],
+      "review_note": "All base/downside leverage, coupon step-up, annual interest, coverage, 20M cure, post-cure re-test and default decision are correct. The only recorded discrepancy is \"default\" versus \"In Default\" for the downside final_status, a semantic equivalent."
+    },
+    "probe-013": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must use both April updates and reject the stale 4.0× memo, yielding 3.2143× and compliant."
+    },
+    "probe-014": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must exclude the Apr 20 refinancing, use $230M/$64M=3.59375×, trigger the 50 bp step-up, and compute $1.15M annualized incremental interest."
+    },
+    "probe-015": {
+      "status": "pass",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 7,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must choose B and explicitly discard A before ranking returns."
+    },
+    "probe-016": {
+      "status": "pass",
+      "matched": 20,
+      "matched_loose": 20,
+      "expected": 20,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must compute all nine post-hedge metrics, identify only B as feasible, and choose B despite A's lower carry and C's stronger VaR reduction."
+    },
+    "probe-017": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must use the stated contract definitions exactly and obtain EBITDA $20.7M, net debt $76M, leverage 3.6715×, compliant."
+    },
+    "probe-018": {
+      "status": "pass",
+      "matched": 13,
+      "matched_loose": 13,
+      "expected": 13,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must show the $1.8M sweep leaves net debt at $87M and derive a $0.75M external equity injection to reach exactly 3.75×."
+    },
+    "probe-019": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must use Beta severe-stress $23M and Beta limit $22M, not any adjacent row or mild-stress value."
+    },
+    "probe-020": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must aggregate only Orion rows to $44M/$46M, identify only Credit as breached, and never add desk subtotal rows."
+    },
+    "probe-021": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must include the covariance term and obtain approximately $350.3k."
+    },
+    "probe-022": {
+      "status": "pass",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 7,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must update both module values and correlations, obtain stressed EC ≈$10.6921M, and shortfall ≈$1.8305M."
+    },
+    "probe-023": {
+      "status": "partial",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "step_1.description"
+      ],
+      "pass_condition": "Must explicitly conclude that all three steps are correct; claiming an error is a failure.",
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "output_format_error"
+      ],
+      "review_note": "All three expected-loss/PD-stress calculations and correctness judgments match. The response explicitly finds no incorrect step. The model uses the shorter first-step label \"Expected loss\" rather than \"Base expected loss\" and represents no error as the string \"none\"."
+    },
+    "probe-024": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must identify Step 4 and Step 6 as independent errors, Step 7 as downstream, and corrected total charge $0.4M."
+    },
+    "probe-025": {
+      "status": "pass",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 7,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must correct bond loss to $0.75M, preserve FX loss $0.088M, and report total $0.838M."
+    },
+    "probe-026": {
+      "status": "pass",
+      "matched": 10,
+      "matched_loose": 10,
+      "expected": 10,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must conclude all supplied upstream nodes are valid and compute final liquidity shortfall $1.28M."
+    },
+    "probe-027": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must choose threshold $0, not $0.5M or $2M, and compute a $2.1M call."
+    },
+    "probe-028": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must use 40% haircut and solve x≈$10.2128M with the 5% sale-impact feedback included."
+    },
+    "probe-030": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must obtain net EAD $73M, credit EL $481,800, total $1.0818M, and escalate."
+    },
+    "probe-031": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must derive Q3 values by subtraction and report 3.00×; using 9M denominators is incorrect."
+    },
+    "probe-032": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report Q3 3.0× but TTM 3.2857× and conclude no covenant breach."
+    },
+    "probe-033": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must return 25.0% and explicitly avoid summing Corporate/Retail parent totals with their children."
+    },
+    "probe-034": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must obtain RWA $142M, concentration 46.875%, density 88.75%, and identify $160M of overstatement from double counting."
+    },
+    "probe-035": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must use Bayes' rule and obtain about 14.04%."
+    },
+    "probe-036": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must obtain posterior ≈13.3929%, stressed PD ≈23.6220%, switch LGD to 60%, and EL ≈$1,133,858."
+    },
+    "probe-038": {
+      "status": "pass",
+      "matched": 42,
+      "matched_loose": 42,
+      "expected": 42,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must demonstrate that every subset violates at least one hard constraint and explicitly report no feasible hedge subset."
+    },
+    "probe-039": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report −$0.50M delta-only and −$0.25M delta-gamma."
+    },
+    "probe-040": {
+      "status": "pass",
+      "matched": 14,
+      "matched_loose": 14,
+      "expected": 14,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must obtain total P&L −$0.64M, trigger $0.75M margin, and report $0.15M liquidity shortfall."
+    },
+    "probe-041": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must classify Stage 2 and compute $110,400 ECL without allowing the manager's preference to change the rule."
+    },
+    "probe-042": {
+      "status": "pass",
+      "matched": 15,
+      "matched_loose": 15,
+      "expected": 15,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must reject the CFO claim, report 7.619% after stress, 7.576% after sale, and $91.5M minimum additional CET1."
+    },
+    "probe-045": {
+      "status": "partial",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 12,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "step_classifications.step_1",
+        "step_classifications.step_3",
+        "step_classifications.step_4"
+      ],
+      "pass_condition": "Must identify Step 4 as the first independent error, preserve Steps 1–3, and mark Step 5 as downstream-invalid rather than a separate independent error.",
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "output_format_error"
+      ],
+      "review_note": "Correctly identifies Step 4 as the first independent error, preserves Steps 1–3, marks Step 5 downstream-invalid, and calculates stress add-on 0.8388M and buffer 14.1018M. The three nonmatching entries are classification synonyms (\"given input\", \"correct within rounding\", \"independently incorrect\") rather than a different diagnosis."
+    },
+    "probe-046": {
+      "status": "partial",
+      "matched": 13,
+      "matched_loose": 13,
+      "expected": 14,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "audit_findings.credit_branch.status"
+      ],
+      "pass_condition": "Must keep market=$5.0M and liquidity shortfall=$0, correct credit EL to $0.80M, and total to $5.80M; Step 7 is downstream-invalid.",
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "output_format_error"
+      ],
+      "review_note": "Correctly retains market capital at $5M and liquidity shortfall at zero, identifies the independent error as omission of the BB PD floor, corrects credit EL to $0.8M and total to $5.8M, and treats reported total as downstream-invalid. Credit status \"PD floor omitted\" is more specific but semantically equivalent to \"independent_error\"."
+    },
+    "probe-047": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must discard $85M, use $75M stressed capacity, and report a $7M shortfall."
+    },
+    "probe-048": {
+      "status": "pass",
+      "matched": 15,
+      "matched_loose": 15,
+      "expected": 15,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must trigger 20% haircut, cap debt at $75.6M, find $6.4M cash gap, $0.336842M sale loss, 2.5486× leverage, and $0.576842M equity injection."
+    },
+    "probe-051": {
+      "status": "pass",
+      "matched": 13,
+      "matched_loose": 13,
+      "expected": 13,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report $40k, $160k, $400k and weighted expected ECL $112k with no cross-scenario leakage."
+    },
+    "probe-052": {
+      "status": "pass",
+      "matched": 23,
+      "matched_loose": 23,
+      "expected": 23,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report scenario ECLs $70k/$360k/$1.2M, only Severe margin call $1.4M and cash shortfall $0.4M, and weighted ECL $270k."
+    },
+    "probe-053": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must classify as Adequate."
+    },
+    "probe-054": {
+      "status": "pass",
+      "matched": 15,
+      "matched_loose": 15,
+      "expected": 15,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must assign +1,+1,−1,−1,−1 = −1 and classify Heightened supervisory concern."
+    },
+    "probe-055": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must approve Project B despite its lower NPV."
+    },
+    "probe-056": {
+      "status": "pass",
+      "matched": 13,
+      "matched_loose": 13,
+      "expected": 13,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report A: CET1≈9.184%, LCR≈112.07% (infeasible); B: CET1≈9.890%, LCR=123% (feasible); select B."
+    },
+    "probe-058": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must compute 4.00× and compliant, using only gross funded debt, unrestricted cash and adjusted EBITDA."
+    },
+    "probe-059": {
+      "status": "pass",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 7,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must infer HQLA=$40M and LCR=125%; refusing because the total is not explicitly printed is incorrect."
+    },
+    "probe-060": {
+      "status": "pass",
+      "matched": 11,
+      "matched_loose": 11,
+      "expected": 11,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must give pre-LCR 37.5%–125%, post-dividend 25%–112.5%, and state dividend eligibility is indeterminate."
+    },
+    "probe-061": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must score 6; probes 061 and 062 must produce the same score despite opposite narrative framing."
+    },
+    "probe-063": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report NIM 3.2%→3.1% (−10bp) and reject the claim that improved funding conditions raised the margin."
+    },
+    "probe-064": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report ROE 8%→10%, CET1≈9.239% with $24M shortfall, LCR=110% with $100M HQLA shortfall, and reject the overall-risk-improved claim."
+    },
+    "long-001": {
+      "status": "partial",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "post_draw_debt_equity_ratio"
+      ],
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "financial_convention_error",
+        "ground_truth_review"
+      ],
+      "review_note": "Correct bond loss 3.744M, collateral 56.256M, margin call 3.744M, cash 0.256M, emergency draw 1.244M, and both liquidity/leverage decisions. Model uses equity after recognizing the 3.744M loss (16.256M), making leverage 80.744/16.256≈4.967, while reference uses unchanged $20M and returns 4.0372; benchmark should clarify whether the bond loss must reduce equity.",
+      "ground_truth_review_flag": true
+    },
+    "long-002": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-003": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-004": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-005": {
+      "status": "pass",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 7,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-006": {
+      "status": "pass",
+      "matched": 13,
+      "matched_loose": 13,
+      "expected": 13,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-007": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-008": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-009": {
+      "status": "pass",
+      "matched": 11,
+      "matched_loose": 11,
+      "expected": 11,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-010": {
+      "status": "pass",
+      "matched": 11,
+      "matched_loose": 11,
+      "expected": 11,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-011": {
+      "status": "pass",
+      "matched": 18,
+      "matched_loose": 18,
+      "expected": 18,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-012": {
+      "status": "pass",
+      "matched": 17,
+      "matched_loose": 17,
+      "expected": 17,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-013": {
+      "status": "pass",
+      "matched": 10,
+      "matched_loose": 10,
+      "expected": 10,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-014": {
+      "status": "pass",
+      "matched": 13,
+      "matched_loose": 13,
+      "expected": 13,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-015": {
+      "status": "pass",
+      "matched": 52,
+      "matched_loose": 52,
+      "expected": 52,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-016": {
+      "status": "pass",
+      "matched": 43,
+      "matched_loose": 43,
+      "expected": 43,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-017": {
+      "status": "pass",
+      "matched": 44,
+      "matched_loose": 44,
+      "expected": 44,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-018": {
+      "status": "pass",
+      "matched": 25,
+      "matched_loose": 25,
+      "expected": 25,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-019": {
+      "status": "pass",
+      "matched": 11,
+      "matched_loose": 11,
+      "expected": 11,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-020": {
+      "status": "pass",
+      "matched": 31,
+      "matched_loose": 31,
+      "expected": 31,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-021": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-022": {
+      "status": "pass",
+      "matched": 36,
+      "matched_loose": 36,
+      "expected": 36,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-023": {
+      "status": "pass",
+      "matched": 17,
+      "matched_loose": 17,
+      "expected": 17,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-024": {
+      "status": "pass",
+      "matched": 12,
+      "matched_loose": 12,
+      "expected": 12,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-025": {
+      "status": "partial",
+      "matched": 41,
+      "matched_loose": 41,
+      "expected": 43,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "sequence.2.event",
+        "sequence.5.event"
+      ],
+      "partial_type": "outcome_correct",
+      "error_tags": [
+        "output_format_error"
+      ],
+      "review_note": "All 41 numeric, index and decision fields match across all eight borrowing-base/cash/revolver states, including first unremedied liquidity breach at step 4, cure at step 5, 3.2M headroom and final $2.2M headroom. Two event descriptions are paraphrases rather than the exact reference labels."
+    },
+    "long-026": {
+      "status": "pass",
+      "matched": 14,
+      "matched_loose": 14,
+      "expected": 14,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-027": {
+      "status": "pass",
+      "matched": 19,
+      "matched_loose": 19,
+      "expected": 19,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-028": {
+      "status": "near",
+      "matched": 20,
+      "matched_loose": 23,
+      "expected": 23,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-029": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-030": {
+      "status": "pass",
+      "matched": 14,
+      "matched_loose": 14,
+      "expected": 14,
+      "mode": "keyed",
+      "schema_ok": true
+    }
+  }
+}

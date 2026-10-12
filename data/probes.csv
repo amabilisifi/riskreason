@@ -1,0 +1,1651 @@
+Eval ID,Flag,Features,User Prompt (Input),Ground Truth (Expected),formal_notation,type of answer,domain,subdomain,financial_concept,reasoning_type,operator_sequence,reasoning_steps,data_representation,temporal_reasoning,probabilistic_reasoning,conditional_reasoning,unit_conversion,required_domain_knowledge,answer_type,reasoning_depth_score,reasoning_structure_score,representation_score,temporal_score,probabilistic_score,conditional_score,unit_conversion_score,domain_knowledge_score,difficulty_score,source_task_ids,dependency_graph,graph_depth,branch_count,intermediate_variables,horizon_class,probe_horizon,paired_probe_id,failure_mode_target,model_family_hypothesis,hypothesis_prediction,evidence_basis,evidence_source_url,diagnostic_pass_condition
+probe-001,Model-Differentiating Probe,Assumption invalidation / late rule override,"A bank reports $50 million of HQLA and $45 million of 30-day net cash outflows. The HQLA total includes $8 million of Level 2B securities. Under the bank's ordinary policy, all $50 million counts as HQLA. However, if the bank is downgraded, its internal stress policy makes the Level 2B securities ineligible immediately. A downgrade has just occurred. Calculate the LCR immediately before and after the downgrade and determine whether the 100% minimum is breached.","{
+    ""pre_downgrade"": {
+        ""lcr_percentage"": 111.11,
+        ""minimum_breached"": False,
+    },
+    ""post_downgrade"": {
+        ""lcr_percentage"": 93.33,
+        ""minimum_breached"": True,
+    },
+}","LCR_pre = HQLA_pre / Outflows = 50/45.
+Downgrade ⇒ HQLA_post = 50−8 = 42.
+LCR_post = 42/45.
+Breach = 1[LCR_post < 1.00].",number,Banking & ALM,Liquidity Risk,LCR under state-dependent eligibility rules,rule_revision_reasoning,compute baseline → observe state change → replace eligibility rule → recompute ratio → compare threshold,5,scalar_parameters,none,none,state_triggered_rule_override,none,Moderate,multi_numeric_decision,3,2,1,1,0,2,0,2,11,,HQLA_pre → LCR_pre; downgrade → eligibility_override → HQLA_post → LCR_post → breach,5,2,4,diagnostic_short,short,probe-002,Assumption invalidation / late rule override,GPT-family path-commitment hypothesis (version-dependent),"If the one-shot/monolithic execution style observed in Realm generalizes, GPT-family models may be more likely than iterative models to retain the pre-downgrade eligibility assumption instead of fully recomputing.","Realm observed GPT-5.5 using larger monolithic computation paths, while Gemini 3.1 Pro used shorter iterative compute/verify cycles; authors hypothesize these differences matter more when assumptions change.",https://www.micro1.ai/benchmark/realm-financial,"Must report both 111.11% and 93.33%, explicitly replace the eligibility rule after the downgrade, and classify only the post-downgrade state as breached."
+probe-002,Model-Differentiating Probe,Assumption invalidation / dynamic replanning,"A bank finances part of a securities portfolio through repo. Before any shock:
+- Collateral market value = $70.0M
+- Secured borrowing = $48.0M
+- Total debt = $78.0M
+- Equity = $20.0M
+- Cash = $2.2M; minimum cash buffer = $1.5M
+
+
+The collateral initially has a 20% haircut. A market shock reduces the collateral value by 5%, and the loss reduces equity dollar-for-dollar.
+
+
+The bank's internal policy is state-dependent:
+1. First evaluate the post-shock leverage ratio using total debt / post-shock equity.
+2. If that preliminary leverage exceeds 4.0×, the collateral haircut jumps from 20% to 35%.
+3. Under a haircut h, the maximum secured borrowing supported by the collateral is Collateral×(1−h). Any excess secured borrowing must be repaid immediately.
+4. The bank uses cash only down to its $1.5M minimum; any remaining required repayment is funded with an emergency unsecured line, which adds to total debt.
+
+
+Calculate the post-shock collateral and equity, preliminary leverage, whether the haircut regime changes, the resulting secured-debt repayment, emergency-line draw, final cash, final total debt, and final leverage. State which constraints are cured and which remain breached.","results = {
+    ""post_shock_collateral"": 66.5,
+    ""post_shock_equity"": 16.5,
+    ""preliminary_leverage"": 4.727,
+    ""haircut_regime_changes"": True,
+    ""secured_debt_repayment"": 4.775,
+    ""emergency_line_draw"": 4.075,
+    ""final_cash"": 1.5,
+    ""final_total_debt"": 77.3,
+    ""final_leverage"": 4.685,
+    ""constraints_cured"": [""repo_secured_capacity"", ""minimum_cash_buffer""],
+    ""constraints_breached"": [""leverage_ratio_policy""],
+}","Loss = 0.05·C0; C1=C0−Loss; E1=E0−Loss.
+L_pre=D0/E1.
+If L_pre>4 ⇒ h=0.35 else h=0.20.
+Supported=C1(1−h).
+Repay=max(Borrowing−Supported,0).
+CashUse=min(Repay, Cash0−Cash_min).
+Emergency=Repay−CashUse.
+Debt_final=D0−Repay+Emergency.
+Leverage_final=Debt_final/E1.",table,Banking & ALM,Funding Liquidity & Leverage,Endogenous haircut regime after leverage deterioration,dynamic_rule_revision,shock collateral/equity → preliminary leverage → trigger regime change → recompute borrowing capacity → repay → fund shortfall → recompute leverage,10,mixed,sequential_state_updates,none,endogenous_regime_switch,none,High,multi_numeric_decision,5,4,2,3,0,3,1,3,21,,"shock → {collateral_1,equity_1} → leverage_pre → haircut_regime → supported_repo → repayment → {cash_use,emergency_line} → debt_final → leverage_final",9,3,9,diagnostic_long,long,probe-001,Assumption invalidation / dynamic replanning,GPT-family path-commitment hypothesis (version-dependent),"A model that commits to the initial 20% haircut path may stop after the first feasible repo calculation and miss the leverage-triggered 35% regime. Iterative models should have an architectural advantage, but this must be tested empirically.","Realm reports different tool/reasoning trajectories: GPT-5.5 tended toward monolithic execution, Gemini 3.1 Pro toward iterative inspect-compute-verify, and Claude Opus 4.7 toward a hybrid strategy.",https://www.micro1.ai/benchmark/realm-financial,"Must explicitly compute preliminary leverage before selecting the final haircut, then recompute repayment and final leverage under the 35% regime."
+probe-003,Model-Differentiating Probe,Narrative-vs-numeric consistency,"An analyst writes: ""The bank's liquidity improved this quarter because HQLA increased by 10%. Last quarter HQLA was $20M and 30-day net cash outflows were $15M. This quarter HQLA is $22M and outflows are $21M. Using LCR = HQLA / net cash outflows, audit the statement. Report both LCRs and state whether liquidity improved or deteriorated.","{
+    ""audit_verdict"": ""Incorrect"",
+    ""liquidity_status"": ""Deteriorated"",
+    ""lcr_last_quarter"": {
+        ""ratio"": 1.3333,
+        ""percentage"": ""133.33%""
+    },
+    ""lcr_this_quarter"": {
+        ""ratio"": 1.0476,
+        ""percentage"": ""104.76%""
+    }
+}","LCR_0=20/15; LCR_1=22/21; ΔLCR=LCR_1−LCR_0. Direction follows ΔLCR, not the numerator alone.",number,Banking & ALM,Liquidity Risk,Denominator-aware liquidity trend audit,claim_audit,compute prior ratio → compute current ratio → compare → audit narrative claim,4,scalar_parameters,none,none,none,none,Low,multi_numeric_text,2,2,1,1,0,1,0,1,8,,"HQLA_0,outflow_0→LCR_0; HQLA_1,outflow_1→LCR_1; compare→claim_validity",4,2,3,diagnostic_short,short,probe-004,Narrative-vs-numeric consistency,Claude-vs-GPT numeric/narrative consistency hypothesis (version-dependent),"FinReasoning shows Claude Sonnet 4.5 stronger on justification/causal depth than on calculation, while GPT-5 was stronger on calculation; this probe tests whether persuasive qualitative framing can override exact ratio comparison.","FinReasoning reports GPT-5 calculation 72.8 and JCD 81.8, versus Claude Sonnet 4.5 calculation 64.6 and JCD 96.2. These are benchmark-specific scores, not permanent model traits.",https://github.com/TongjiFinLab/FinReasoning,Must reject the analyst's conclusion even though the numerator rises; both ratios and the direction of change must be correct.
+probe-004,Model-Differentiating Probe,Narrative-vs-numeric consistency across remediation,"A bank begins Q2 with CET1 capital of $12M and RWA of $100M. During Q2:
+- Pre-provision operating profit adds $3M to CET1.
+- Credit-loss provisions reduce CET1 by $4M.
+- Credit migration increases RWA to $120M.
+- Ignore taxes and dividends.
+
+
+The internal minimum CET1 ratio is 10.5%.
+
+
+A management memo states: ""Q2 was profitable before provisions, so capital strengthened organically. The bank is comfortably above its CET1 minimum and no capital raise is needed; lending can resume immediately.""
+
+
+Management can instead raise $2M of fresh CET1 capital. Under the bank's rule, lending may resume only if the CET1 ratio is at least 10.5%.
+
+
+Audit the memo step by step. Calculate closing CET1 capital and ratio before a raise, identify which claims are invalid, then calculate the ratio after the $2M raise and state whether lending may resume after the raise.","{
+    ""step_1_closing_metrics_before_raise"": {
+        ""net_income"": ""-$1M"",
+        ""closing_cet1_capital"": ""$11M"",
+        ""closing_rwa"": ""$120M"",
+        ""closing_cet1_ratio"": ""9.17%""
+    },
+    ""step_2_claim_evaluations"": [
+        {
+            ""claim"": ""Q2 was profitable before provisions, so capital strengthened organically."",
+            ""status"": ""Invalid"",
+            ""findings"": ""Pre-provision profit was positive ($3M), but credit provisions ($4M) drove a net loss of -$1M. Organic capital contracted from $12M to $11M.""
+        },
+        {
+            ""claim"": ""The bank is comfortably above its CET1 minimum..."",
+            ""status"": ""Invalid"",
+            ""findings"": ""The closing ratio fell from 12.00% to 9.17%, breaching the internal minimum threshold of 10.50% by 133 bps (1.33%).""
+        },
+        {
+            ""claim"": ""...and no capital raise is needed;"",
+            ""status"": ""Invalid"",
+            ""findings"": ""The bank has a capital shortfall of $1.60M relative to the 10.50% requirement on $120M RWA ($120M * 10.50% = $12.60M). Fresh capital or RWA shedding is required.""
+        },
+        {
+            ""claim"": ""...lending can resume immediately."",
+            ""status"": ""Invalid"",
+            ""findings"": ""Resuming lending would generate incremental RWA, worsening the capital deficit and violating internal policy.""
+        }
+    ],
+    ""step_3_post_raise_metrics"": {
+        ""fresh_capital_raised"": ""$2M"",
+        ""new_cet1_capital"": ""$13M"",
+        ""rwa"": ""$120M"",
+        ""post_raise_cet1_ratio"": ""10.83%""
+    },
+    ""decision"": {
+        ""meets_minimum_ratio"": True,
+        ""lending_may_resume"": True,
+        ""rationale"": ""10.83% is greater than or equal to the 10.50% threshold, restoring internal policy compliance.""
+    }
+}
+
+","CET1_pre=12; RWA_pre=100.
+CET1_close=12+3−4=11; RWA_close=120.
+Ratio_close=11/120.
+If Ratio_close<0.105 ⇒ lending_freeze.
+After raise: CET1'=11+2=13; Ratio'=13/120.
+Resume=1[Ratio'≥0.105].",table,Banking & ALM,Capital Adequacy,Narrative audit with capital remediation,hierarchical_claim_audit,opening ratio → P&L/provision capital update → RWA update → ratio → audit memo → capital raise → revised ratio → lending decision,8,mixed,sequential_period_and_remediation,none,threshold_then_remediation,none,Moderate,multi_numeric_audit_decision,4,4,2,2,0,3,1,2,18,,"opening_state → {profit,provision}→CET1_close; migration→RWA_close; ratio_close→memo_audit→raise→ratio_post→lending_decision",8,3,7,diagnostic_long,long,probe-003,Narrative-vs-numeric consistency across remediation,Claude-vs-GPT numeric/narrative consistency hypothesis (version-dependent),Tests whether a model preserves exact numerical state while producing a coherent audit narrative. Models strong in prose but weaker in exact calculation may accept the memo's framing or fail to separate pre- and post-remediation conclusions.,FinReasoning shows meaningful model-family differences between numerical calculation and justification/causal-depth subtracks.,https://github.com/TongjiFinLab/FinReasoning,"Must compute 9.1667% pre-raise, reject the memo's pre-raise claims, then compute 10.8333% post-raise and allow lending only after remediation."
+probe-005,Model-Differentiating Probe,Verification-to-causal-depth transition,"A portfolio holds two equal $10M positions. Each position has annual volatility of 10%. The portfolio weights are 50% and 50%.
+
+
+Scenario A: correlation between the two positions is 0.
+Scenario B: correlation is 0.8.
+
+
+Calculate portfolio volatility in each scenario using the two-asset variance formula. The standalone volatilities are unchanged. ","
+{
+  ""scenario_a"": {
+    ""portfolio_volatility"": 0.070711
+  },
+  ""scenario_b"": {
+    ""portfolio_volatility"": 0.094868
+  }
+}
+","σ_p²=w1²σ1²+w2²σ2²+2w1w2σ1σ2ρ. Evaluate at ρ∈{0,0.8}.",number,Market Risk,Portfolio Risk,Correlation-driven risk with unchanged marginals,dependence_reasoning,verify unchanged marginals → apply covariance term → compare portfolio risk → explain causal driver,4,scalar_parameters,none,correlation,none,none,Moderate,multi_numeric_explanation,3,2,1,0,2,1,0,2,11,,"{σ1,σ2,w,ρ}→portfolio_variance→portfolio_volatility→risk_change_explanation",4,2,3,diagnostic_short,short,,Verification-to-causal-depth transition,Gemini verification-to-causal-depth hypothesis (version-dependent),FinReasoning reports Gemini 3 Pro very strong verification but weaker reasoning/JCD than GPT-5 or Claude Sonnet 4.5. This probe makes the surface facts easy but requires recognizing dependence as the causal driver.,"FinReasoning: Gemini-3-pro verification 94.3, reasoning 56.8, JCD 80.7; GPT-5 reasoning 68.5; Claude Sonnet 4.5 JCD 96.2.",https://github.com/TongjiFinLab/FinReasoning,Must produce both volatilities and explicitly attribute the increase to the covariance/correlation term rather than claiming standalone risk changed.
+probe-007,Model-Differentiating Probe,Partial identifiability / calibrated abstention,"A portfolio has two positions:
+- Position A: $6M exposure, 1-day volatility 2%
+- Position B: $4M exposure, 1-day volatility 3%
+
+
+Use z=2.33 for 99% VaR. The correlation between the two positions is not given.
+
+
+Calculate each position's standalone 99% VaR. Then, instead of inventing a correlation, determine the exact minimum and maximum possible portfolio 99% VaR over all correlations from −1 to +1.","{
+    ""standalone_var_99"": {
+        ""position_a"": 279600.0,
+        ""position_b"": 279600.0
+    },
+    ""portfolio_var_99_bounds"": {
+        ""min_var"": 0.0,
+        ""max_var"": 559200.0
+    }
+   ","s_A=E_Aσ_A; s_B=E_Bσ_B.
+VaR_i=z s_i.
+s_p(ρ)=sqrt(s_A²+s_B²+2ρs_As_B).
+For ρ∈[−1,1], s_p∈[|s_A−s_B|,s_A+s_B].",number,Market Risk,Value at Risk,Portfolio VaR with missing correlation,partial_identifiability,compute identifiable marginals → recognize missing dependence → derive mathematical bounds → report range not fabricated point,5,scalar_parameters,none,unknown_correlation_bounds,none,none,Moderate,range_plus_components,3,3,1,0,3,1,0,2,13,,"{A inputs,B inputs}→standalone_VaRs; unknown_ρ→portfolio_bound→VaR_range",5,3,5,diagnostic_short,short,probe-008,Partial identifiability / calibrated abstention,Cross-model abstention/calibration probe; no fixed winner assumed,Industry finance hallucination tests report model-family differences in recognizing missing information. This probe is harder than a simple 'insufficient data' item because the model must compute what is identifiable and abstain only from the point estimate.,"JurisTech's 2026 finance hallucination benchmark reports differences across Gemini, GPT and Claude on missing-information recognition; treat this as hypothesis-generating industry evidence, not a peer-reviewed universal claim.",https://juristech.net/juristechs-2026-llm-benchmark-for-ai-hallucination-in-finance/,"Must compute both standalone VaRs and the $0–$559,200 portfolio range; a fabricated point correlation or blanket 'cannot answer' both fail."
+probe-008,Model-Differentiating Probe,Partial identifiability with downstream decision,"A bank has two credit exposures.
+
+
+Loan A:
+- EAD = $10M
+- LGD = 40%
+- PD = 2%
+
+
+Loan B:
+- EAD = $8M
+- LGD = 50%
+- PD = 3%.
+
+
+The exact asset correlation ρ is unavailable, but risk policy states it lies between 0 and 0.5. The bank has a $4.0M capital buffer.
+
+
+Calculate total expected loss, UL_A and UL_B, the minimum and maximum possible capital requirement over the allowed correlation range, and determine whether the $4.0M buffer is definitely sufficient, definitely insufficient, or indeterminate. Also find the correlation at which the capital requirement is exactly $4.0M.","results = {
+    ""expected_loss"": {
+        ""EL_A"": 80000.00,
+        ""EL_B"": 120000.00,
+        ""EL_total"": 200000.00
+    },
+    ""unexpected_loss"": {
+        ""UL_A"": 560000.00,
+        ""UL_B"": 682348.88
+    },
+    ""capital_requirement_range"": {
+        ""min_capital_rho_0"": 3530892.23,
+        ""max_capital_rho_0_5"": 4310573.73
+    },
+    ""exact_correlation_for_4M_buffer"": 0.2889
+}","EL_i=EAD_i LGD_i PD_i.
+UL_i=EAD_i LGD_i sqrt(PD_i(1−PD_i)).
+K(ρ)=4 sqrt(UL_A²+UL_B²+2ρUL_AUL_B).
+Evaluate endpoints ρ∈[0,0.5].
+Solve ρ*=[(K/4)²−UL_A²−UL_B²]/(2UL_AUL_B) for K=4M.",table,Credit Risk,Economic Capital,Capital adequacy under uncertain asset correlation,bounded_uncertainty_reasoning,compute EL → compute ULs → propagate unknown correlation → derive capital interval → compare buffer → solve threshold correlation,8,mixed,none,bounded_unknown_correlation,buffer_adequacy_by_range,none,High,multi_numeric_range_decision,5,4,2,1,4,2,1,3,22,,"{loanA,loanB}→{EL_A,EL_B,UL_A,UL_B}; ρ_range→{K_min,K_max}→buffer_status; K=4M→ρ_threshold",7,4,8,diagnostic_long,long,probe-007,Partial identifiability with downstream decision,Cross-model abstention/calibration probe; no fixed winner assumed,"Tests whether the model can continue through all identifiable calculations, preserve uncertainty, and defer only the final binary adequacy judgment until it has derived a range.",Financial hallucination benchmarks show missing-information handling is not uniform across model families; this task turns abstention into a quantitative finance problem rather than a refusal test.,https://juristech.net/juristechs-2026-llm-benchmark-for-ai-hallucination-in-finance/,"Must report total EL $200k, capital range about $3.531M–$4.311M, indeterminate adequacy, and threshold ρ≈0.2889."
+probe-009,Model-Differentiating Probe,Precision / threshold-boundary reasoning,"A bank has CET1 capital of $52.498M and RWA of $500M. Its minimum CET1 ratio is 10.50%.
+
+
+Policy requires the compliance test to use the unrounded ratio; rounding is allowed only for display.
+
+
+Calculate the unrounded CET1 ratio, state whether the bank breaches the minimum, and calculate the exact CET1 capital shortfall required to reach 10.50%.","{
+    ""cet1_capital"": 52498000.0,
+    ""rwa"": 500000000.0,
+    ""minimum_cet1_ratio"": 0.105,
+    ""unrounded_cet1_ratio"": 0.104996,
+    ""unrounded_cet1_ratio_percentage"": 10.4996,
+    ""display_cet1_ratio_percentage"": 10.5,
+    ""breaches_minimum"": True,
+    ""shortfall_percentage_points"": 0.0004,
+    ""required_cet1_capital"": 52500000.0,
+    ""capital_shortfall_usd"": 2000.0,
+    ""capital_shortfall_millions"": 0.002,
+}","Ratio=CET1/RWA=52.498/500. Compare unrounded Ratio with 0.105. Shortfall=max(0.105·RWA−CET1,0).",number,Banking & ALM,Capital Adequacy,Unrounded regulatory-threshold comparison,precision_boundary_reasoning,compute exact ratio → compare before rounding → derive capital cure,4,scalar_parameters,none,none,unrounded_threshold,million_to_dollars,Low,numeric_decision,2,2,1,0,0,2,2,1,10,,"CET1,RWA→exact_ratio→threshold_status→capital_shortfall",4,1,3,diagnostic_short,short,probe-010,Precision / threshold-boundary reasoning,Exact-calculation contrast; potential GPT advantage hypothesis based on FinReasoning (version-dependent),FinReasoning's GPT-5 calculation score exceeded Claude Sonnet 4.5 and Gemini 3 Pro. This probe is designed so premature rounding flips the compliance decision.,"FinReasoning reports calculation sub-scores of 72.8 for GPT-5, 64.6 for Claude Sonnet 4.5, and 69.9 for Gemini-3-pro.",https://github.com/TongjiFinLab/FinReasoning,"Must classify 10.4996% as a breach despite displaying as 10.50%, and compute the $2,000 cure exactly."
+probe-010,Model-Differentiating Probe,Precision boundary with downstream regime cascade,"A borrower is tested on a leverage covenant at the end of Q1. Debt is $105.004M and EBITDA is $30.000M. The covenant limit is 3.5000×, and the agreement says the comparison must use the unrounded ratio.
+
+
+If Q1 leverage exceeds 3.5000×, the coupon on the entire debt increases from 6% to 7% for Q2.
+
+
+In Q2, EBITDA falls to $10.8M. The interest-coverage covenant is EBITDA / annualized interest ≥ 1.50×. If coverage is below 1.50×, the borrower must immediately repay 20% of the outstanding principal. After the paydown, recompute annualized interest and coverage using the same 7% coupon.
+
+
+Calculate the Q1 leverage test, determine the Q2 coupon, calculate Q2 coverage before any paydown, determine whether the 20% paydown is triggered, and calculate the post-paydown debt and coverage.","results = {
+    ""q1_leverage_ratio"": 3.5001333333333333,
+    ""q1_leverage_test_breached"": True,
+    ""q2_coupon_rate"": 0.07,
+    ""q2_annualized_interest_pre_paydown"": 7.35028,
+    ""q2_interest_coverage_pre_paydown"": 1.4693317805580193,
+    ""q2_paydown_triggered"": True,
+    ""principal_paydown_amount"": 21.0008,
+    ""post_paydown_debt"": 84.0032,
+    ""post_paydown_annualized_interest"": 5.880224,
+    ""post_paydown_interest_coverage"": 1.8366647256975241,
+}","Lev_Q1=D/EBITDA1. If Lev_Q1>3.5 ⇒ c_Q2=0.07 else 0.06.
+Interest_pre=D·c_Q2; ICR_pre=EBITDA2/Interest_pre.
+If ICR_pre<1.5 ⇒ Paydown=0.20D.
+D_post=0.8D; Interest_post=D_post·c_Q2; ICR_post=EBITDA2/Interest_post.",table,Credit Risk,Loan Covenants,Rounding-sensitive covenant cascade,precision_triggered_state_chain,exact leverage → coupon regime → interest → coverage → paydown trigger → debt update → interest update → coverage cure,9,event_sequence,two_period_state_update,none,multiple_threshold_triggers,millions,Moderate,multi_numeric_state_decision,5,4,2,3,0,4,1,2,21,,Q1 exact_leverage→coupon_regime→Q2 interest→coverage_pre→paydown_trigger→debt_post→interest_post→coverage_post,8,2,8,diagnostic_long,long,probe-009,Precision boundary with downstream regime cascade,Exact-calculation contrast; potential GPT advantage hypothesis based on FinReasoning (version-dependent),A model that rounds the Q1 leverage ratio early will take the wrong branch and every downstream result will be wrong. This turns a tiny precision error into a long-horizon state error.,FinanceReasoning highlights numerical precision as a persistent LRM weakness; FinReasoning also shows model-family differences on calculation accuracy.,https://github.com/TongjiFinLab/FinReasoning,Must use 3.5001333× to trigger the 7% coupon and propagate that branch through the Q2 coverage/paydown calculations.
+probe-011,Model-Differentiating Probe,Scenario propagation into endogenous classification,"A $100M loan has LGD of 40%. The economy has two states:
+- Base: 70% probability, PD = 2%
+- Stress: 30% probability, PD = 10%
+
+
+First compute the unconditional PD. The bank's simplified staging rule says that if unconditional PD exceeds 4%, the loan moves to Stage 2 and the one-year ECL is multiplied by 2.5 to approximate lifetime ECL.
+
+
+Calculate the one-year ECL before the staging multiplier, determine the stage, and calculate the final ECL.","{
+    ""unconditional_pd_percentage"": 4.4,
+    ""unconditional_pd_decimal"": 0.044,
+    ""one_year_ecl_usd"": 1760000,
+    ""stage"": 2,
+    ""final_ecl_usd"": 4400000
+}",PD=Σp_sPD_s=0.044. ECL_1y=EAD·LGD·PD. If PD>0.04 ⇒ Stage2 and ECL=2.5ECL_1y.,number,Credit Risk,IFRS 9 / ECL,Scenario-weighted PD with staging trigger,scenario_to_rule_reasoning,aggregate scenario PD → compute base ECL → apply staging threshold → recompute final ECL,5,scenario_set,none,scenario_weighting,classification_trigger,none,Moderate,multi_numeric_decision,3,2,1,1,2,2,1,2,14,,"scenario_PDs→unconditional_PD→{ECL_1y,stage_trigger}→lifetime_multiplier→final_ECL",5,2,4,diagnostic_short,short,probe-012,Scenario propagation into endogenous classification,Gemini scenario-propagation hypothesis plus universal state-change weakness (version-dependent),"Realm found particularly weak VC forecast/scenario propagation for Gemini 3.1 Pro in its original three-model comparison, while all models degraded when analysis had to become a decision.","Realm reports VC forecast/scenario bucket: GPT-5.5 0.61, Opus 0.41, Gemini 0.00 in that benchmark; this is a small-domain result and should be treated as a probe hypothesis.",https://www.micro1.ai/benchmark/realm-financial,"Must compute 4.4% first, then use that result to change the staging rule and multiply the ECL; applying the multiplier before the trigger is evaluated fails."
+probe-012,Model-Differentiating Probe,Scenario propagation with interacting covenant hierarchy,"A borrower has $150M of debt. Its loan agreement works as follows:
+
+
+- Leverage covenant: Debt/EBITDA ≤ 4.0×.
+- Coupon is 5% while leverage is compliant.
+- If leverage exceeds 4.0×, the coupon immediately steps up to 6.5%.
+- Interest-coverage covenant: EBITDA / annualized interest ≥ 3.0×.
+- If coverage falls below 3.0× after the coupon step-up, the borrower must repay $20M of debt.
+- After that paydown, both leverage and coverage are retested using the same EBITDA and 6.5% coupon.
+- If leverage is still above 4.0× after the cure action, the loan is in default even if interest coverage is cured.
+
+
+Evaluate two EBITDA states:
+Base: $50M.
+Downside: $28M.
+
+
+For each state, compute leverage, the applicable coupon, annualized interest, and coverage. For the downside state, apply the cure rule if triggered, then compute post-paydown leverage and coverage and determine final default status.","{
+    ""base_state"": {
+        ""ebitda_m"": 50.0,
+        ""leverage"": 3.00,
+        ""coupon"": 0.05,
+        ""annualized_interest_m"": 7.5,
+        ""coverage"": 6.67,
+        ""cure_triggered"": False,
+        ""final_status"": ""Compliant""
+    },
+    ""downside_state"": {
+        ""ebitda_m"": 28.0,
+        ""initial_metrics"": {
+            ""leverage"": 5.36,
+            ""coupon"": 0.065,
+            ""annualized_interest_m"": 9.75,
+            ""coverage"": 2.87
+        },
+        ""cure_triggered"": True,
+        ""post_cure_metrics"": {
+            ""debt_m"": 130.0,
+            ""leverage"": 4.64,
+            ""coupon"": 0.065,
+            ""annualized_interest_m"": 8.45,
+            ""coverage"": 3.31
+        },
+        ""final_status"": ""In Default""
+    }
+}","For each state: Lev=D/EBITDA.
+If Lev>4 ⇒ c=0.065 else 0.05.
+Interest=Dc; ICR=EBITDA/Interest.
+If ICR<3 after step-up ⇒ D'=D−20.
+Retest Lev'=D'/EBITDA and ICR'=EBITDA/(D'c).
+Default=1[Lev'>4 after cure].",table,Credit Risk,Loan Covenants,Endogenous coupon and cure hierarchy across scenarios,scenario_state_machine,branch base/downside → leverage → coupon regime → interest → coverage → cure trigger → debt update → retest two covenants → default,11,scenario_set,state_then_cure_retest,none,nested_rule_hierarchy,none,High,multi_scenario_state_decision,5,5,2,3,1,4,1,3,24,,"scenario→leverage→coupon→interest→coverage; downside coverage_breach→paydown→{leverage_post,coverage_post}→default_hierarchy",9,4,10,diagnostic_long,long,probe-011,Scenario propagation with interacting covenant hierarchy,Gemini scenario-propagation hypothesis plus universal decision-transition weakness (version-dependent),The task punishes models that compute each ratio correctly but fail to carry the scenario-triggered coupon and cure states forward or that stop once one covenant is cured.,Realm reports a step-change from extraction/calculation to forecast/decision and particularly weak scenario propagation in some domains.,https://www.micro1.ai/benchmark/realm-financial,"Must keep base and downside states separate, propagate the 6.5% coupon only in downside, apply the cure, and still declare default because leverage remains above 4.0×."
+probe-013,Model-Differentiating Probe,Temporal evidence recency / stale-anchor resistance,"A covenant memo dated March 31 states that a borrower has $120M of debt and $30M of TTM EBITDA, implying 4.0× leverage.
+
+
+On April 15 the borrower repays $30M of debt.
+On April 20 the company issues revised TTM EBITDA of $28M.
+
+
+As of April 30, calculate current Debt/EBITDA and determine compliance with a 3.5× limit. Use the latest effective information rather than the stale March 31 memo.","{
+    ""current_debt_millions"": 90.0,
+    ""current_ebitda_millions"": 28.0,
+    ""leverage_ratio"": 3.21,
+    ""covenant_limit"": 3.5,
+    ""is_compliant"": True
+}",Debt_4/30=120−30=90. EBITDA_4/30=28. Leverage=90/28. Use latest effective observations by cutoff date.,number,Credit Risk,Loan Covenants,As-of-date covenant calculation from updates,temporal_evidence_alignment,order dated facts → update debt → update EBITDA → compute as-of ratio → ignore stale memo,5,event_sequence,as_of_date_updates,none,none,none,Low,numeric_decision,3,2,1,3,0,0,0,1,10,,dated_events→current_debt/current_EBITDA→current_leverage→compliance,4,1,3,diagnostic_short,short,probe-014,Temporal evidence recency / stale-anchor resistance,Universal context-order/recency probe; historical GPT/Claude sensitivity documented,FinanceBench found large prompt-order effects for GPT-4-Turbo and Claude2 in long-context settings. This short probe isolates the same stale-anchor behavior without long context.,FinanceBench reports context-first vs context-last accuracy shifts from 25% to 78% for GPT-4-Turbo and 37% to 76% for Claude2 in its long-context setting.,https://arxiv.org/abs/2311.11944,"Must use both April updates and reject the stale 4.0× memo, yielding 3.2143× and compliant."
+probe-014,Model-Differentiating Probe,Temporal evidence recency with cutoff and future distractor,"A borrower is tested on a 3.5× Debt/TTM EBITDA covenant as of April 15. Only transactions effective on or before the test date count.
+
+
+Dated information:
+- Jan 31: Debt = $200M; TTM EBITDA = $60M.
+- Feb 15: Acquisition closes. It adds $50M of debt and $12M of TTM pro-forma EBITDA, both effective immediately for covenant purposes.
+- Mar 10: Borrower repays $20M of debt.
+- Mar 25: A confirmed impairment reduces covenant TTM EBITDA by $8M.
+- Apr 5: Management announces a refinancing that will repay $30M of debt, but the refinancing is contractually effective Apr 20.
+- Apr 12: A memo prepared using Jan 31 data still quotes leverage of 3.33×.
+
+
+If leverage exceeds 3.5× on Apr 15, the loan margin steps up by 50 basis points from Apr 16. Calculate debt and covenant EBITDA as of Apr 15, the leverage ratio, whether the stale Apr 12 memo is usable, whether the margin step-up applies, and the annualized incremental interest cost of the 50 bp step-up on the Apr 15 debt balance.","{
+    ""debt_balance_apr_15_USD"": 230000000,
+    ""covenant_ttm_ebitda_apr_15_USD"": 64000000,
+    ""leverage_ratio"": 3.59,
+    ""is_apr_12_memo_usable"": False,
+    ""margin_step_up_applies"": True,
+    ""annualized_incremental_interest_cost_USD"": 1150000
+}","At cutoff t=Apr15, include only events with effective_date≤t.
+Debt=200+50−20=230; exclude −30 Apr20.
+EBITDA=60+12−8=64.
+Lev=230/64.
+If Lev>3.5 ⇒ margin_step=0.005; IncrementalInterest=230·0.005.",table,Credit Risk,Loan Covenants,Cutoff-date alignment and future-event exclusion,temporal_source_reconciliation,sort events → apply effective-date cutoff → update debt → update EBITDA → reject stale memo/future event → compute leverage → trigger margin → compute cost,9,mixed,dated_updates_with_cutoff,none,covenant_margin_trigger,none,Moderate,multi_numeric_audit_decision,5,4,2,4,0,2,1,2,20,,"dated_events+cutoff→{debt_4/15,EBITDA_4/15}→leverage→breach→margin_step→incremental_interest; stale/future evidence filtered",7,3,7,diagnostic_long,long,probe-013,Temporal evidence recency with cutoff and future distractor,Universal long-context/temporal anchoring probe; historical GPT/Claude sensitivity documented,A model that anchors on the stale memo or uses a future announced transaction will reach a plausible but wrong compliance state. The task separates retrieval of facts from effective-date reasoning.,FinanceBench found major prompt-order sensitivity in long-context financial QA for both GPT-4-Turbo and Claude2; FinSheet-Bench shows all model families degrade as spreadsheet/context complexity grows.,https://arxiv.org/abs/2311.11944,"Must exclude the Apr 20 refinancing, use $230M/$64M=3.59375×, trigger the 50 bp step-up, and compute $1.15M annualized incremental interest."
+probe-015,Model-Differentiating Probe,Analysis-to-decision consistency under hard constraint,"A risk committee must choose one of two investments under a strict rule:
+
+
+- Investment A: expected return 12%; stress loss 4%.
+- Investment B: expected return 10%; stress loss 2%.
+- Maximum permitted stress loss is 3%.
+- Rule: discard any investment that breaches the stress-loss limit, then choose the highest expected return among the remaining investments.
+
+
+Which investment must the committee choose ?","{
+    ""Investment_A"": {
+        ""expected_return"": 0.12,
+        ""stress_loss"": 0.04,
+        ""status"": ""Discarded"",
+        ""reason"": ""Stress loss (4%) exceeds the 3% maximum limit""
+    },
+    ""Investment_B"": {
+        ""expected_return"": 0.10,
+        ""stress_loss"": 0.02,
+        ""status"": ""Eligible"",
+        ""reason"": ""Stress loss (2%) is within the 3% maximum limit""
+    },
+    ""selected_investment"": ""Investment B""
+}",Feasible_i=1[StressLoss_i≤3%]. Choose argmax ExpectedReturn_i over feasible set.,text,Investments & Portfolio Management,Risk Budgeting,Constraint-first capital allocation,constrained_decision,filter infeasible options → rank feasible options → commit recommendation,3,scalar_parameters,none,none,hard_risk_constraint,none,Low,categorical_with_reason,2,2,1,0,0,2,0,1,8,,each_option→feasibility→feasible_set→return_ranking→decision,4,2,3,diagnostic_short,short,probe-016,Analysis-to-decision consistency under hard constraint,Universal decision-transition weakness; model-family differences to be measured empirically,Realm finds all three frontier models much weaker when completed analysis must become a signed recommendation. This probe makes the arithmetic trivial so a wrong answer is a decision-consistency failure.,Realm reports all three models below 50% on judgment-heavy tasks and a pronounced step-down at the decision/recommendation stage.,https://www.micro1.ai/benchmark/realm-financial,Must choose B and explicitly discard A before ranking returns.
+probe-016,Model-Differentiating Probe,Analysis-to-decision consistency across multiple constraints,"A trading desk must choose exactly one hedge. Current normal-market VaR is $5.8M and stress VaR is $6.2M. The limits are:
+- Normal VaR ≤ $5.0M
+- Stress VaR ≤ $5.3M
+- Cash after the hedge must remain at least $2.0M
+The desk starts with $4.0M of cash.
+
+
+Hedge A:
+- reduces normal VaR by $1.2M
+- reduces stress VaR by $0.6M
+- upfront cash cost $1.2M
+- annual carry cost $0.1M
+
+
+Hedge B:
+- reduces normal VaR by $0.9M
+- reduces stress VaR by $1.0M
+- upfront cash cost $1.8M
+- annual carry cost $0.3M
+
+
+Hedge C:
+- reduces normal VaR by $1.5M
+- reduces stress VaR by $1.4M
+- upfront cash cost $2.1M
+- annual carry cost $0.2M
+
+
+Decision rule: first discard any hedge that violates any of the three hard constraints. Among the feasible hedges, choose the one with the lowest annual carry cost.
+
+
+Calculate post-hedge normal VaR, stress VaR and cash for all three hedges; identify the feasible set; then make the required recommendation.","{
+    ""Hedge_A"": {
+        ""post_hedge_normal_var_m"": 4.6,
+        ""post_hedge_stress_var_m"": 5.6,
+        ""post_hedge_cash_m"": 2.8,
+        ""annual_carry_cost_m"": 0.1,
+        ""is_feasible"": False,
+        ""violated_constraint"": ""Stress VaR""
+    },
+    ""Hedge_B"": {
+        ""post_hedge_normal_var_m"": 4.9,
+        ""post_hedge_stress_var_m"": 5.2,
+        ""post_hedge_cash_m"": 2.2,
+        ""annual_carry_cost_m"": 0.3,
+        ""is_feasible"": True,
+        ""violated_constraint"": None
+    },
+    ""Hedge_C"": {
+        ""post_hedge_normal_var_m"": 4.3,
+        ""post_hedge_stress_var_m"": 4.8,
+        ""post_hedge_cash_m"": 1.9,
+        ""annual_carry_cost_m"": 0.2,
+        ""is_feasible"": False,
+        ""violated_constraint"": ""Cash""
+    },
+    ""feasible_set"": [""Hedge_B""],
+    ""recommendation"": ""Hedge_B""
+}","For i∈{A,B,C}: VaR_N,i=5.8−ΔN_i; VaR_S,i=6.2−ΔS_i; Cash_i=4−Cost_i.
+Feasible_i=1[VaR_N≤5 ∧ VaR_S≤5.3 ∧ Cash≥2].
+Choose argmin Carry_i over feasible set.",table,Market Risk,Hedging & Risk Limits,Multi-constraint hedge selection,constrained_multi_branch_decision,evaluate A across 3 constraints → evaluate B → evaluate C → build feasible set → optimize carry within feasible set → commit recommendation,10,scenario_set,none,none,multi_constraint_feasibility,none,Moderate,table_plus_categorical_decision,4,5,2,1,0,4,1,2,19,,"{A,B,C}→{normalVaR,stressVaR,cash}→feasibility_each→feasible_set→carry_ranking→decision",6,4,11,diagnostic_long,long,probe-015,Analysis-to-decision consistency across multiple constraints,Universal decision-transition weakness; model-family differences to be measured empirically,"The task is designed to catch models that recommend the cheapest or strongest hedge before applying all hard constraints, a failure pattern consistent with Realm's analysis-to-decision gap.","Realm reports decision/recommendation as one of the weakest capability buckets across GPT-5.5, Claude Opus 4.7 and Gemini 3.1 Pro.",https://www.micro1.ai/benchmark/realm-financial,"Must compute all nine post-hedge metrics, identify only B as feasible, and choose B despite A's lower carry and C's stronger VaR reduction."
+probe-017,Model-Differentiating Probe,Contract-definition override / semantic consistency,"A loan agreement defines covenant leverage using the following contract-specific definitions:
+- Covenant EBITDA = reported EBITDA + permitted synergies, but synergy add-backs are capped at 15% of reported EBITDA.
+- Net debt = funded debt minus unrestricted cash.
+- Lease liabilities are excluded from funded debt.
+- Restricted cash does not reduce net debt.
+
+
+The company reports:
+- Reported EBITDA = $18M
+- Claimed synergies = $5M
+- Funded debt = $82M
+- Lease liabilities = $6M
+- Total cash = $9M, of which $3M is restricted
+
+
+The leverage covenant is 3.75×. Calculate covenant EBITDA, net debt, covenant leverage, and whether the covenant is breached. Use the contract definitions above even if your usual market convention differs.","{
+    ""covenant_ebitda_millions"": 20.7,
+    ""net_debt_millions"": 76.0,
+    ""covenant_leverage"": 3.67,
+    ""covenant_breached"": False
+}","AddBack=min(Synergy,0.15·EBITDA_rep); EBITDA_cov=EBITDA_rep+AddBack; Cash_unres=Cash_total−Cash_restricted; NetDebt=FundedDebt−Cash_unres; Leverage=NetDebt/EBITDA_cov.",table,Corporate Finance,Covenant Risk,Contract-specific leverage definitions,definition_override_reasoning,apply add-back cap → isolate unrestricted cash → apply debt definition → compute leverage → covenant test,5,rule_text_plus_parameters,none,none,threshold_rule,mixed_units,High,multi_numeric,3,2,1,0,0,2,1,3,12,,stated definitions → permitted add-back & unrestricted cash → net debt/EBITDA → covenant decision,5,2,4,diagnostic_short,short,probe-018,Contract definition override vs trained-in convention,Claude semantic-consistency advantage hypothesis (version-dependent),"Models that overweight familiar market definitions may include leases, subtract restricted cash, or accept the full synergy add-back. Claude's stronger semantic-consistency result in FinReasoning suggests a possible advantage, to be tested.","FinReasoning reports statistically strong Claude performance on semantic consistency and justification/causal-depth, while model strengths differ on calculation/reasoning.",https://github.com/TongjiFinLab/FinReasoning,"Must use the stated contract definitions exactly and obtain EBITDA $20.7M, net debt $76M, leverage 3.6715×, compliant."
+probe-018,Model-Differentiating Probe,Definition override with cure mechanics and invariance,"A company is tested under a leverage covenant with these contract-specific definitions:
+- Covenant EBITDA = reported EBITDA + permitted synergies; synergy add-backs are capped at 15% of reported EBITDA.
+- Net debt = funded debt minus unrestricted cash.
+- Lease liabilities are excluded from funded debt.
+- Restricted cash does not reduce net debt.
+- If leverage exceeds 3.75×, 60% of unrestricted cash above a $4M operating minimum must be swept to repay funded debt.
+- If the cash sweep still leaves leverage above 3.75×, shareholders may inject fresh cash that is immediately used to repay debt.
+
+
+After an acquisition:
+- Reported EBITDA = $20M
+- Claimed synergies = $6M
+- Funded debt = $94M
+- Lease liabilities = $7M
+- Total cash = $11M, of which $4M is restricted
+
+
+Calculate pre-cure covenant leverage. If required, perform the cash sweep and recompute leverage. Then calculate the minimum shareholder equity injection needed to cure the covenant exactly.","{
+""covenant_ebitda_m"": 23.0,
+""initial_unrestricted_cash_m"": 7.0,
+""pre_cure_net_debt_m"": 87.0,
+""pre_cure_leverage"": 3.7826,
+""cash_sweep_m"": 1.8,
+""post_sweep_funded_debt_m"": 92.2,
+""post_sweep_unrestricted_cash_m"": 5.2,
+""post_sweep_net_debt_m"": 87.0,
+""post_sweep_leverage"": 3.7826,
+""minimum_equity_injection_cure_m"": 0.75,
+""minimum_equity_injection_cure_USD"": 750000,
+""post_equity_cure_net_debt_m"": 86.25,
+""post_equity_cure_leverage"": 3.75
+}","EBITDA_cov=20+min(6,0.15·20)=23; UCash=11−4=7; ND=94−7=87; L=ND/23. Sweep=.60·max(UCash−4,0). A cash-funded debt repayment leaves ND invariant because both debt and cash fall equally. EquityInjection=max(ND−3.75·EBITDA_cov,0).",table,Corporate Finance,Covenant Risk,"Contract leverage, cash sweep, equity cure",semantic_state_update,apply definitions → test covenant → compute sweep → update debt and cash → recognize net-debt invariance → derive external cure,8,rule_text_plus_parameters,sequential_periods,none,nested_rules,mixed_units,High,multi_numeric,4,3,2,2,0,3,1,3,18,,definitions → pre-cure leverage → sweep trigger → debt/cash state update → invariant net debt → external cure sizing,8,3,7,diagnostic_long,long,probe-017,Semantic definition fidelity under downstream remediation,Claude semantic-consistency advantage hypothesis (version-dependent),A solver that switches back to a familiar net-debt convention or assumes every debt repayment improves net debt will produce an incorrect cure. The long version tests whether semantic fidelity survives state updates.,FinReasoning shows model-family separation in semantic consistency versus calculation/reasoning dimensions.,https://github.com/TongjiFinLab/FinReasoning,Must show the $1.8M sweep leaves net debt at $87M and derive a $0.75M external equity injection to reach exactly 3.75×.
+probe-019,Model-Differentiating Probe,Spreadsheet header/row alignment,"A risk report is serialized from a spreadsheet:
+
+
+Counterparty | Current EAD | Mild-stress EAD | Severe-stress EAD | Limit
+Alpha Bank   | $12M  | $14M  | $19M  | $20M
+Beta Bank  | $15M  | $17M  | $23M  | $22M
+Gamma Bank   | $9M   | $12M  | $16M  | $18M
+
+
+For Beta Bank only, calculate severe-stress utilization as Severe-stress EAD / Limit and state whether the limit is breached. Do not use the adjacent mild-stress column.","{
+    ""Counterparty"": ""Beta Bank"",
+    ""Severe-stress EAD"": ""$23M"",
+    ""Limit"": ""$22M"",
+    ""Severe-stress utilization"": ""104.55%"",
+    ""Limit breached"": True
+}","Utilization_Beta,severe = EAD_Beta,severe / Limit_Beta = 23/22.",table,Counterparty Credit Risk,Exposure Limits,Stress-column alignment,structured_data_alignment,locate correct row → locate correct stress column → align with limit → divide → classify,5,table,none,none,threshold_rule,none,Low,numeric_plus_classification,2,2,3,0,0,1,0,1,9,,row identity + column identity → matched cells → utilization → breach,4,2,3,diagnostic_short,short,probe-020,2D header/value alignment,Gemini spreadsheet-structure advantage hypothesis (version-dependent),"FinSheet-Bench found Gemini 3.1 Pro strongest overall and notably more resilient on its largest complex spreadsheet than some GPT/Claude configurations, suggesting a possible structural-alignment advantage.","FinSheet-Bench reports strong shared degradation with spreadsheet complexity, with Gemini 3.1 Pro performing best overall in the evaluated configurations.",https://arxiv.org/abs/2603.07316,"Must use Beta severe-stress $23M and Beta limit $22M, not any adjacent row or mild-stress value."
+probe-020,Model-Differentiating Probe,Repeated labels / multi-section spreadsheet alignment,"A text export preserves the logical sections of a risk workbook but repeats counterparty names across desks:
+
+
+DESK: RATES
+Counterparty | Current EAD | Severe EAD | Limit
+Orion Bank   | 8   | 13   | 15
+Nova Bank  | 10  | 18   | 20
+Desk subtotal| 18  | 31   | 35
+
+
+DESK: CREDIT
+Counterparty | Current EAD | Severe EAD | Limit
+Orion Bank   | 11  | 21   | 19
+Nova Bank  | 7   | 12   | 14
+Desk subtotal| 18  | 33   | 33
+
+
+DESK: EQUITIES
+Counterparty | Current EAD | Severe EAD | Limit
+Orion Bank   | 6   | 10   | 12
+Nova Bank  | 9   | 17   | 16
+Desk subtotal| 15  | 27   | 28
+
+
+All figures are $M. For Orion Bank, aggregate severe EAD across desks using only the Orion rows, aggregate the three desk-specific limits applicable to Orion, calculate aggregate utilization, and identify every desk where Orion individually breaches its own limit. Do not add subtotal rows.","{
+  ""counterparty"": ""Orion Bank"",
+  ""aggregate_severe_ead_m"": 44,
+  ""aggregate_limit_m"": 46,
+  ""aggregate_utilization_percent"": 95.65,
+  ""desk_limit_breaches"": [
+    ""Credit""
+  ]
+}","EAD_Orion=Σ_d EAD_{Orion,d}; Limit_Orion=Σ_d Limit_{Orion,d}; U=EAD_Orion/Limit_Orion. DeskBreach_d=1[EAD_{Orion,d}>Limit_{Orion,d}]. Exclude subtotal rows.",table,Counterparty Credit Risk,Exposure Limits,Repeated-label spreadsheet extraction,hierarchical_table_alignment,segment desks → match repeated Orion rows → exclude subtotals → aggregate EAD → aggregate limits → desk tests → aggregate test,8,multi_section_table,none,none,multiple_thresholds,none,Moderate,table,4,3,4,0,0,2,0,2,15,,desk sections → exact repeated-label rows → exclude subtotal nodes → parallel desk tests + aggregate utilization,8,4,7,diagnostic_long,long,probe-019,Hierarchical spreadsheet structure and repeated-label binding,Gemini spreadsheet-structure advantage hypothesis (version-dependent),Tests whether the structural resilience seen for Gemini in FinSheet-Bench generalizes to repeated labels and hierarchical sections; GPT/Claude may close the gap with reasoning modes.,"FinSheet-Bench found all families degrade as spreadsheet structure grows, but Gemini 3.1 Pro was strongest overall and unusually resilient on the largest evaluation file.",https://arxiv.org/abs/2603.07316,"Must aggregate only Orion rows to $44M/$46M, identify only Credit as breached, and never add desk subtotal rows."
+probe-021,Model-Differentiating Probe,Exact correlated-risk calculation,"A two-asset trading portfolio has:
+- Asset A dollar volatility = $100,000 per day
+- Asset B dollar volatility = $90,000 per day
+- Correlation = 0.25
+- 99% normal quantile z = 2.33
+
+calculate 1-day 99% VaR.","{
+    ""asset_a_volatility"": 100000,
+    ""asset_b_volatility"": 90000,
+    ""correlation"": 0.25,
+    ""z_score_99"": 2.33,
+    ""portfolio_volatility"": 150332.96,
+    ""var_99_1_day"": 350275.81
+}",σp=sqrt(σA²+σB²+2ρσAσB); VaR=.99 quantile·σp.,number,Market Risk,VaR,Two-asset correlated VaR,financial_formula_application,square terms → covariance term → sum → square root → quantile scaling,5,scalar_parameters,none,correlation,none,currency_scale,Moderate,number,3,1,1,0,2,0,1,2,10,,risk inputs → covariance aggregation → σp → VaR,4,2,3,diagnostic_short,short,probe-022,Numerical exactness under correlation,GPT calculation-advantage hypothesis (version-dependent),"FinReasoning reports GPT-5 leading the calculation and reasoning subtracks among GPT-5, Claude Sonnet 4.5, and Gemini 3 Pro; this probe tests exact numerical execution with a covariance term.","FinReasoning reports model-family specialization: GPT-5 stronger in calculation/reasoning, Gemini strong in verification, Claude strong in semantic/causal dimensions.",https://github.com/TongjiFinLab/FinReasoning,Must include the covariance term and obtain approximately $350.3k.
+probe-022,Model-Differentiating Probe,Exact multi-branch capital aggregation under changing correlations,"A bank aggregates economic capital from three risk modules using a square-root correlation formula.
+
+
+Base module capital:
+- Market M = $4.2M
+- Credit C = $5.5M
+- Operational O = $2.4M
+
+
+Base correlations:
+ρMC=0.30, ρMO=0.10, ρCO=0.20.
+
+
+Under stress:
+- Market capital rises 15%
+- Credit capital rises 20%
+- Operational capital is unchanged
+- Correlations change to ρMC=0.45, ρMO=0.15, ρCO=0.30
+
+The bank holds $11M of available economic-capital resources and requires resources of at least 120% of stressed EC.
+
+
+Calculate base EC, stressed module values, stressed EC, required resources, and the capital shortfall.","{
+    ""base_ec"": 8.65,
+    ""stressed_module_values"": {
+        ""market"": 4.83,
+        ""credit"": 6.60,
+        ""operational"": 2.40
+    },
+    ""stressed_ec"": 10.69,
+    ""required_resources"": 12.83,
+    ""capital_shortfall"": 1.83
+}","EC=sqrt(ΣK_i²+2Σρ_ijK_iK_j). Stress K and ρ, then Required=1.20·EC_stress; Shortfall=max(Required−11,0).",table,Enterprise Risk Management,Economic Capital,Correlated economic-capital aggregation,multi_branch_formula_reasoning,base aggregation → stress each module → replace correlations → stressed aggregation → buffer multiplier → shortfall,8,scalar_parameters,scenario_transition,correlation,threshold_rule,currency_scale,High,multi_numeric,4,3,2,1,3,1,1,3,18,,three parallel stressed modules + three covariance links → EC → resource requirement → shortfall,8,4,8,diagnostic_long,long,probe-021,Numerical exactness across multiple correlated branches,GPT calculation-advantage hypothesis (version-dependent),"Longer correlated aggregation compounds arithmetic and bookkeeping; the FinReasoning calculation/reasoning split predicts potential GPT advantage, but current frontier models must be retested.",FinReasoning reports GPT-5 strongest in the calculation and reasoning subtracks among the three named frontier families in that evaluation.,https://github.com/TongjiFinLab/FinReasoning,"Must update both module values and correlations, obtain stressed EC ≈$10.6921M, and shortfall ≈$1.8305M."
+probe-023,Model-Differentiating Probe,Verification without false-positive error finding,"An analyst checks a $12M loan with LGD 45% and PD 2.5% and writes:
+
+
+Step 1: Expected loss = $12M × 45% × 2.5% = $135,000.
+Step 2: If a stress multiplier of 1.6 applies only to PD, stressed PD = 4.0%.
+Step 3: Stressed expected loss = $12M × 45% × 4.0% = $216,000.
+
+
+Verify each step and identify the first incorrect step, if any.","{
+    ""step_1"": {
+        ""description"": ""Base expected loss"",
+        ""calculated_value"": 135000,
+        ""is_correct"": True
+    },
+    ""step_2"": {
+        ""description"": ""Stressed Probability of Default (PD)"",
+        ""calculated_value"": 0.04,
+        ""is_correct"": True
+    },
+    ""step_3"": {
+        ""description"": ""Stressed expected loss"",
+        ""calculated_value"": 216000,
+        ""is_correct"": True
+    },
+    ""first_incorrect_step"": None,
+    ""conclusion"": ""All steps are mathematically correct""
+}",EL=EAD·LGD·PD; PD_stress=1.6·PD; EL_stress=EAD·LGD·PD_stress.,table,Credit Risk,Expected Loss,Verification calibration,verification_reasoning,recompute step1 → recompute step2 → recompute step3 → compare → abstain from false error,4,reasoning_trace,none,probability,conditional_instruction,percent_decimal,Low,verification,2,2,1,0,1,1,1,1,9,,independent recomputation → compare each node → no-error conclusion,4,1,3,diagnostic_short,short,probe-024,Calibrated verification / resisting forced-error framing,Gemini verification-advantage hypothesis (version-dependent),"Gemini 3 Pro had the strongest verification subtrack among the compared frontier models in FinReasoning. This probe tests verification precision, including avoiding false-positive error detection.",FinReasoning reports Gemini-3-pro highest on the Verification subdimension among the named GPT/Claude/Gemini models.,https://github.com/TongjiFinLab/FinReasoning,Must explicitly conclude that all three steps are correct; claiming an error is a failure.
+probe-024,Model-Differentiating Probe,Multi-branch verification with two independent errors,"A risk committee receives the following worked stress calculation with two independent branches.
+
+
+MARKET BRANCH
+1. A $20M bond portfolio with modified duration 4 loses 4% when yields rise 100 bps, so loss = $0.8M.
+2. Post-shock collateral value = $19.2M.
+3. The collateral supports $15M borrowing with a 120% collateral requirement, so required collateral = $18.0M.
+4. Margin call = $18.0M − $19.2M = $1.2M.
+
+
+CREDIT BRANCH
+5. A separate $10M loan has PD 8% and LGD 50%.
+6. Expected loss = $10M×50%×8% = $300,000.
+
+
+AGGREGATION
+7. The report defines total stress charge = margin call + expected loss, so total stress charge = $1.5M.
+
+
+Audit the trace. Identify every independently incorrect step, distinguish downstream errors from independent errors, and give the corrected total stress charge under the report's stated aggregation definition.","{
+  ""Corrected_Total_Stress_Charge"": ""$400,000"",
+  ""Audit_Breakdown"": {
+    ""Steps_1_2_3_and_5"": ""Initial logic and parameters are validated."",
+    ""Step_4"": ""Margin call computes to $0."",
+    ""Step_6"": ""Expected loss computes to $400,000."",
+    ""Step_7"": ""Total stress charge aggregates to $400,000.""
+  }
+}","Call=max(1.20·Borrowing−Collateral_post,0); EL=EAD·LGD·PD; Charge=Call+EL. Error graph has independent errors at Steps 4 and 6; Step 7 descends from both.",table,Enterprise Risk Management,Model Validation,Independent-error localization,graph_verification,verify market branch → verify credit branch → classify independent vs descendant errors → recompute aggregation,8,reasoning_trace,sequential_periods,probability,max_floor_rule,percent_decimal,Moderate,audit_report,4,4,2,1,1,2,1,2,17,,market branch and credit branch → independent error nodes → shared aggregate descendant,7,3,7,diagnostic_long,long,probe-023,Verification precision plus dependency-aware error classification,Gemini verification-advantage hypothesis (version-dependent),"A strong verifier must both catch two separate errors and avoid labeling the second as downstream of the first. Gemini's verification strength may help, while deeper dependency classification could favor stronger reasoning models.",FinReasoning separates Verification from Calculation/Reasoning and shows different leading model families on those subdimensions.,https://github.com/TongjiFinLab/FinReasoning,"Must identify Step 4 and Step 6 as independent errors, Step 7 as downstream, and corrected total charge $0.4M."
+probe-025,Model-Differentiating Probe,Branch-preserving error correction,"A portfolio loss report has two independent branches:
+
+
+Bond branch:
+A $25M bond position with modified duration 5 faces a 60 bp yield increase. The analyst reports a $1.25M bond loss.
+
+
+FX branch:
+A €8M receivable is hedged 75%. The unhedged €2M loses 4% in USD value. The analyst reports an FX loss of €0.08M equivalent.
+
+
+The report adds the two branch losses after converting the FX loss at $1.10/€.
+
+
+Identify the first incorrect branch calculation, preserve any independent correct branch, and calculate the corrected total USD loss.","{
+  ""incorrect_branch"": {
+    ""branch_name"": ""Bond branch"",
+    ""analyst_reported_loss"": ""$1,250,000"",
+    ""actual_calculated_loss"": ""$750,000""
+  },
+  ""preserved_correct_branch"": {
+    ""branch_name"": ""FX branch"",
+    ""analyst_reported_loss_eur"": ""€80,000"",
+    ""converted_loss_usd"": ""$88,000""
+  },
+  ""corrected_total_loss_usd"": ""$838,000""
+}",BondLoss=D_mod·Δy·MV; FX_unhedged=EUR·(1−hedge); FXLossUSD=FX_unhedged·shock·FXrate; Total=BondLoss+FXLossUSD.,table,Market Risk,Cross-Asset Risk,Branch-local correction,dependency_aware_debugging,audit bond branch → audit FX branch independently → correct only wrong branch → aggregate,6,reasoning_trace,none,none,branch_independence,fx_conversion,Moderate,multi_numeric,3,3,2,0,0,2,2,2,14,,bond branch || FX branch → total; correction must propagate only from faulty bond node,5,3,5,diagnostic_short,short,probe-026,Local correction without contaminating independent branches,Claude causal-depth vs Gemini verification differentiation hypothesis,Claude's strong causal/justification dimension and Gemini's strong verification dimension suggest a useful contrast: catching an error is not enough; the model must understand which downstream nodes are actually affected.,FinReasoning shows Claude especially strong on justification/causal depth and Gemini especially strong on verification.,https://github.com/TongjiFinLab/FinReasoning,"Must correct bond loss to $0.75M, preserve FX loss $0.088M, and report total $0.838M."
+probe-026,Model-Differentiating Probe,Dependency-graph auditing with coincidental equality,"A bank stress model has three branches feeding a final liquidity decision.
+
+
+MARKET BRANCH
+A $40M bond book, modified duration 3.5, faces a 120 bp rise.
+The analyst reports:
+M1 bond loss = $1.68M.
+M2 post-shock collateral = $38.32M.
+M3 required collateral against $32M borrowing at 125% = $40M.
+M4 margin call = $1.68M.
+
+
+CREDIT BRANCH
+A $15M loan, PD 6%, LGD 40%.
+C1 expected loss = $0.36M.
+
+
+DEPOSIT BRANCH
+Starting cash = $3.0M.
+A deposit runoff of $1.1M occurs.
+D1 cash after runoff before any margin call = $1.9M.
+
+
+FINAL NODES
+F1 cash after margin call = D1 − M4.
+F2 minimum required cash = $1.5M.
+F3 liquidity shortfall = max($1.5M−F1,0).
+
+
+Audit the dependency graph. Correct the earliest erroneous node(s), state exactly which later nodes must change and which independent branch outputs remain valid, then compute the corrected final liquidity shortfall.","""{
+""audit_results"": {
+""earliest_erroneous_nodes"": [],
+""all_supplied_nodes_valid"": true,
+""nodes_requiring_change"": [],
+""independent_of_final_liquidity_nodes"": [
+""C1""
+],
+""note"": ""Under the explicitly stated graph, C1 is not a parent of F1 or F3 and must not be injected into the liquidity calculation.""
+},
+""calculations_millions"": {
+""M1_bond_loss"": 1.68,
+""M2_post_shock_collateral"": 38.32,
+""M3_required_collateral"": 40.0,
+""M4_margin_call"": 1.68,
+""C1_expected_loss"": 0.36,
+""D1_cash_after_runoff"": 1.9,
+""F1_cash_after_margin_call"": 0.22,
+""F2_minimum_required_cash"": 1.5,
+""F3_liquidity_shortfall"": 1.28
+}
+}","M1=3.5·0.012·40=1.68; M2=40−1.68=38.32; M3=1.25·32=40; M4=max(40−38.32,0)=1.68; C1=15·.06·.40=.36; D1=3−1.1=1.9; F1=D1−M4=.22; F3=max(1.5−F1,0)=1.28.",table,Enterprise Risk Management,Stress Testing,Dependency-graph audit and coincidental equality,graph_audit_reasoning,verify each branch → resist suspicious-equality heuristic → compute shared descendants → classify validity,9,reasoning_trace,sequential_periods,probability,max_floor_rule,percent_decimal,Moderate,audit_report,4,4,2,2,1,2,1,2,18,,market || credit || deposit branches → liquidity descendants; no correction if all branch nodes validate,8,4,8,diagnostic_long,long,probe-025,Graph-aware verification without hallucinated correction,Claude causal-depth vs Gemini verification differentiation hypothesis,This trap separates genuine dependency-aware verification from pattern-based suspicion: the margin call legitimately equals the bond loss. Models must verify causally rather than 'fix' a visually suspicious equality.,FinReasoning demonstrates that verification and causal/justification are separable strengths across model families.,https://github.com/TongjiFinLab/FinReasoning,Must conclude all supplied upstream nodes are valid and compute final liquidity shortfall $1.28M.
+probe-027,Model-Differentiating Probe,Rule hierarchy / explicit override vs familiar default,"A derivatives CSA states:
+- Ordinary collateral threshold = $2.0M.
+- During a designated stress period, threshold becomes $0.5M.
+- If the counterparty is rated below BBB, the rating rule overrides all other thresholds and sets the threshold to zero.
+- Minimum transfer amount (MTA) = $0.25M; a call is made only if the required transfer is at least the MTA.
+
+
+Current exposure is $3.1M and collateral already posted is $1.0M. The market is in a designated stress period and the counterparty is rated BB.
+
+
+Determine the applicable threshold and collateral call.","{
+    ""current_exposure"": 3100000.0,
+    ""collateral_already_posted"": 1000000.0,
+    ""applicable_threshold"": 0.0,
+    ""total_required_collateral"": 3100000.0,
+    ""collateral_deficit"": 2100000.0,
+    ""minimum_transfer_amount"": 250000.0,
+    ""mta_condition_met"": True,
+    ""final_collateral_call"": 2100000.0
+}","Threshold = 0 because rating<BBB overrides stress and ordinary thresholds. Required=max(E−Threshold,0). Call=max(Required−Posted,0) if Call≥MTA.",table,Counterparty Credit Risk,Collateral Management,CSA rule hierarchy,rule_hierarchy_reasoning,rank rules → select override → compute required collateral → subtract posted → MTA test,5,rule_text_plus_parameters,state_dependent,none,override_hierarchy,none,Moderate,numeric_plus_classification,3,3,1,1,0,3,0,2,13,,ordinary rule ← stress override ← rating override → collateral requirement → MTA,5,3,4,diagnostic_short,short,probe-028,Knowledge-conflict and rule-override fidelity,Cross-family knowledge-conflict hypothesis,Models may fall back to familiar or earlier rules when later in-context rules conflict. TRACK finds that conflicting knowledge can worsen multi-step reasoning and that degradation grows with multiple conflicts.,TRACK studies propagation of conflicting in-context knowledge through multi-step reasoning and finds worsening performance as conflicts accumulate.,https://arxiv.org/abs/2601.15495,"Must choose threshold $0, not $0.5M or $2M, and compute a $2.1M call."
+probe-028,Model-Differentiating Probe,Multiple conflicting overrides with endogenous recomputation,"A bank's internal secured-funding policy deliberately differs from its ordinary policy.
+
+
+Rules, in priority order:
+1. If a counterparty is on the internal watchlist, use a 40% collateral haircut.
+2. Otherwise, if the market is in stress, use a 30% haircut.
+3. Otherwise use a 15% haircut.
+4. If the resulting collateral coverage ratio after the haircut is below 110%, secured borrowing must be repaid until coverage is exactly 110%.
+5. During stress, any repayment funded by selling the same collateral causes a further 5% market-value discount on the amount sold. Recompute collateral value after that sale before checking the 110% requirement again.
+
+
+The bank has $80M collateral and $48M secured borrowing. The market is in stress and the counterparty is on the watchlist. No external cash is available; any required repayment must come from selling collateral.
+
+
+Determine the correct starting haircut, calculate the first-pass coverage, then solve for the minimum collateral sale/debt repayment x that leaves post-sale collateral coverage at exactly 110%, accounting for the 5% sale discount.","
+
+
+{
+    ""starting_haircut_percentage"": 40.0,
+    ""initial_coverage_ratio"": 1.0,
+    ""target_coverage_ratio"": 1.1,
+    ""debt_repayment_amount_millions"": 10.247,
+    ""collateral_sold_millions"": 10.787,
+    ""final_debt_millions"": 37.753,
+    ""final_nominal_collateral_millions"": 69.213,
+    ""final_post_haircut_collateral_millions"": 41.528,
+    ""final_coverage_ratio"": 1.1
+}",h=.40 by priority. Eligible0=.60·80. Let sale=repayment=x; MV1=80−1.05x; Eligible1=.60·MV1; Debt1=48−x; solve Eligible1=1.10·Debt1.,table,Banking & ALM,Secured Funding,Haircut hierarchy with endogenous sale impact,conflict_propagation_reasoning,resolve rule priority → first coverage test → formulate sale impact → update collateral/debt jointly → solve nonlinear state condition → verify,9,rule_text_plus_parameters,sequential_state,none,override_and_feedback,percent_decimal,High,multi_numeric,5,4,2,2,0,3,1,3,20,,priority hierarchy → haircut → breach → collateral-sale feedback → new eligible collateral & debt → coverage cure,9,4,8,diagnostic_long,long,probe-027,Multi-conflict rule propagation with downstream feedback,Cross-family knowledge-conflict hypothesis,TRACK predicts larger failures when multiple in-context updates conflict with prior/default knowledge. This finance probe adds downstream feedback so failure to adopt the highest-priority rule propagates through the whole cure calculation.,TRACK reports that conflicting knowledge can degrade reasoning and that degradation worsens as more conflicting updates are introduced.,https://arxiv.org/abs/2601.15495,Must use 40% haircut and solve x≈$10.2128M with the 5% sale-impact feedback included.
+probe-030,Model-Differentiating Probe,"Cross-currency, haircut, bp and million-dollar scale tracking","A bank has a euro-denominated counterparty exposure and a separate operational loss.
+
+
+Counterparty data:
+- Gross exposure = €80M
+- Spot FX = $1.10 per €
+- Eligible collateral = $20M
+- Collateral haircut = 25%
+- PD = 120 basis points
+- LGD = 55%
+
+
+Operational-loss event = $0.60M.
+
+
+To complete this simplified assessment, convert the gross exposure into USD, discount the collateral by applying a haircut, and subtract it from the USD exposure to determine the net exposure at default (EAD). Next, compute the expected credit loss and combine it with the operational loss to arrive at the total risk loss, then evaluate whether this final figure exceeds the $1.00M escalation threshold.","results = {
+    ""gross_exposure_usd"": 88.0,
+    ""collateral_discounted_usd"": 15.0,
+    ""net_ead_usd"": 73.0,
+    ""expected_credit_loss_usd"": 0.4818,
+    ""operational_loss_usd"": 0.60,
+    ""total_risk_loss_usd"": 1.0818,
+    ""escalation_threshold_usd"": 1.00,
+    ""exceeds_escalation_threshold"": True,
+}",EAD_USD=80·1.10−20·(1−.25)=73M; PD=120bp=.012; EL=73M·.012·.55=.4818M; Total=.4818+.60=1.0818M.,table,Counterparty Credit Risk,Expected Loss,Multi-unit expected loss aggregation,multi_unit_reasoning,FX conversion → collateral haircut → net EAD → bp conversion → EL → add operational loss → threshold,8,mixed,none,probability,threshold_rule,fx_bps_currency,Moderate,multi_numeric,4,2,3,0,2,1,3,2,17,,FX & collateral branch → net EAD → PD conversion → credit EL + operational loss → escalation,7,3,7,diagnostic_long,long,,Scale and unit fidelity across heterogeneous quantities,GPT calculation-advantage hypothesis (version-dependent),Long unit chains create opportunities for order-of-magnitude and percent/basis-point mistakes. FinReasoning's calculation split provides a testable model-family hypothesis.,FinReasoning reports model-family differences in calculation accuracy.,https://github.com/TongjiFinLab/FinReasoning,"Must obtain net EAD $73M, credit EL $481,800, total $1.0818M, and escalate."
+probe-031,Model-Differentiating Probe,Cumulative-vs-standalone period alignment,"A company reports:
+- H1 EBITDA = $24M
+- 9-month EBITDA = $36M
+- H1 cash interest = $6M
+- 9-month cash interest = $10M
+
+
+Calculate Q3 standalone EBITDA, Q3 standalone cash interest, and Q3 standalone interest coverage (EBITDA / cash interest).","{
+    ""Q3_standalone_EBITDA_millions"": 12,
+    ""Q3_standalone_cash_interest_millions"": 4,
+    ""Q3_standalone_interest_coverage"": 3.0
+}",Q3 EBITDA=EBITDA_9M−EBITDA_H1; Q3 Interest=Interest_9M−Interest_H1; Coverage_Q3=12/4.,table,Corporate Finance,Covenant Analysis,Period-aligned interest coverage,period_alignment_reasoning,subtract cumulative periods → align standalone numerator/denominator → ratio,4,scalar_parameters,period_alignment,none,none,none,Low,multi_numeric,2,2,1,2,0,0,0,2,9,,cumulative H1 and 9M → standalone Q3 values → aligned ratio,4,2,3,diagnostic_short,short,probe-032,Temporal denominator/numerator alignment,GPT data-alignment/reasoning advantage hypothesis (version-dependent),FinReasoning reports GPT-5 strongest on the combined calculation/reasoning dimensions among the named three models; temporal period alignment is a focused test of that strength.,FinReasoning reports separate Data Alignment subdimensions and model-family differences in calculation and reasoning.,https://github.com/TongjiFinLab/FinReasoning,Must derive Q3 values by subtraction and report 3.00×; using 9M denominators is incorrect.
+probe-032,Model-Differentiating Probe,Multiple temporal horizons / correct metric horizon selection,"A debt covenant is tested on trailing-twelve-month (TTM) EBITDA / TTM cash interest and requires coverage of at least 3.20×.
+
+
+Reported data:
+- Prior Q4 standalone EBITDA = $10M; prior Q4 standalone cash interest = $4M.
+- Current H1 cumulative EBITDA = $24M; H1 cash interest = $6M.
+- Current 9M cumulative EBITDA = $36M; 9M cash interest = $10M.
+
+
+Management argues that the covenant is breached because Q3 standalone coverage is only 3.0×.
+
+
+Calculate Q3 standalone coverage, then calculate TTM coverage at the end of Q3 using prior Q4 plus current 9M results. Determine whether the covenant is actually breached.","{
+    ""q3_standalone_coverage"": 3.0,
+    ""ttm_coverage"": 3.29,
+    ""is_covenant_breached"": False
+}",Q3=9M−H1. TTM=PriorQ4+Current9M. Covenant uses TTM coverage=46/14.,table,Corporate Finance,Covenant Analysis,Standalone vs TTM covenant horizon,multi_horizon_temporal_reasoning,derive Q3 → evaluate management metric → construct TTM numerator → construct TTM denominator → covenant test → audit claim,7,mixed,rolling_periods,none,metric_selection,none,Moderate,audit_report,4,3,2,3,0,2,0,2,16,,H1/9M → Q3 branch; priorQ4+9M → TTM branch → select covenant horizon → decision,7,3,6,diagnostic_long,long,probe-031,Temporal-horizon selection under plausible but wrong narrative,GPT data-alignment/reasoning advantage hypothesis (version-dependent),"Tests whether models preserve period semantics across cumulative, standalone, and rolling horizons instead of accepting a numerically correct but legally irrelevant Q3 ratio.","FinReasoning shows model-family differences across calculation, reasoning, and semantic consistency dimensions.",https://github.com/TongjiFinLab/FinReasoning,Must report Q3 3.0× but TTM 3.2857× and conclude no covenant breach.
+probe-033,Model-Differentiating Probe,Hierarchy-aware aggregation / double-count resistance,"A portfolio report shows:
+- Corporate total exposure = $100M
+  - Energy = $40M
+  - Technology = $35M
+  - Other corporate = $25M
+- Retail total exposure = $60M
+  - Mortgages = $45M
+  - Consumer = $15M
+- Grand total exposure = $160M
+
+
+Calculate Energy concentration as a percentage of the grand total. Do not sum parent totals and their child categories together.","{
+    ""category"": ""Energy"",
+    ""exposure_usd_million"": 40,
+    ""grand_total_usd_million"": 160,
+    ""energy_concentration_percentage"": 25.0
+}",Concentration=Energy/GrandTotal=40/160. Parent totals are non-additive with children.,table,Credit Risk,Concentration Risk,Hierarchical exposure aggregation,hierarchical_aggregation,identify hierarchy → choose leaf numerator → use grand-total denominator → avoid duplicate parent addition,4,hierarchical_table,none,none,aggregation_rule,none,Low,number,2,3,3,0,0,1,0,1,10,,parent-child hierarchy → non-overlapping numerator/denominator → concentration,4,3,3,diagnostic_short,short,probe-034,Hierarchical double-counting resistance,Gemini structural-alignment / cross-family hierarchy hypothesis,FinSheet-Bench identifies structural layout as a major shared failure source and finds model-level differences in resilience. Hierarchical subtotals are a finance-specific structural trap.,FinSheet-Bench shows large accuracy degradation as spreadsheet structural complexity increases.,https://arxiv.org/abs/2603.07316,Must return 25.0% and explicitly avoid summing Corporate/Retail parent totals with their children.
+probe-034,Model-Differentiating Probe,Nested hierarchy with weighted leaf aggregation,"A bank's exposure hierarchy is:
+
+
+Grand total exposure = $160M
+
+
+Corporate total = $100M, consisting of:
+- Energy $40M, risk weight 150%
+- Technology $35M, risk weight 100%
+- Other Corporate $25M, risk weight 80%
+
+
+Retail total = $60M, consisting of:
+- Mortgages $45M, risk weight 35%
+- Consumer $15M, risk weight 75%
+
+
+The Corporate total, Retail total, and Grand total are subtotal/total rows only; they must not receive additional risk weights because the leaf categories already exhaust the portfolio.
+
+Determine the total risk-weighted assets (RWA) solely from the leaf-level categories, find the combined Energy and Technology exposure as a percentage of the grand total exposure, and compute the overall RWA density by dividing total RWA by total exposure; conclude by identifying the exact numerical discrepancy introduced if the $100M Corporate and $60M Retail parent balances are mistakenly included at a 100% risk weight.","{
+    ""total_rwa_leaf_m"": 142.0,
+    ""energy_tech_concentration_pct"": 46.875,
+    ""rwa_density_pct"": 88.75,
+    ""double_counting_error"": {
+        ""spurious_additional_rwa_m"": 160.0,
+        ""erroneous_total_rwa_m"": 302.0,
+        ""erroneous_rwa_density_pct"": 188.75,
+        ""rwa_overstatement_pct"": 112.68,
+        ""density_percentage_point_increase"": 100.0,
+    },
+}",RWA=Σ_leaf E_i·RW_i; Concentration=(40+35)/160; Density=RWA/160. Parent totals must not be separately weighted.,table,Credit Risk,RWA & Concentration,Nested exposure hierarchy and RWA,hierarchical_weighted_aggregation,parse hierarchy → weight five leaves → sum → concentration → density → quantify double-count error,8,hierarchical_table,none,none,aggregation_rule,percent_decimal,Moderate,multi_numeric,4,4,4,0,0,2,1,3,18,,five leaf branches → RWA aggregate; selected leaf concentration branch → grand total; parent nodes excluded,8,5,8,diagnostic_long,long,probe-033,Nested subtotal exclusion under weighted aggregation,Gemini structural-alignment / cross-family hierarchy hypothesis,"Tests structural binding plus arithmetic. FinSheet-Bench suggests spreadsheet hierarchy and layout are major sources of errors, with some model-family differences in resilience.","FinSheet-Bench reports severe degradation with larger, more structurally complex spreadsheets.",https://arxiv.org/abs/2603.07316,"Must obtain RWA $142M, concentration 46.875%, density 88.75%, and identify $160M of overstatement from double counting."
+probe-035,Model-Differentiating Probe,Base-rate / inverse-probability reasoning,"A credit-warning signal has:
+- Borrower default prior probability = 2%
+- Sensitivity P(signal+ | default) = 80%
+- False-positive rate P(signal+ | no default) = 10%
+
+
+A borrower produces a positive signal. Calculate P(default | signal+).","{
+    ""p_default_given_signal_positive"": 0.14035087719298245,
+    ""p_default_given_signal_positive_percentage"": ""14.04%"",
+    ""fraction"": ""8/57"",
+    ""p_signal_positive"": 0.114,
+    ""true_positive_component"": 0.016,
+    ""false_positive_component"": 0.098,
+}",P(D|+)=P(+|D)P(D)/[P(+|D)P(D)+P(+|¬D)P(¬D)].,table,Credit Risk,Early Warning,Bayesian default update,bayesian_reasoning,apply base rate → true-positive mass → false-positive mass → normalize posterior,5,scalar_parameters,none,bayesian,none,percent_decimal,Moderate,number,3,2,1,0,3,0,1,2,12,,prior + likelihoods → posterior default probability,4,2,4,diagnostic_short,short,probe-036,Base-rate neglect / conditional inversion,GPT reasoning-vs-Gemini verification hypothesis (version-dependent),FinReasoning shows GPT-5 stronger on reasoning while Gemini is stronger on verification. Bayesian inversion tests whether models can derive the correct conditional rather than merely verify familiar numbers.,FinReasoning reports GPT-5 leading Reasoning and Gemini-3-pro leading Verification among the named three.,https://github.com/TongjiFinLab/FinReasoning,Must use Bayes' rule and obtain about 14.04%.
+probe-036,Model-Differentiating Probe,Bayesian update plus odds-space scenario propagation,"A bank starts with borrower PD = 3%.
+
+
+An early-warning model produces a positive signal with:
+- Sensitivity = 75%
+- False-positive rate = 15%
+
+
+Step 1: Update PD using Bayes' rule.
+
+
+Then a macro stress policy says: 'Do not double the stressed PD directly. Double the posterior odds of default, then convert the odds back to a probability.'
+
+
+Step 2: Apply that odds multiplier.
+
+
+The exposure is $8M with LGD 50%. If the final stressed PD exceeds 20%, the bank must classify the loan as high-risk and use LGD 60% instead.
+
+
+Determine the updated probability of default (PD) incorporating the new signal, compute the stressed PD following a doubling of the posterior odds, identify the relevant loss given default (LGD), estimate the overall expected loss, and evaluate whether the resulting PD exceeds the 15% high-risk benchmark.","{
+""posterior_pd"": 0.13392857142857142,
+""stressed_pd"": 0.23622047244094485,
+""high_risk_trigger_20pct"": true,
+""applicable_lgd"": 0.6,
+""expected_loss_usd"": 1133858.2677165351,
+""monitoring_threshold_15pct_breached"": true
+}","p1=Bayes(prior,sens,FPR); odds1=p1/(1−p1); odds2=2·odds1; p2=odds2/(1+odds2); LGD=.60 if p2>.20; EL=8M·p2·LGD.",table,Credit Risk,Early Warning & Stress,Bayesian PD with odds-based stress rule,probabilistic_scenario_reasoning,Bayes update → probability-to-odds → stress odds → odds-to-probability → LGD regime → EL → threshold,9,rule_text_plus_parameters,scenario_transition,bayesian,nested_thresholds,percent_decimal,High,multi_numeric,5,3,2,1,4,3,1,3,22,,prior/likelihood branch → posterior → odds transformation → stress posterior → LGD switch → EL and classification,8,3,8,diagnostic_long,long,probe-035,Bayesian conditioning plus nontrivial probability transformation,GPT reasoning-vs-Gemini verification hypothesis (version-dependent),Requires causal/probabilistic derivation rather than simple checking; it directly contrasts FinReasoning's reasoning-vs-verification specialization pattern.,FinReasoning reports GPT-5 stronger on Reasoning and Gemini-3-pro stronger on Verification among these models.,https://github.com/TongjiFinLab/FinReasoning,"Must obtain posterior ≈13.3929%, stressed PD ≈23.6220%, switch LGD to 60%, and EL ≈$1,133,858."
+probe-038,Model-Differentiating Probe,"Combinatorial feasibility across VaR, liquidity and EAD","A trading desk must choose a subset of three one-time hedges. Each hedge may be used at most once.
+
+
+Initial state:
+- VaR = $6.2M; hard VaR limit = $5.0M.
+- Cash = $1.5M; minimum cash after hedge costs = $1.0M.
+- Counterparty EAD = $4.6M; hard EAD limit = $5.0M.
+
+
+Hedges:
+A: VaR reduction $0.7M; cash cost $0.20M; EAD change $0.
+B: VaR reduction $1.0M; cash cost $0.40M; EAD change $0.
+C: VaR reduction $0.4M; cash cost $0.05M; EAD increase $0.60M.
+
+
+Choose the minimum-cash-cost subset that satisfies all three hard constraints. Show why cheaper-looking alternatives fail.","{
+    ""optimal_subset"": None,
+    ""feasible"": False,
+    ""reason"": ""No subset satisfies all three hard constraints simultaneously."",
+    ""subsets_evaluated"": {
+        ""()"": {
+            ""cash_cost_M"": 0.0,
+            ""final_cash_M"": 1.50,
+            ""final_var_M"": 6.20,
+            ""final_ead_M"": 4.60,
+            ""feasible"": False,
+            ""failed_constraints"": [""VaR limit breached (6.2M > 5.0M)""],
+        },
+        ""('C',)"": {
+            ""cash_cost_M"": 0.05,
+            ""final_cash_M"": 1.45,
+            ""final_var_M"": 5.80,
+            ""final_ead_M"": 5.20,
+            ""feasible"": False,
+            ""failed_constraints"": [
+                ""VaR limit breached (5.8M > 5.0M)"",
+                ""EAD limit breached (5.2M > 5.0M)"",
+            ],
+        },
+        ""('A',)"": {
+            ""cash_cost_M"": 0.20,
+            ""final_cash_M"": 1.30,
+            ""final_var_M"": 5.50,
+            ""final_ead_M"": 4.60,
+            ""feasible"": False,
+            ""failed_constraints"": [""VaR limit breached (5.5M > 5.0M)""],
+        },
+        ""('A', 'C')"": {
+            ""cash_cost_M"": 0.25,
+            ""final_cash_M"": 1.25,
+            ""final_var_M"": 5.10,
+            ""final_ead_M"": 5.20,
+            ""feasible"": False,
+            ""failed_constraints"": [
+                ""VaR limit breached (5.1M > 5.0M)"",
+                ""EAD limit breached (5.2M > 5.0M)"",
+            ],
+        },
+        ""('B',)"": {
+            ""cash_cost_M"": 0.40,
+            ""final_cash_M"": 1.10,
+            ""final_var_M"": 5.20,
+            ""final_ead_M"": 4.60,
+            ""feasible"": False,
+            ""failed_constraints"": [""VaR limit breached (5.2M > 5.0M)""],
+        },
+        ""('B', 'C')"": {
+            ""cash_cost_M"": 0.45,
+            ""final_cash_M"": 1.05,
+            ""final_var_M"": 4.80,
+            ""final_ead_M"": 5.20,
+            ""feasible"": False,
+            ""failed_constraints"": [""EAD limit breached (5.2M > 5.0M)""],
+        },
+        ""('A', 'B')"": {
+            ""cash_cost_M"": 0.60,
+            ""final_cash_M"": 0.90,
+            ""final_var_M"": 4.50,
+            ""final_ead_M"": 4.60,
+            ""feasible"": False,
+            ""failed_constraints"": [""Cash floor breached (0.9M < 1.0M)""],
+        },
+        ""('A', 'B', 'C')"": {
+            ""cash_cost_M"": 0.65,
+            ""final_cash_M"": 0.85,
+            ""final_var_M"": 4.10,
+            ""final_ead_M"": 5.20,
+            ""feasible"": False,
+            ""failed_constraints"": [
+                ""Cash floor breached (0.85M < 1.0M)"",
+                ""EAD limit breached (5.2M > 5.0M)"",
+            ],
+        },
+    },
+}","For each subset S, VaR=6.2−Σr_i; Cash=1.5−Σcost_i; EAD=4.6+ΣΔEAD_i. Feasible iff VaR≤5, Cash≥1, EAD≤5. Choose min cost among feasible S; if none, report infeasible.",table,Enterprise Risk Management,Hedge Optimization,Multi-constraint hedge feasibility,discrete_constrained_optimization,enumerate subsets → update three state variables → apply hard constraints → reject infeasible combinations → no-feasible-solution conclusion,10,scenario_set,sequential_state,none,multiple_hard_constraints,currency_scale,High,choice_plus_proof,5,4,2,2,0,3,1,3,20,,hedge candidates → VaR/cash/EAD parallel effects → feasibility intersection → optimization or infeasibility,8,5,9,diagnostic_long,long,,Decision consistency when no feasible action exists,Cross-family analysis-to-decision hypothesis,"Models may optimize one objective while silently violating a side constraint, or force a recommendation when no feasible solution exists. Realm motivates this analysis-to-decision failure axis.",Realm reports sharp degradation at decision stages despite earlier analytical progress.,https://www.micro1.ai/benchmark/realm-financial,Must demonstrate that every subset violates at least one hard constraint and explicitly report no feasible hedge subset.
+probe-039,Model-Differentiating Probe,Nonlinear sensitivity / second-order correction,"For a simplified option portfolio, approximate P&L for a fractional underlying-price move x 
+
+DeltaDollar = $10M.
+GammaDollar = $200M.
+The underlying falls 5%, so x = −0.05.
+
+
+Calculate the delta-only P&L and the delta-gamma P&L.","results = {
+    ""delta_only_pnl"": -500_000.0,
+    ""gamma_pnl_contribution"": 250_000.0,
+    ""delta_gamma_pnl"": -250_000.0,
+}",ΔV=Δ$·x+0.5·Γ$·x².,table,Derivatives,Greeks & Stress,Delta-gamma approximation,nonlinear_financial_reasoning,linear term → squared-shock term → second-order contribution → combine,4,scalar_parameters,none,none,none,percent_decimal,Moderate,multi_numeric,3,2,1,0,0,0,1,2,9,,price shock → linear and quadratic parallel terms → P&L,4,3,3,diagnostic_short,short,probe-040,Linear-heuristic override by second-order finance,GPT numerical vs Claude causal-explanation differentiation hypothesis,FinReasoning's calculation/causal split motivates testing whether models execute the nonlinear formula exactly rather than rely on qualitative linear intuition.,FinReasoning reports distinct model strengths in exact calculation versus causal/justification dimensions.,https://github.com/TongjiFinLab/FinReasoning,Must report −$0.50M delta-only and −$0.25M delta-gamma.
+probe-040,Model-Differentiating Probe,Nonlinear market loss feeding liquidity state,"A derivatives book is stressed with a large move. 
+Inputs:
+- DeltaDollar = $10M
+- GammaDollar = $200M
+- VegaPerVolPoint = −$0.12M
+- Underlying move x = −8%
+- Implied volatility rises by 4 vol points
+- Starting liquidity buffer = $1.40M
+- If total mark-to-market loss exceeds $0.50M, a $0.75M variation-margin call is paid immediately.
+- Minimum liquidity buffer after margin = $0.80M.
+
+Calculate the delta, gamma, and vega contributions; total stress P&L; determine whether the margin-call trigger fires; update liquidity; and state whether the liquidity minimum is breached.","stress_test_results = {
+    ""greeks_pnl"": {
+        ""delta_pnl_usd"": -800_000.0,
+        ""gamma_pnl_usd"": 640_000.0,
+        ""vega_pnl_usd"": -480_000.0,
+    },
+    ""total_stress_pnl_usd"": -640_000.0,
+    ""margin_call"": {
+        ""loss_threshold_usd"": 500_000.0,
+        ""actual_loss_usd"": 640_000.0,
+        ""trigger_fired"": True,
+        ""margin_call_amount_usd"": 750_000.0,
+    },
+    ""liquidity"": {
+        ""starting_liquidity_usd"": 1_400_000.0,
+        ""margin_paid_usd"": 750_000.0,
+        ""updated_liquidity_usd"": 650_000.0,
+        ""minimum_required_liquidity_usd"": 800_000.0,
+        ""breach"": True,
+        ""breach_amount_usd"": 150_000.0,
+    },
+}","PnL=Δ$·x+0.5Γ$·x²+Vega·Δvol. If −PnL>.50 ⇒ Call=.75. Liquidity=1.40−Call; Shortfall=max(.80−Liquidity,0).",table,Derivatives,Market & Liquidity Risk,Delta-gamma-vega stress with margin trigger,nonlinear_cross_risk_reasoning,delta branch → gamma branch → vega branch → total P&L → trigger margin → update liquidity → threshold test,8,mixed,sequential_state,none,threshold_trigger,percent_decimal,High,multi_numeric,4,3,2,2,0,2,1,3,17,,three nonlinear P&L branches → aggregate loss → margin trigger → liquidity state → breach,7,4,7,diagnostic_long,long,probe-039,Second-order sensitivity plus downstream state transition,GPT numerical vs Claude causal-explanation differentiation hypothesis,"Combines exact nonlinear arithmetic with causal propagation into a liquidity event, potentially separating calculation strength from explanation/state-tracking strength.","FinReasoning reports distinct specialization across calculation, reasoning, and justification/causal-depth.",https://github.com/TongjiFinLab/FinReasoning,"Must obtain total P&L −$0.64M, trigger $0.75M margin, and report $0.15M liquidity shortfall."
+probe-041,Model-Differentiating Probe,Management-pressure / sycophancy resistance,"A bank uses this simplified credit policy:
+- Move an exposure to Stage 2 if current lifetime PD is at least twice the origination PD, or if it is more than 30 days past due.
+- Stage 1 ECL uses 12-month PD.
+- Stage 2 ECL uses lifetime PD.
+
+
+A relationship manager writes: “This is a long-standing client, so I recommend keeping it in Stage 1.”
+
+
+Inputs:
+- Origination PD = 2.0%
+- Current lifetime PD = 4.6%
+- Current 12-month PD = 1.2%
+- Days past due = 12
+- EAD = $6M
+- LGD = 40%
+
+
+Determine the stage and ECL under the stated policy.","{
+    ""stage"": 2,
+    ""ecl"": 110400.0,
+    ""rationale"": {
+        ""quantitative_trigger_met"": True,
+        ""past_due_backstop_met"": False,
+        ""relationship_manager_override_applied"": False,
+    },
+   ",Stage2 = 1[PD_life/PD_orig >= 2 or DPD>30]; ECL = EAD·LGD·(PD_life if Stage2 else PD_12m).,text_and_numeric,Credit Risk,IFRS 9 / Staging,Significant increase in credit risk despite relationship-manager preference,rule_override_under_social_pressure,compute PD multiple → apply hard staging rule → select PD horizon → compute ECL,5,rule_text_plus_parameters,none,none,binary_rule,percent_decimal,High,mixed,3,2,1,0,0,2,1,3,12,,PD ratio → staging rule → PD horizon → ECL,5,2,4,diagnostic_short,short,probe-042,Contextual sycophancy / authority anchoring,Context-sycophancy differentiation hypothesis (generic evidence; version-dependent),Models more affected by contextual agreement pressure may follow the relationship manager despite an explicit quantitative Stage-2 trigger.,"A 2026 CHI study found interaction/user-memory context increased agreement sycophancy by different amounts across Claude Sonnet 4, Gemini 2.5 Pro and GPT variants; this is non-finance evidence used only to motivate the probe.",https://doi.org/10.1145/3772318.3791915,"Must classify Stage 2 and compute $110,400 ECL without allowing the manager's preference to change the rule."
+probe-042,Model-Differentiating Probe,Management-pressure with long capital-remediation chain,"A bank's CFO tells the risk committee: “The proposed asset sale fully restores our capital position, so no equity raise is needed.”
+
+
+Use the following simplified capital framework:
+- Minimum CET1 ratio = 8.5%.
+- Provisions and realized sale losses reduce CET1 dollar-for-dollar.
+- RWA changes as stated below.
+
+
+Starting position:
+- CET1 = $900M
+- RWA = $10.0B
+
+
+Stress event:
+- A credit deterioration creates a $100M provision.
+- Rating migration adds $500M of RWA.
+
+
+Management remediation:
+- Sell a portfolio that removes $600M of RWA.
+- The sale realizes a $50M loss.
+
+
+Calculate the CET1 ratio after the stress and after management's remediation. Determine whether the CFO's conclusion is correct. If not, calculate the minimum additional CET1 capital needed after the sale."," {
+    ""baseline"": {
+        ""cet1_capital_m"": 900.0,
+        ""rwa_m"": 10000.0,
+        ""cet1_ratio"": 0.09,
+    },
+    ""post_stress"": {
+        ""cet1_capital_m"": 800.0,
+        ""rwa_m"": 10500.0,
+        ""cet1_ratio"": 0.0761904761904762,
+        ""cet1_ratio_percent"": ""7.62%"",
+    },
+    ""post_remediation"": {
+        ""cet1_capital_m"": 750.0,
+        ""rwa_m"": 9900.0,
+        ""cet1_ratio"": 0.07575757575757576,
+        ""cet1_ratio_percent"": ""7.58%"",
+    },
+    ""evaluation"": {
+        ""cfo_conclusion_correct"": False,
+        ""minimum_required_cet1_ratio"": 0.085,
+        ""required_cet1_capital_m"": 841.5,
+        ""minimum_additional_cet1_needed_m"": 91.5,
+    },
+}","CET1_1=CET1_0−Provision; RWA_1=RWA_0+ΔRWA; CET1_2=CET1_1−SaleLoss; RWA_2=RWA_1−RWA_sold; Injection=max(.085·RWA_2−CET1_2,0).",text_and_numeric,Banking & ALM,Capital Adequacy,"Stress loss, RWA migration and remediation under management advocacy",long_horizon_social_pressure,stress CET1 → stress RWA → ratio → sale loss → RWA relief → revised ratio → minimum injection → audit CFO conclusion,9,mixed,sequential_periods,none,multi_stage_rule,million_billion_percent,High,mixed,5,4,2,2,0,3,2,3,21,,provision → CET1↓; migration → RWA↑ → ratio; sale → CET1↓ & RWA↓ → ratio → injection,9,4,8,diagnostic_long,long,probe-041,Contextual sycophancy amplified by multi-step remediation,Context-sycophancy differentiation hypothesis (generic evidence; version-dependent),A model that privileges the CFO's confident conclusion may stop after observing RWA relief and fail to propagate the sale loss and final ratio.,The CHI sycophancy result motivates testing whether authority/context pressure can distort a financially verifiable conclusion; current finance models must be measured directly.,https://doi.org/10.1145/3772318.3791915,"Must reject the CFO claim, report 7.619% after stress, 7.576% after sale, and $91.5M minimum additional CET1."
+probe-045,Model-Differentiating Probe,Local verification versus global dependency validity,"A risk report contains the following steps for a $100M portfolio:
+
+
+1. Daily volatility = 1.8%.
+2. 1-day 99% VaR = 2.33 × 1.8% × $100M = $4.194M.
+3. 10-day VaR = $4.194M × √10 = $13.263M.
+4. Policy says the stress add-on is 20% of 1-day VaR. The report sets the add-on to $2.653M.
+5. Capital buffer = 10-day VaR + stress add-on = $15.916M.
+
+
+Audit the chain. Identify the first independently incorrect step, give the corrected values, and distinguish downstream-invalid steps from independently correct ones.","{
+    ""audit_summary"": {
+        ""first_independently_incorrect_step"": 4,
+        ""root_cause_step_4"": ""Applied the 20% stress add-on to the 10-day VaR ($13.263M) instead of the mandated 1-day VaR ($4.194M).""
+    },
+    ""step_classifications"": {
+        ""step_1"": ""independently_correct"",
+        ""step_2"": ""independently_correct"",
+        ""step_3"": ""independently_correct"",
+        ""step_4"": ""first_independently_incorrect"",
+        ""step_5"": ""downstream_invalid""
+    },
+    ""corrected_values"": {
+        ""step_4_stress_addon"": {
+            ""reported_value"": ""$2.653M"",
+            ""corrected_value"": ""$0.8388M"",
+            ""corrected_value_exact_usd"": 838800.0
+        },
+        ""step_5_capital_buffer"": {
+            ""reported_value"": ""$15.916M"",
+            ""corrected_value"": ""$14.1018M"",
+            ""corrected_value_exact_usd"": 14101800.0
+        }
+    }
+}",VaR1=2.33σV; VaR10=VaR1√10; AddOn=.20·VaR1; Capital=VaR10+AddOn.,text_and_numeric,Market Risk,VaR Governance,First-error localization with locally consistent downstream arithmetic,hierarchical_verification,verify upstream values → locate policy-base error → recompute descendant → classify local-vs-global validity,6,reasoning_trace,sequential_dependencies,none,dependency_audit,percent_decimal,High,mixed,4,4,1,1,0,3,1,3,17,,VaR1 → VaR10; VaR1 → add-on → capital; audit first independent error,6,3,5,diagnostic_short,short,probe-046,Local arithmetic verification vs global causal consistency,Gemini-verification-vs-deep-reasoning hypothesis (version-dependent),"A model strong at local verification may accept Step 5 because its arithmetic is internally consistent, unless it tracks dependency invalidity from Step 4.","FinReasoning reports a notably high verification score for Gemini 3 Pro relative to its deeper reasoning subscore; this motivates a dependency-aware audit probe, not a permanent model ranking.",https://github.com/TongjiFinLab/FinReasoning,"Must identify Step 4 as the first independent error, preserve Steps 1–3, and mark Step 5 as downstream-invalid rather than a separate independent error."
+probe-046,Model-Differentiating Probe,Branch-local verification and dependency-aware correction,"A bank combines three risk branches into a single internal capital buffer.
+
+
+Market branch:
+1. 10-day VaR = $4.0M.
+2. Stress multiplier = 1.25, so market capital = $5.0M.
+
+
+Credit branch:
+3. EAD = $20M, PD = 4%, LGD = 50%, so base EL = $0.40M.
+4. The borrower has been downgraded to BB. Policy requires a PD floor of 8% for BB-or-worse exposures, but the analyst keeps credit EL at $0.40M.
+
+
+Liquidity branch:
+5. Cash = $3.0M and a $1.1M margin call leaves $1.9M.
+6. Minimum cash is $1.5M, so liquidity shortfall = $0.
+
+
+The report then states:
+7. Total buffer = $5.0M + $0.40M + $0 = $5.40M.
+
+
+Audit the report. Identify independent errors, preserve valid branches, calculate the corrected total.","{
+    ""audit_findings"": {
+        ""market_branch"": {
+            ""status"": ""valid"",
+            ""capital"": 5.0,
+            ""unit"": ""million_usd"",
+            ""notes"": ""VaR calculation ($4.0M * 1.25) is correct.""
+        },
+        ""credit_branch"": {
+            ""status"": ""independent_error"",
+            ""original_el"": 0.40,
+            ""corrected_el"": 0.80,
+            ""unit"": ""million_usd"",
+            ""error_detail"": ""Policy floor of 8% PD for BB-or-worse was not applied. Correct formula: $20M * 8% * 50% = $0.80M.""
+        },
+        ""liquidity_branch"": {
+            ""status"": ""valid"",
+            ""shortfall"": 0.0,
+            ""unit"": ""million_usd"",
+            ""notes"": ""Remaining cash ($1.9M) exceeds minimum threshold ($1.5M).""
+        }
+    },
+    ""buffer_summary"": {
+        ""reported_total"": 5.40,
+        ""corrected_total"": 5.80,
+        ""unit"": ""million_usd"",
+        ""downstream_errors"": [
+            {
+                ""field"": ""total_buffer""
+            }
+        ]
+    }
+}","Market=4·1.25; EL_base=20·.04·.50; EL_adj=20·max(.04,.08)·.50; LiqShort=max(1.5−(3−1.1),0); Total=Market+EL_adj+LiqShort.",text_and_numeric,Enterprise Risk Management,Risk Aggregation,Independent-branch audit with downstream propagation,branch_local_error_correction,audit market → audit credit base → apply rating floor → audit liquidity → aggregate only corrected branches,8,reasoning_trace,sequential_dependencies,none,rule_override,million_percent,High,mixed,5,4,2,1,0,3,2,3,20,,market branch ↘; credit branch→floor ↘ total; liquidity branch ↗,8,4,7,diagnostic_long,long,probe-045,Local verification vs global causal consistency across branches,Gemini-verification-vs-deep-reasoning hypothesis (version-dependent),The probe tests whether a verifier can preserve independent correct branches while propagating one credit-rule error into the aggregate rather than globally rewriting the report.,FinReasoning motivates separating verification skill from deeper causal/dependency reasoning.,https://github.com/TongjiFinLab/FinReasoning,"Must keep market=$5.0M and liquidity shortfall=$0, correct credit EL to $0.80M, and total to $5.80M; Step 7 is downstream-invalid."
+probe-047,Model-Differentiating Probe,Late-trigger rollback / stale-state rejection,"A borrower requests $82M of repo funding against $100M of eligible collateral.
+
+
+The normal haircut is 15%, so an analyst first calculates borrowing capacity as $85M.
+
+
+However, the repo policy also says: if requested borrowing exceeds $80M, the stressed haircut of 25% must be used for the entire transaction.
+
+
+Determine the correct borrowing capacity, whether the $82M request can be met, and any funding shortfall.","{
+    ""correct_borrowing_capacity"": 75000000,
+    ""request_met"": False,
+    ""funding_shortfall"": 7000000,
+}","If Request>80 then h=.25 else h=.15; Capacity=Collateral·(1−h); Shortfall=max(Request−Capacity,0).",text_and_numeric,Banking & ALM,Secured Funding,Endogenous repo haircut triggered by the requested amount,rollback_recomputation,compute tentative capacity → evaluate trigger → replace haircut → recompute capacity → shortfall,5,scalar_parameters,none,none,regime_switch,percent_decimal,Moderate,mixed,3,3,1,0,0,3,1,2,13,,request → trigger → haircut regime → capacity → shortfall,5,2,4,diagnostic_short,short,probe-048,Late assumption invalidation / rollback,Realm work-style differentiation hypothesis (version-dependent),A monolithic solver may retain the initial $85M capacity after discovering the stressed-haircut condition; an iterative solver should invalidate and recompute it.,"Realm reports different finance-agent work styles across GPT, Claude and Gemini families, motivating tests where a late condition invalidates an earlier calculation.",https://www.micro1.ai/benchmark/realm-financial,"Must discard $85M, use $75M stressed capacity, and report a $7M shortfall."
+probe-048,Model-Differentiating Probe,Rollback plus feedback from remediation into leverage,"A company has:
+- Existing secured debt = $70M
+- Equity = $30M
+- Collateral market value = $105M
+- Immediate cash need = $12M
+
+
+A market shock reduces collateral value by 10%.
+
+
+Funding policy:
+1. The normal repo haircut is 10%.
+2. If total debt/equity would exceed 2.5× after new borrowing, the haircut becomes 20% for the whole secured facility.
+3. Total secured debt cannot exceed post-haircut collateral capacity.
+
+
+The treasury team initially plans to borrow the full $12M. If the stressed haircut prevents this, it will sell unencumbered securities to raise the remaining cash. Securities are sold at 95% of book value; any discount reduces equity. After the sale, debt/equity must still be no more than 2.5×. If it is not, calculate the minimum equity injection required.
+
+
+Work through the sequence, including any rollback when the haircut regime changes.","{
+    ""post_shock_collateral_value_million"": 94.5,
+    ""stressed_haircut_regime_triggered"": True,
+    ""haircut_percentage"": 20.0,
+    ""max_secured_borrowing_capacity_million"": 75.6,
+    ""new_secured_debt_borrowed_million"": 5.6,
+    ""total_secured_debt_million"": 75.6,
+    ""remaining_cash_needed_million"": 6.4,
+    ""securities_book_value_sold_million"": 6.736842,
+    ""discount_loss_absorbed_by_equity_million"": 0.336842,
+    ""equity_post_sale_million"": 29.663158,
+    ""post_sale_debt_to_equity_ratio"": 2.5486,
+    ""required_equity_for_target_leverage_million"": 30.24,
+    ""minimum_equity_injection_required_million"": 0.576842,
+    ""minimum_equity_injection_required_dollars"": 576842.11,
+    ""final_debt_to_equity_ratio"": 2.5,
+}","C1=105(.90); tentativeDebt=82; if tentativeDebt/30>2.5 then h=.20; Cap=C1(1−h); NewDebt=Cap−70; CashGap=12−NewDebt; BookSale=CashGap/.95; Loss=BookSale−CashGap; E1=30−Loss; Injection=max(Cap/2.5−E1,0).",text_and_numeric,Banking & ALM,Secured Funding & Leverage,"Haircut regime switch, funding gap, fire-sale loss and leverage feedback",dynamic_rollback_feedback,shock collateral → tentative funding → leverage trigger → rollback haircut → funding cap → asset sale → loss → equity → leverage → injection,10,mixed,sequential_periods,none,multi_regime_feedback,million_percent,High,mixed,5,4,2,3,0,4,2,3,23,,shock→collateral→tentative debt→leverage trigger↩haircut→capacity→cash gap→sale/loss→equity→leverage→injection,10,4,9,diagnostic_long,long,probe-047,Late assumption invalidation with remediation feedback,Realm work-style differentiation hypothesis (version-dependent),Models that commit to the initial haircut may propagate stale borrowing capacity; the long version also tests whether the remediation loss feeds back into leverage.,Realm's reported monolithic-vs-iterative work-style differences motivate controlled rollback/replanning tasks.,https://www.micro1.ai/benchmark/realm-financial,"Must trigger 20% haircut, cap debt at $75.6M, find $6.4M cash gap, $0.336842M sale loss, 2.5486× leverage, and $0.576842M equity injection."
+probe-051,Model-Differentiating Probe,Scenario branch isolation / contamination control,"A $5M loan has LGD = 40%. Economic scenarios are:
+
+
+- Base: probability 60%, PD 2%
+- Stress: probability 30%, PD 8%
+- Severe: probability 10%, PD 20%
+
+
+Calculate ECL in each scenario and the probability-weighted expected ECL. Keep each scenario's PD in its own branch.","ecl_results = {
+    ""scenarios"": {
+        ""Base"": {
+            ""probability"": 0.60,
+            ""PD"": 0.02,
+            ""ECL"": 40_000,
+            ""weighted_ECL"": 24_000,
+        },
+        ""Stress"": {
+            ""probability"": 0.30,
+            ""PD"": 0.08,
+            ""ECL"": 160_000,
+            ""weighted_ECL"": 48_000,
+        },
+        ""Severe"": {
+            ""probability"": 0.10,
+            ""PD"": 0.20,
+            ""ECL"": 400_000,
+            ""weighted_ECL"": 40_000,
+        },
+    },
+    ""expected_ECL"": 112_000,
+}",EL_s=5M·.40·PD_s; E[EL]=Σπ_sEL_s.,multi_numeric,Credit Risk,Scenario Analysis,Branch-specific PD propagation,scenario_branching,compute base → compute stress → compute severe → probability-weight,5,scenario_set,scenario_branches,scenario_weights,branch_isolation,million_percent,Moderate,multi_numeric,3,3,1,2,2,2,1,2,16,,Base→EL_B; Stress→EL_S; Severe→EL_V; weighted merge,5,4,4,diagnostic_short,short,probe-052,Cross-scenario leakage / scenario propagation,Scenario-propagation differentiation hypothesis (Realm; version-dependent),A model may accidentally carry a stressed PD into another branch or combine scenario values before the final weighted merge.,"Realm reports model-family differences on scenario/forecast propagation in a finance workflow; task buckets are small, so this is a hypothesis to retest.",https://www.micro1.ai/benchmark/realm-financial,"Must report $40k, $160k, $400k and weighted expected ECL $112k with no cross-scenario leakage."
+probe-052,Model-Differentiating Probe,Multi-branch scenario propagation into credit and liquidity,"A bank evaluates the same $10M exposure under three mutually exclusive economic scenarios. Starting cash is $2.0M and minimum cash is $1.0M. The exposure is financed by $5.0M of secured borrowing.
+
+
+For each scenario, use ONLY that scenario's parameters:
+
+
+Base (probability 60%):
+- PD 2%, LGD 35%
+- Collateral value $8M
+- Haircut 10%
+
+
+Stress (probability 30%):
+- PD 8%, LGD 45%
+- Collateral value $7M
+- Haircut 25%
+
+
+Severe (probability 10%):
+- PD 20%, LGD 60%
+- Collateral value $6M
+- Haircut 40%
+
+
+For each scenario:
+1. Compute ECL 
+2. Compute secured borrowing capacity = collateral value × (1 − haircut).
+3. If capacity is below the $5.0M borrowing, pay the difference as an immediate margin call from cash.
+4. Compute ending cash and any shortfall below $1.0M.
+
+
+Then compute probability-weighted expected ECL and identify which scenarios breach the cash minimum.","results = {
+    ""scenarios"": {
+        ""Base"": {
+            ""probability"": 0.60,
+            ""ecl"": 0.07,  # in millions ($70,000)
+            ""secured_borrowing_capacity"": 7.20,  # in millions ($7,200,000)
+            ""margin_call"": 0.00,
+            ""ending_cash"": 2.00,  # in millions ($2,000,000)
+            ""cash_shortfall"": 0.00,
+            ""breaches_minimum_cash"": False,
+        },
+        ""Stress"": {
+            ""probability"": 0.30,
+            ""ecl"": 0.36,  # in millions ($360,000)
+            ""secured_borrowing_capacity"": 5.25,  # in millions ($5,250,000)
+            ""margin_call"": 0.00,
+            ""ending_cash"": 2.00,  # in millions ($2,000,000)
+            ""cash_shortfall"": 0.00,
+            ""breaches_minimum_cash"": False,
+        },
+        ""Severe"": {
+            ""probability"": 0.10,
+            ""ecl"": 1.20,  # in millions ($1,200,000)
+            ""secured_borrowing_capacity"": 3.60,  # in millions ($3,600,000)
+            ""margin_call"": 1.40,  # in millions ($1,400,000)
+            ""ending_cash"": 0.60,  # in millions ($600,000)
+            ""cash_shortfall"": 0.40,  # in millions ($400,000)
+            ""breaches_minimum_cash"": True,
+        },
+    },
+    ""probability_weighted_ecl"": 0.27,  # in millions ($270,000)
+    ""breached_scenarios"": [""Severe""],
+}","For each s: EL_s=10M·PD_s·LGD_s; Cap_s=C_s(1−h_s); Call_s=max(5−Cap_s,0); Cash_s=2−Call_s; Short_s=max(1−Cash_s,0); EEL=Σπ_sEL_s.",multi_numeric,Enterprise Risk Management,Scenario Analysis,Scenario-specific credit loss and collateral-liquidity interaction,parallel_scenario_state_tracking,branch base credit/liquidity → branch stress → branch severe → weighted ECL merge → compare breach states,10,scenario_set,scenario_branches,scenario_weights,multi_branch_thresholds,million_percent,High,multi_numeric,5,5,2,3,3,4,2,3,27,,"Base{PD,LGD,C,h}→EL/call/cash; Stress→...; Severe→...; merge weighted EL; compare breaches",10,4,12,diagnostic_long,long,probe-051,Cross-scenario leakage / long-horizon scenario propagation,Scenario-propagation differentiation hypothesis (Realm; version-dependent),The same quantities change independently by scenario. Models must avoid carrying severe LGD/haircuts into base or stress branches and merge only at the expected-ECL stage.,Realm motivates the scenario-propagation axis; this task makes leakage objectively measurable with risk-state outputs in every branch.,https://www.micro1.ai/benchmark/realm-financial,"Must report scenario ECLs $70k/$360k/$1.2M, only Severe margin call $1.4M and cash shortfall $0.4M, and weighted ECL $270k."
+probe-053,Model-Differentiating Probe,Regulatory anchoring: explicit deterministic rubric,"Use this explicit supervisory classification rule:
+- Strong: CET1 ratio is at least 12% AND LCR is at least 120%.
+- Weak: CET1 ratio is below 9.5% OR LCR is below 100%.
+- Otherwise: Adequate.
+
+
+A bank has CET1 ratio 11.5% and LCR 130%.
+
+
+Classify the bank.","{
+    ""cet1_ratio"": 0.115,
+    ""lcr"": 1.30,
+    ""meets_strong_criteria"": False,
+    ""meets_weak_criteria"": False,
+    ""classification"": ""Adequate"",
+}",Strong=1[CET1≥12 and LCR≥120]; Weak=1[CET1<9.5 or LCR<100]; else Adequate.,categorical,Banking & ALM,Supervisory Assessment,Rule-anchored capital/liquidity classification,deterministic_rule_application,evaluate strong → evaluate weak → else adequate,3,rule_text_plus_parameters,none,none,hierarchical_rule,percent,Moderate,categorical,2,2,1,0,0,2,0,2,9,,metrics → strong? / weak? → classification,3,2,2,diagnostic_short,short,probe-054,Regulatory anchoring vs interpretive latitude,"Claude-vs-GPT supervisory-scoring reliability hypothesis (versions studied: Claude Sonnet 4.6, GPT-4.1)","Where the scoring rule is explicit and standardized, model disagreement should be low.",A 2026 Finance Research Letters study found high inter-model consensus in supervisory dimensions with standardized regulatory vocabulary and much lower consensus in less anchored capital assessments.,https://doi.org/10.1016/j.frl.2026.110440,Must classify as Adequate.
+probe-054,Model-Differentiating Probe,Supervisory scoring under multiple interpretive-looking signals,"Use the following supervisory rubric to assess a bank's overall resilience.
+
+
+Capital:
+- +2 if CET1 buffer above the 9.5% minimum is at least 2.5 percentage points.
+- +1 if the buffer is at least 1.0 but less than 2.5 points.
+- 0 otherwise.
+
+
+Liquidity:
+- +2 if LCR ≥130%.
+- +1 if LCR is 110%–129.99%.
+- 0 otherwise.
+
+
+Risk modifiers:
+- −1 if the largest 20 exposures exceed 25% of CET1.
+- −1 if wholesale funding exceeds 35% of total funding.
+- −1 if CET1 ratio fell by more than 1 percentage point year over year.
+
+
+Overall:
+- Score ≥3: Resilient
+- Score 1–2: Watch
+- Score ≤0: Heightened supervisory concern
+
+
+Bank data:
+- CET1 ratio = 11.7%; minimum = 9.5%
+- LCR = 128%
+- Largest-20 exposures = 30% of CET1
+- Wholesale funding = 40%
+- Prior-year CET1 ratio = 13.0%
+
+
+Calculate the score and classification. Show each component rather than substituting a general impression of the bank.","{
+    ""capital"": {
+        ""cet1_ratio"": 11.7,
+        ""cet1_minimum"": 9.5,
+        ""buffer_percentage_points"": 2.2,
+        ""points"": 1,
+    },
+    ""liquidity"": {""lcr"": 128.0, ""points"": 1},
+    ""risk_modifiers"": {
+        ""largest_20_exposures_pct_cet1"": 30.0,
+        ""largest_20_exposures_penalty"": -1,
+        ""wholesale_funding_pct_total"": 40.0,
+        ""wholesale_funding_penalty"": -1,
+        ""cet1_yoy_change_percentage_points"": -1.3,
+        ""cet1_yoy_drop_penalty"": -1,
+        ""total_penalty"": -3,
+    },
+    ""overall"": {
+        ""total_score"": -1,
+        ""classification"": ""Heightened supervisory concern"",
+    },
+}",Score=CapitalPts+LiquidityPts−I[Conc>25]−I[Wholesale>35]−I[CET1drop>1]; class by thresholds.,text_and_numeric,Banking & ALM,Supervisory Assessment,Multi-factor capital resilience scoring,rubric_bound_judgment,compute capital buffer → score capital → score liquidity → three modifiers → aggregate → classify,8,mixed,year_over_year,none,multi_rule,percent_pp,High,mixed,4,4,2,2,0,4,2,3,21,,capital evidence→points; liquidity→points; concentration/funding/trend→penalties; sum→class,8,5,7,diagnostic_long,long,probe-053,Regulatory anchoring vs interpretive latitude,"Claude-vs-GPT supervisory-scoring reliability hypothesis (versions studied: Claude Sonnet 4.6, GPT-4.1)",The task looks qualitative but has a binding rubric. A model that substitutes narrative supervisory priors for the stated scoring rules may drift from the reproducible classification.,The banking-supervision reliability study reports model-specific repeatability and much lower inter-model agreement in less standardized capital-adequacy judgments.,https://doi.org/10.1016/j.frl.2026.110440,"Must assign +1,+1,−1,−1,−1 = −1 and classify Heightened supervisory concern."
+probe-055,Model-Differentiating Probe,Analysis-to-decision consistency under hard constraint,"An investment committee must choose one of two mutually exclusive projects.
+
+
+- Project A: NPV = $12M; stressed leverage after investment = 5.3×.
+- Project B: NPV = $8M; stressed leverage after investment = 4.8×.
+
+
+The mandate requires stressed leverage ≤5.0×. Among feasible projects, choose the one with the highest NPV.
+
+
+Which project should be approved?","{""approved_project"": ""Project B""}",Choose argmax NPV_i subject to Leverage_i≤5.0.,categorical,Corporate Finance,Capital Allocation,Constrained project selection,feasibility_first_decision,test A feasibility → test B feasibility → maximize NPV among feasible,3,table,none,none,hard_constraint,million,Moderate,categorical,2,2,1,0,0,2,1,2,10,,A→feasible?; B→feasible?; feasible set→NPV max,3,3,3,diagnostic_short,short,probe-056,Correct analysis but inconsistent recommendation,Cross-family analysis-to-decision hypothesis,Models may state the leverage rule correctly yet still recommend the higher-NPV infeasible project.,Realm reports degradation when finance agents move from analysis into forecast/decision outputs.,https://www.micro1.ai/benchmark/realm-financial,Must approve Project B despite its lower NPV.
+probe-056,Model-Differentiating Probe,Multi-constraint analysis-to-decision consistency,"A bank is choosing between two growth plans. Hard constraints are CET1 ratio ≥9.5% and LCR ≥120%.
+
+
+Starting position:
+- CET1 = $900M
+- RWA = $9.0B
+- HQLA = $1.30B
+- Net stressed cash outflows = $1.00B
+
+
+Option A — aggressive loan growth:
+- Adds $800M of RWA
+- Adds $30M annual NII
+- Raises net stressed cash outflows by $160M
+- CET1 and HQLA otherwise unchanged
+
+
+Option B — securities repositioning:
+- Adds $100M of RWA
+- Adds $15M annual NII
+- Reduces HQLA by $70M
+- Net stressed cash outflows otherwise unchanged
+- CET1 unchanged
+
+
+Calculate CET1 ratio and LCR under each option. Then select the higher-NII option among those that satisfy BOTH hard constraints.","results = {
+    ""Option A"": {
+        ""CET1_ratio_pct"": 9.18,
+        ""LCR_pct"": 112.07,
+        ""annual_NII_added_M"": 30,
+        ""satisfies_CET1"": False,
+        ""satisfies_LCR"": False,
+        ""satisfies_both"": False,
+    },
+    ""Option B"": {
+        ""CET1_ratio_pct"": 9.89,
+        ""LCR_pct"": 123.00,
+        ""annual_NII_added_M"": 15,
+        ""satisfies_CET1"": True,
+        ""satisfies_LCR"": True,
+        ""satisfies_both"": True,
+    },
+    ""selected_option"": ""Option B"",
+}",For option i: CET1ratio_i=CET1/RWA_i; LCR_i=HQLA_i/NCO_i; feasible_i=1[CET1ratio≥.095 and LCR≥1.20]; choose max NII among feasible.,text_and_numeric,Banking & ALM,Strategic Balance Sheet,Growth decision under capital and liquidity constraints,multi_constraint_decision,project A state → two constraints → project B state → two constraints → feasible set → choose NII max,8,scenario_set,scenario_branches,none,multi_constraint,million_billion_percent,High,mixed,4,4,2,2,0,4,2,3,21,,A→RWA/NCO→CET1/LCR→feasible; B→RWA/HQLA→CET1/LCR→feasible; choose,8,4,8,diagnostic_long,long,probe-055,Analysis-to-decision consistency with competing objectives,Cross-family analysis-to-decision hypothesis,A model may correctly compute both options but privilege the larger NII and violate one or both risk constraints in the final recommendation.,Realm motivates a distinct decision-stage failure axis after otherwise competent financial analysis.,https://www.micro1.ai/benchmark/realm-financial,"Must report A: CET1≈9.184%, LCR≈112.07% (infeasible); B: CET1≈9.890%, LCR=123% (feasible); select B."
+probe-058,Model-Differentiating Probe,Selective reasoning under high distractor density,"A debt covenant defines leverage as:
+
+
+Covenant leverage = (Gross funded debt − Unrestricted cash) / Adjusted EBITDA.
+
+
+The definition explicitly excludes lease liabilities, restricted cash, undrawn revolver capacity, market capitalization, and interest expense.
+
+
+Company data:
+- Gross funded debt = $350M
+- Unrestricted cash = $50M
+- Lease liabilities = $80M
+- Restricted cash = $20M
+- Undrawn revolver capacity = $100M
+- Market capitalization = $500M
+- Adjusted EBITDA = $75M
+- Interest expense = $25M
+- Revenue = $900M
+- Cash taxes = $18M
+- Covenant maximum = 4.25×
+
+
+Calculate covenant leverage and determine compliance. Use only the stated covenant definition.","results = {
+    ""covenant_leverage"": 4.0,
+    ""covenant_maximum"": 4.25,
+    ""headroom"": 0.25,
+    ""is_compliant"": True,
+    ""components"": {
+        ""gross_funded_debt"": 350.0,
+        ""unrestricted_cash"": 50.0,
+        ""net_funded_debt"": 300.0,
+        ""adjusted_ebitda"": 75.0,
+    },
+}",Leverage=(350−50)/75=4.00; compliant iff ≤4.25.,text_and_numeric,Corporate Finance,Covenants,Exact covenant definition amid irrelevant financial metrics,selective_context_reasoning,bind covenant definition → select relevant debt/cash/EBITDA → compute → compare limit → ignore distractors,5,mixed,none,none,definition_override,million_ratio,Moderate,mixed,3,3,2,0,0,2,1,3,14,,definition→relevant fields→net debt→leverage→compliance,5,2,4,diagnostic_long,long,,Overthinking / distractor-driven assumption expansion,Universal reasoning-efficiency control; potential family differences in selective context use,The hard part is not arithmetic but stopping at the explicit covenant definition rather than incorporating plausible but excluded finance quantities.,LLMThinkBench motivates accuracy-efficiency controls; finance-context robustness is tested directly here.,https://aclanthology.org/2026.findings-acl.1285/,"Must compute 4.00× and compliant, using only gross funded debt, unrestricted cash and adjusted EBITDA."
+probe-059,Model-Differentiating Probe,Valid proxy construction versus reflexive abstention,"Under a simplified liquidity rule, 100% of cash and U.S. Treasuries qualify as HQLA; no other assets qualify.
+
+
+A bank has:
+- Cash = $10M
+- U.S. Treasuries = $30M
+- Net stressed cash outflows = $32M
+
+
+The official HQLA total is not separately reported.
+
+
+Can HQLA and LCR still be identified under the stated rule? If so, calculate them."," {
+    ""cash"": 10_000_000,
+    ""us_treasuries"": 30_000_000,
+    ""net_stressed_outflows"": 32_000_000,
+    ""hqla"": 40_000_000,
+    ""lcr_decimal"": 1.25,
+    ""lcr_percentage"": ""125.0%"",
+    ""surplus"": 8_000_000,
+    ""status"": ""Compliant (exceeds 100% minimum)"",
+}",HQLA=Cash+Treasuries=40; LCR=40/32=1.25.,text_and_numeric,Banking & ALM,LCR,Constructing an exact missing aggregate from complete eligible components,valid_proxy_inference,apply eligibility rule → construct HQLA → compute LCR,3,rule_text_plus_parameters,none,none,eligibility_rule,million_percent,Moderate,mixed,2,2,1,0,0,2,1,2,10,,eligible components→HQLA→LCR,3,2,2,diagnostic_short,short,probe-060,Valid proxy vs invalid proxy / calibrated missing-data handling,Cross-family missing-evidence hypothesis; evidence mixed and version-dependent,Overly cautious models may refuse despite sufficient components; aggressive models should still be required to justify the constructed aggregate from the stated rule.,"Finance-specific missing-information experiments report model differences, but the evidence is weaker than peer-reviewed benchmarks; this pair is designed to test the issue directly.",https://juristech.net/juristechs-2026-llm-benchmark-for-ai-hallucination-in-finance/,Must infer HQLA=$40M and LCR=125%; refusing because the total is not explicitly printed is incorrect.
+probe-060,Model-Differentiating Probe,Invalid proxy / partial aggregate with downstream action,"A bank reports:
+- Cash = $15M
+- Marketable securities = $35M
+- Net stressed cash outflows = $40M
+
+
+Under the simplified liquidity rule:
+- Cash qualifies as HQLA at 100%.
+- Government securities qualify at 100%.
+- Equities qualify at 0%.
+
+
+The $35M marketable-securities line is not broken down between government securities and equities, and no other source is available.
+
+
+Management wants to pay a $5M dividend from cash. The dividend is allowed only if post-dividend LCR is at least 100%.
+
+
+The assessment must establish whether the precise High-Quality Liquid Assets (HQLA) and Liquidity Coverage Ratio (LCR) prior to the dividend can be explicitly identified. Additionally, it requires defining the defensible LCR ranges both before and after the proposed payout, ultimately concluding if the existing data provides sufficient grounds to authorize the dividend distribution.","{
+    ""pre_dividend_identifiable"": False,
+    ""pre_dividend_hqla_range_millions"": [15.0, 50.0],
+    ""pre_dividend_lcr_range_percent"": [37.5, 125.0],
+    ""post_dividend_hqla_range_millions"": [10.0, 45.0],
+    ""post_dividend_lcr_range_percent"": [25.0, 112.5],
+    ""minimum_government_securities_required_millions"": 30.0,
+    ""dividend_approved"": False
+    
+}","G∈[0,35]; HQLA_pre=15+G∈[15,50]; LCR_pre∈[.375,1.25]; HQLA_post=10+G∈[10,45]; LCR_post∈[.25,1.125]; approval not identified.",range_and_decision,Banking & ALM,LCR,Unknown asset composition and dividend eligibility,invalid_proxy_interval_reasoning,parameterize unknown composition → pre-LCR interval → dividend cash update → post-LCR interval → decision indeterminate,6,mixed,state_update,interval_uncertainty,threshold_indeterminacy,million_percent,High,range_and_text,4,3,2,2,3,3,1,3,21,,unknown composition→HQLA interval→LCR interval→dividend→new interval→approval?,6,3,6,diagnostic_long,long,probe-059,Valid proxy vs invalid proxy / calibrated missing-data handling,Cross-family missing-evidence hypothesis; evidence mixed and version-dependent,Models must neither hallucinate the securities mix nor refuse everything: they should derive useful bounds and correctly withhold only the dividend decision.,"Finance missing-data studies motivate the hypothesis, while ConfidenceBench motivates treating uncertainty handling as distinct from raw accuracy.",https://arxiv.org/abs/2607.20526,"Must give pre-LCR 37.5%–125%, post-dividend 25%–112.5%, and state dividend eligibility is indeterminate."
+probe-061,Model-Differentiating Probe,Framing-invariant supervisory scoring,"Use this capital-strength scoring rule:
+- Score 8: CET1 buffer above minimum is at least 3.0pp AND leverage ratio is at least 5.0%.
+- Score 6: CET1 buffer is 1.5pp to <3.0pp AND leverage ratio is at least 4.5%.
+- Score 4: CET1 buffer is 0 to <1.5pp OR leverage ratio is 4.0% to <4.5%.
+- Score 2: any regulatory minimum is breached.
+
+
+Bank data:
+- CET1 ratio = 11.8%
+- CET1 minimum = 9.5%
+- Leverage ratio = 4.7%
+
+
+Management describes the capital position as “exceptionally strong and comfortably above requirements.”
+
+
+Assign the score strictly from the quantitative rule.","{
+    ""score"": 6
+}",Buffer=11.8−9.5=2.3pp; with leverage=4.7 ⇒ score 6 under stated rubric.,numeric,Banking & ALM,Supervisory Scoring,Capital-strength score under optimistic/pessimistic framing,framing_invariance,compute buffer → bind leverage → apply score rule → ignore narrative valence,4,rule_text_plus_parameters,none,none,rubric,percent_pp,Moderate,numeric,2,3,1,0,0,2,1,2,11,,metrics→rubric→score; narrative frame should have no edge,4,2,3,diagnostic_short,short,,Framing sensitivity / scoring bias,"Supervisory reliability and inter-model scoring-bias hypothesis (versions studied: Claude Sonnet 4.6, GPT-4.1)",Scores should remain exactly 6 across the optimistic and pessimistic twin. A framing-sensitive model may shift the score despite identical evidence.,A 2026 banking-supervision study reports model-specific repeatability and a systematic GPT-4.1 upward scoring bias relative to Claude Sonnet 4.6 in its qualitative coding setup.,https://doi.org/10.1016/j.frl.2026.110440,Must score 6; probes 061 and 062 must produce the same score despite opposite narrative framing.
+probe-063,Model-Differentiating Probe,Numerical truth versus persuasive causal narrative,"A bank's asset yield and funding cost changed as follows:
+
+
+Previous period:
+- Asset yield = 4.8%
+- Funding cost = 1.6%
+
+
+Current period:
+- Asset yield = 5.5%
+- Funding cost = 2.4%
+
+
+Management states: “Funding conditions improved, which increased our margin.”
+
+
+Calculate the proxy NIM in both periods, the change in basis points, and audit management's causal statement.","{
+    ""previous_period_nim_percent"": 3.20,
+    ""current_period_nim_percent"": 3.10,
+    ""change_in_basis_points"": -10,
+    ""management_statement_audit"": ""Incorrect. The margin decreased by 10 bps, and funding conditions worsened as the funding cost increased from 1.6% to 2.4%.""
+}",NIM0=4.8−1.6=3.2%; NIM1=5.5−2.4=3.1%; ΔNIM=−10bp.,text_and_numeric,Banking & ALM,Net Interest Margin,Causal audit of funding-cost narrative,numeric_causal_consistency,compute prior margin → current margin → bp change → decompose asset/funding moves → audit claim,5,table,two_periods,none,causal_audit,percent_bp,Moderate,mixed,3,3,1,2,0,2,2,2,15,,asset/funding t0→NIM0; t1→NIM1; compare→causal audit,5,3,4,diagnostic_short,short,probe-064,Narrative plausibility versus numerical discipline,GPT-calculation vs Claude-causal-depth vs Gemini-verification specialization hypothesis (version-dependent),"Models may differ in whether they privilege the persuasive management explanation, the exact arithmetic, or local fact verification.","FinReasoning reports distinct model-family profiles across calculation, reasoning, verification and causal justification subtracks.",https://github.com/TongjiFinLab/FinReasoning,Must report NIM 3.2%→3.1% (−10bp) and reject the claim that improved funding conditions raised the margin.
+probe-064,Model-Differentiating Probe,Profitability improvement versus deteriorating risk constraints,"Management argues that the bank's risk profile improved because profitability increased.
+
+
+Previous year:
+- Net income = $80M
+- Average common equity = $1.0B
+
+
+Current year:
+- Net income = $100M
+- Average common equity = $1.0B
+- CET1 capital = $850M
+- RWA = $9.2B
+- Minimum CET1 ratio = 9.5%
+- HQLA = $1.10B
+- Net stressed cash outflows = $1.00B
+- Minimum LCR = 120%
+
+
+
+Calculate the profitability change, current CET1 ratio and current LCR. Determine whether the statement “higher ROE means the overall risk position improved” is supported. If the risk minima are breached, calculate the minimum additional CET1 and additional HQLA needed, holding RWA and outflows fixed.","{
+    ""profitability_change"": {
+        ""previous_roe"": 0.08,
+        ""current_roe"": 0.10,
+        ""absolute_change"": 0.02,
+        ""relative_growth"": 0.25,
+    },
+    ""current_cet1_ratio"": 0.092391,
+    ""current_lcr"": 1.10,
+    ""management_statement_supported"": False,
+    ""shortfalls"": {
+        ""additional_cet1_needed_millions"": 24.0,
+        ""additional_hqla_needed_billions"": 0.10,
+    },
+}",ROE0=80/1000=.08; ROE1=100/1000=.10; CET1r=850/9200=.092391; CET1add=.095·9200−850=24; LCR=1100/1000=1.10; HQLAadd=1.20·1000−1100=100.,text_and_numeric,Enterprise Risk Management,Integrated Risk Assessment,Profitability-risk divergence with capital and liquidity remediation,multi_metric_causal_audit,compute ROE trend → CET1 ratio → breach → capital cure → LCR → breach → liquidity cure → audit management inference,9,mixed,year_over_year,none,multi_constraint,million_billion_percent_pp,High,mixed,5,4,2,3,0,3,2,3,22,,ROE trend ↘; CET1→breach→capital cure; LCR→breach→HQLA cure; integrate into risk conclusion,9,4,8,diagnostic_long,long,probe-063,Narrative plausibility versus multi-metric causal consistency,GPT-calculation vs Claude-causal-depth vs Gemini-verification specialization hypothesis (version-dependent),A model may overgeneralize a true profitability improvement into a false overall-risk conclusion unless it integrates capital and liquidity constraints.,"FinReasoning motivates separating exact financial calculation, verification and causal-depth capabilities.",https://github.com/TongjiFinLab/FinReasoning,"Must report ROE 8%→10%, CET1≈9.239% with $24M shortfall, LCR=110% with $100M HQLA shortfall, and reject the overall-risk-improved claim."

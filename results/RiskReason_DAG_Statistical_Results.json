@@ -1,0 +1,290 @@
+{
+  "counts": {
+    "total": 1758,
+    "eight": 1638,
+    "std": 1398,
+    "common_nine": 1062
+  },
+  "fits": {
+    "std_depth_only": {
+      "n": 1398,
+      "tasks": 175,
+      "features": {
+        "dag_depth": {
+          "beta": -0.0834,
+          "OR": 0.92,
+          "lower_OR": 0.8544,
+          "upper_OR": 0.9906,
+          "p": 0.02706
+        }
+      }
+    },
+    "std_depth_output": {
+      "n": 1398,
+      "tasks": 175,
+      "features": {
+        "dag_depth": {
+          "beta": -0.0514,
+          "OR": 0.9499,
+          "lower_OR": 0.8844,
+          "upper_OR": 1.0203,
+          "p": 0.15856
+        },
+        "log_outputs": {
+          "beta": -1.2701,
+          "OR": 0.2808,
+          "lower_OR": 0.1762,
+          "upper_OR": 0.4476,
+          "p": 0.0
+        }
+      }
+    },
+    "std_depth_fields": {
+      "n": 1398,
+      "tasks": 175,
+      "features": {
+        "dag_depth": {
+          "beta": -0.0566,
+          "OR": 0.9449,
+          "lower_OR": 0.8716,
+          "upper_OR": 1.0245,
+          "p": 0.16957
+        },
+        "log_expected": {
+          "beta": -0.9179,
+          "OR": 0.3994,
+          "lower_OR": 0.2502,
+          "upper_OR": 0.6375,
+          "p": 0.00012
+        }
+      }
+    },
+    "std_extended": {
+      "n": 1398,
+      "tasks": 175,
+      "features": {
+        "dag_depth": {
+          "beta": -0.0632,
+          "OR": 0.9387,
+          "lower_OR": 0.879,
+          "upper_OR": 1.0026,
+          "p": 0.05966
+        },
+        "log_outputs": {
+          "beta": -1.2854,
+          "OR": 0.2765,
+          "lower_OR": 0.1708,
+          "upper_OR": 0.4479,
+          "p": 0.0
+        },
+        "condition_present": {
+          "beta": 0.138,
+          "OR": 1.148,
+          "lower_OR": 0.6502,
+          "upper_OR": 2.0269,
+          "p": 0.63413
+        },
+        "temporal_present": {
+          "beta": 0.2616,
+          "OR": 1.2989,
+          "lower_OR": 0.422,
+          "upper_OR": 3.998,
+          "p": 0.64839
+        }
+      }
+    },
+    "std_validated_depth_output": {
+      "n": 1039,
+      "tasks": 130,
+      "features": {
+        "dag_depth": {
+          "beta": -0.0705,
+          "OR": 0.9319,
+          "lower_OR": 0.8686,
+          "upper_OR": 0.9998,
+          "p": 0.04941
+        },
+        "log_outputs": {
+          "beta": -1.063,
+          "OR": 0.3454,
+          "lower_OR": 0.199,
+          "upper_OR": 0.5997,
+          "p": 0.00016
+        }
+      }
+    },
+    "std_no_macro": {
+      "n": 1200,
+      "tasks": 150,
+      "features": {
+        "dag_depth": {
+          "beta": -0.0405,
+          "OR": 0.9603,
+          "lower_OR": 0.8969,
+          "upper_OR": 1.0282,
+          "p": 0.24484
+        },
+        "log_outputs": {
+          "beta": -1.0141,
+          "OR": 0.3627,
+          "lower_OR": 0.2257,
+          "upper_OR": 0.5828,
+          "p": 3e-05
+        }
+      }
+    },
+    "all_depth_output": {
+      "n": 1638,
+      "tasks": 205,
+      "features": {
+        "dag_depth": {
+          "beta": -0.0167,
+          "OR": 0.9835,
+          "lower_OR": 0.9264,
+          "upper_OR": 1.044,
+          "p": 0.58434
+        },
+        "log_outputs": {
+          "beta": -1.1682,
+          "OR": 0.3109,
+          "lower_OR": 0.1972,
+          "upper_OR": 0.4902,
+          "p": 0.0
+        }
+      }
+    },
+    "all_depth_output_conds": {
+      "n": 1638,
+      "tasks": 205,
+      "features": {
+        "dag_depth": {
+          "beta": -0.0249,
+          "OR": 0.9754,
+          "lower_OR": 0.9204,
+          "upper_OR": 1.0338,
+          "p": 0.40134
+        },
+        "log_outputs": {
+          "beta": -1.1698,
+          "OR": 0.3104,
+          "lower_OR": 0.1949,
+          "upper_OR": 0.4945,
+          "p": 0.0
+        },
+        "condition_present": {
+          "beta": 0.0351,
+          "OR": 1.0357,
+          "lower_OR": 0.5775,
+          "upper_OR": 1.8576,
+          "p": 0.90628
+        },
+        "temporal_present": {
+          "beta": 0.2648,
+          "OR": 1.3031,
+          "lower_OR": 0.5581,
+          "upper_OR": 3.0429,
+          "p": 0.54057
+        }
+      }
+    },
+    "common_all_depth_output": {
+      "n": 1062,
+      "tasks": 118,
+      "features": {
+        "dag_depth": {
+          "beta": -0.0459,
+          "OR": 0.9551,
+          "lower_OR": 0.8841,
+          "upper_OR": 1.0319,
+          "p": 0.2446
+        },
+        "log_outputs": {
+          "beta": -1.2421,
+          "OR": 0.2888,
+          "lower_OR": 0.165,
+          "upper_OR": 0.5052,
+          "p": 1e-05
+        }
+      }
+    },
+    "std_top5": {
+      "n": 873,
+      "tasks": 175,
+      "features": {
+        "dag_depth": {
+          "beta": -0.0278,
+          "OR": 0.9726,
+          "lower_OR": 0.8947,
+          "upper_OR": 1.0572,
+          "p": 0.51366
+        },
+        "log_outputs": {
+          "beta": -1.3574,
+          "OR": 0.2573,
+          "lower_OR": 0.1404,
+          "upper_OR": 0.4718,
+          "p": 1e-05
+        }
+      }
+    }
+  },
+  "std_depth_bins": {
+    "0\u20135": [
+      766,
+      497,
+      64.88
+    ],
+    "6\u20139": [
+      488,
+      278,
+      56.97
+    ],
+    "10+": [
+      144,
+      76,
+      52.78
+    ]
+  },
+  "std_output_bins": {
+    "4\u20139": [
+      526,
+      300,
+      57.03
+    ],
+    "1\u20133": [
+      696,
+      464,
+      66.67
+    ],
+    "10+": [
+      176,
+      87,
+      49.43
+    ]
+  },
+  "std_cond": {
+    "0": [
+      615,
+      377,
+      61.3
+    ],
+    "1": [
+      783,
+      474,
+      60.54
+    ]
+  },
+  "std_temporal": {
+    "0": [
+      1270,
+      776,
+      61.1
+    ],
+    "1": [
+      128,
+      75,
+      58.59
+    ]
+  },
+  "sample_caveat_excluded": 1279
+}

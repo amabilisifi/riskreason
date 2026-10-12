@@ -1,0 +1,1838 @@
+{
+  "summary": {
+    "graded": 204,
+    "by_status": {
+      "pass": 178,
+      "partial": 16,
+      "fail": 4,
+      "fail_close": 6
+    },
+    "pass_rate": 0.8725,
+    "pass_rate_excluding_known_data_issues": 0.8737,
+    "schema_ok": "193/197",
+    "by_set": {
+      "risk": {
+        "graded": 119,
+        "by_status": {
+          "pass": 106,
+          "partial": 5,
+          "fail": 4,
+          "fail_close": 4
+        },
+        "pass_rate": 0.8908,
+        "pass_rate_excluding_known_data_issues": 0.8938,
+        "schema_ok": "111/113"
+      },
+      "probe": {
+        "graded": 55,
+        "by_status": {
+          "pass": 46,
+          "partial": 9
+        },
+        "pass_rate": 0.8364,
+        "pass_rate_excluding_known_data_issues": 0.8364,
+        "schema_ok": "52/54"
+      },
+      "long": {
+        "graded": 30,
+        "by_status": {
+          "partial": 2,
+          "pass": 26,
+          "fail_close": 2
+        },
+        "pass_rate": 0.8667,
+        "pass_rate_excluding_known_data_issues": 0.8667,
+        "schema_ok": "30/30"
+      }
+    },
+    "needs_rerun": [
+      "risk-125",
+      "risk-126"
+    ],
+    "tolerance": {
+      "strict_rel": 0.0005,
+      "loose_rel": 0.02,
+      "gt_precision_cap_rel": 0.01
+    }
+  },
+  "grades": {
+    "risk-001": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-002": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-003": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-004": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-005": {
+      "status": "partial",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "median"
+      ]
+    },
+    "risk-007": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-008": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-009": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-010": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-011": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-012": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-013": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true,
+      "ground_truth": "updated",
+      "data_issue": "256-day year is US-specific"
+    },
+    "risk-014": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-015": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-016": {
+      "status": "pass",
+      "matched": 10,
+      "matched_loose": 10,
+      "expected": 10,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-017": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-018": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-019": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true,
+      "data_issue": "return range [-1, inf) unvalidated"
+    },
+    "risk-020": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2
+    },
+    "risk-021": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-022": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-023": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-024": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-025": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-026": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-027": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-028": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-029": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-030": {
+      "status": "pass",
+      "matched": 96,
+      "matched_loose": 96,
+      "expected": 96,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-031": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-032": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-033": {
+      "status": "fail",
+      "matched": 0,
+      "matched_loose": 0,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "annualized_mwr_decimal",
+        "annualized_mwr_percentage"
+      ]
+    },
+    "risk-034": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-035": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-036": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-037": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-038": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-039": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-040": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": false
+    },
+    "risk-041": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-042": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-043": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-044": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-045": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-046": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "data_issue": "two conflicting HPR values"
+    },
+    "risk-047": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-048": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true,
+      "data_issue": "ground truth rewritten"
+    },
+    "risk-049": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-050": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-051": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-052": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-053": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true,
+      "data_issue": "possible answer swap"
+    },
+    "risk-054": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-055": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-056": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-057": {
+      "status": "pass",
+      "matched": 15,
+      "matched_loose": 15,
+      "expected": 15,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-058": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-059": {
+      "status": "partial",
+      "matched": 0,
+      "matched_loose": 2,
+      "expected": 4,
+      "ground_truth": "updated"
+    },
+    "risk-060": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-061": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-062": {
+      "status": "fail_close",
+      "matched": 1,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-063": {
+      "status": "fail",
+      "matched": 0,
+      "matched_loose": 0,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "executed_trades.0.action",
+        "executed_trades.0.price",
+        "executed_trades.0.shares",
+        "executed_trades.0.fee",
+        "final_portfolio_value"
+      ]
+    },
+    "risk-064": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-065": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-066": {
+      "status": "pass",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 7,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-067": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-068": {
+      "status": "pass",
+      "matched": 12,
+      "matched_loose": 12,
+      "expected": 12,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-069": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-070": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": false
+    },
+    "risk-071": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-072": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-073": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-074": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-075": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-076": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-077": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-078": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-079": {
+      "status": "fail",
+      "matched": 0,
+      "matched_loose": 0,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "var_zero_drift.dollar_amount",
+        "var_zero_drift.percentage",
+        "var_with_drift.dollar_amount",
+        "var_with_drift.percentage"
+      ],
+      "data_issue": "ambiguous: 15% vol is the position's (GT, beta unused) or the S&P's (x beta 1.2, all GPT models)"
+    },
+    "risk-080": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-081": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-082": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-083": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-085": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-086": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-087": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-088": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-089": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-090": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-091": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-092": {
+      "status": "fail",
+      "matched": 0,
+      "matched_loose": 0,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "ratio"
+      ],
+      "ground_truth": "updated"
+    },
+    "risk-093": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "ground_truth": "updated"
+    },
+    "risk-094": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-095": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-096": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-097": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1
+    },
+    "risk-098": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-099": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-100": {
+      "status": "fail_close",
+      "matched": 2,
+      "matched_loose": 3,
+      "expected": 3
+    },
+    "risk-101": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-102": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-103": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-104": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-105": {
+      "status": "pass",
+      "matched": 41,
+      "matched_loose": 41,
+      "expected": 41,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-106": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-107": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-108": {
+      "status": "pass",
+      "matched": 20,
+      "matched_loose": 20,
+      "expected": 20,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-109": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-110": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-111": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-112": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-113": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-114": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-115": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-116": {
+      "status": "fail_close",
+      "matched": 8,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-118": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "risk-119": {
+      "status": "partial",
+      "matched": 4,
+      "matched_loose": 6,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "unconstrained.SYN_RUSSELL2000",
+        "unconstrained.SYN_RUSSELL1000"
+      ]
+    },
+    "risk-120": {
+      "status": "partial",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 24,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "price_levels.0.AIC",
+        "price_levels.0.BIC",
+        "price_levels.1.AIC",
+        "price_levels.1.BIC",
+        "price_levels.2.AIC",
+        "price_levels.2.BIC",
+        "price_levels.3.AIC",
+        "price_levels.3.BIC",
+        "returns.0.AIC",
+        "returns.0.BIC",
+        "returns.1.AIC",
+        "returns.1.BIC",
+        "returns.2.AIC",
+        "returns.2.BIC",
+        "returns.3.AIC",
+        "returns.3.BIC"
+      ]
+    },
+    "risk-125": {
+      "status": "partial",
+      "matched": 4,
+      "matched_loose": 5,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "SYN_SP500.p_value",
+        "SYN_RUSSELL2000.p_value",
+        "SYN_RUSSELL1000.p_value"
+      ],
+      "ground_truth": "needs_rerun"
+    },
+    "risk-126": {
+      "status": "fail_close",
+      "matched": 0,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "ground_truth": "needs_rerun"
+    },
+    "probe-001": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report both 111.11% and 93.33%, explicitly replace the eligibility rule after the downgrade, and classify only the post-downgrade state as breached."
+    },
+    "probe-002": {
+      "status": "partial",
+      "matched": 10,
+      "matched_loose": 10,
+      "expected": 12,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "constraints_cured.0",
+        "constraints_breached.0"
+      ],
+      "pass_condition": "Must explicitly compute preliminary leverage before selecting the final haircut, then recompute repayment and final leverage under the 35% regime."
+    },
+    "probe-003": {
+      "status": "partial",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "audit_verdict"
+      ],
+      "pass_condition": "Must reject the analyst's conclusion even though the numerator rises; both ratios and the direction of change must be correct."
+    },
+    "probe-004": {
+      "status": "partial",
+      "matched": 13,
+      "matched_loose": 13,
+      "expected": 14,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "step_2_claim_evaluations.0.status"
+      ],
+      "pass_condition": "Must compute 9.1667% pre-raise, reject the memo's pre-raise claims, then compute 10.8333% post-raise and allow lending only after remediation."
+    },
+    "probe-005": {
+      "status": "pass",
+      "matched": 2,
+      "matched_loose": 2,
+      "expected": 2,
+      "ground_truth": "updated",
+      "pass_condition": "Must produce both volatilities and explicitly attribute the increase to the covariance/correlation term rather than claiming standalone risk changed."
+    },
+    "probe-007": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must compute both standalone VaRs and the $0\u2013$559,200 portfolio range; a fabricated point correlation or blanket 'cannot answer' both fail."
+    },
+    "probe-008": {
+      "status": "partial",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "capital_requirement_range.min_capital_rho_0",
+        "capital_requirement_range.max_capital_rho_0_5",
+        "exact_correlation_for_4M_buffer"
+      ],
+      "pass_condition": "Must report total EL $200k, capital range about $3.531M\u2013$4.311M, indeterminate adequacy, and threshold \u03c1\u22480.2889."
+    },
+    "probe-009": {
+      "status": "pass",
+      "matched": 11,
+      "matched_loose": 11,
+      "expected": 11,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must classify 10.4996% as a breach despite displaying as 10.50%, and compute the $2,000 cure exactly."
+    },
+    "probe-010": {
+      "status": "pass",
+      "matched": 10,
+      "matched_loose": 10,
+      "expected": 10,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must use 3.5001333\u00d7 to trigger the 7% coupon and propagate that branch through the Q2 coverage/paydown calculations."
+    },
+    "probe-011": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must compute 4.4% first, then use that result to change the staging rule and multiply the ECL; applying the multiplier before the trigger is evaluated fails."
+    },
+    "probe-012": {
+      "status": "partial",
+      "matched": 17,
+      "matched_loose": 17,
+      "expected": 19,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "base_state.coverage",
+        "downside_state.final_status"
+      ],
+      "pass_condition": "Must keep base and downside states separate, propagate the 6.5% coupon only in downside, apply the cure, and still declare default because leverage remains above 4.0\u00d7."
+    },
+    "probe-013": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must use both April updates and reject the stale 4.0\u00d7 memo, yielding 3.2143\u00d7 and compliant."
+    },
+    "probe-014": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must exclude the Apr 20 refinancing, use $230M/$64M=3.59375\u00d7, trigger the 50 bp step-up, and compute $1.15M annualized incremental interest."
+    },
+    "probe-015": {
+      "status": "partial",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 7,
+      "mode": "keyed",
+      "schema_ok": false,
+      "missed": [
+        "selected_investment"
+      ],
+      "pass_condition": "Must choose B and explicitly discard A before ranking returns."
+    },
+    "probe-016": {
+      "status": "pass",
+      "matched": 20,
+      "matched_loose": 20,
+      "expected": 20,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must compute all nine post-hedge metrics, identify only B as feasible, and choose B despite A's lower carry and C's stronger VaR reduction."
+    },
+    "probe-017": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must use the stated contract definitions exactly and obtain EBITDA $20.7M, net debt $76M, leverage 3.6715\u00d7, compliant."
+    },
+    "probe-018": {
+      "status": "pass",
+      "matched": 13,
+      "matched_loose": 13,
+      "expected": 13,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must show the $1.8M sweep leaves net debt at $87M and derive a $0.75M external equity injection to reach exactly 3.75\u00d7."
+    },
+    "probe-019": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must use Beta severe-stress $23M and Beta limit $22M, not any adjacent row or mild-stress value."
+    },
+    "probe-020": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must aggregate only Orion rows to $44M/$46M, identify only Credit as breached, and never add desk subtotal rows."
+    },
+    "probe-021": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must include the covariance term and obtain approximately $350.3k."
+    },
+    "probe-022": {
+      "status": "pass",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 7,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must update both module values and correlations, obtain stressed EC \u2248$10.6921M, and shortfall \u2248$1.8305M."
+    },
+    "probe-023": {
+      "status": "partial",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "step_1.description"
+      ],
+      "pass_condition": "Must explicitly conclude that all three steps are correct; claiming an error is a failure."
+    },
+    "probe-024": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must identify Step 4 and Step 6 as independent errors, Step 7 as downstream, and corrected total charge $0.4M."
+    },
+    "probe-025": {
+      "status": "pass",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 7,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must correct bond loss to $0.75M, preserve FX loss $0.088M, and report total $0.838M."
+    },
+    "probe-026": {
+      "status": "pass",
+      "matched": 10,
+      "matched_loose": 10,
+      "expected": 10,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must conclude all supplied upstream nodes are valid and compute final liquidity shortfall $1.28M."
+    },
+    "probe-027": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must choose threshold $0, not $0.5M or $2M, and compute a $2.1M call."
+    },
+    "probe-028": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must use 40% haircut and solve x\u2248$10.2128M with the 5% sale-impact feedback included."
+    },
+    "probe-030": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must obtain net EAD $73M, credit EL $481,800, total $1.0818M, and escalate."
+    },
+    "probe-031": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must derive Q3 values by subtraction and report 3.00\u00d7; using 9M denominators is incorrect."
+    },
+    "probe-032": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report Q3 3.0\u00d7 but TTM 3.2857\u00d7 and conclude no covenant breach."
+    },
+    "probe-033": {
+      "status": "pass",
+      "matched": 4,
+      "matched_loose": 4,
+      "expected": 4,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must return 25.0% and explicitly avoid summing Corporate/Retail parent totals with their children."
+    },
+    "probe-034": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must obtain RWA $142M, concentration 46.875%, density 88.75%, and identify $160M of overstatement from double counting."
+    },
+    "probe-035": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must use Bayes' rule and obtain about 14.04%."
+    },
+    "probe-036": {
+      "status": "pass",
+      "matched": 6,
+      "matched_loose": 6,
+      "expected": 6,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must obtain posterior \u224813.3929%, stressed PD \u224823.6220%, switch LGD to 60%, and EL \u2248$1,133,858."
+    },
+    "probe-038": {
+      "status": "pass",
+      "matched": 42,
+      "matched_loose": 42,
+      "expected": 42,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must demonstrate that every subset violates at least one hard constraint and explicitly report no feasible hedge subset."
+    },
+    "probe-039": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report \u2212$0.50M delta-only and \u2212$0.25M delta-gamma."
+    },
+    "probe-040": {
+      "status": "pass",
+      "matched": 14,
+      "matched_loose": 14,
+      "expected": 14,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must obtain total P&L \u2212$0.64M, trigger $0.75M margin, and report $0.15M liquidity shortfall."
+    },
+    "probe-041": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must classify Stage 2 and compute $110,400 ECL without allowing the manager's preference to change the rule."
+    },
+    "probe-042": {
+      "status": "pass",
+      "matched": 15,
+      "matched_loose": 15,
+      "expected": 15,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must reject the CFO claim, report 7.619% after stress, 7.576% after sale, and $91.5M minimum additional CET1."
+    },
+    "probe-045": {
+      "status": "partial",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 12,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "step_classifications.step_1",
+        "step_classifications.step_3",
+        "step_classifications.step_4"
+      ],
+      "pass_condition": "Must identify Step 4 as the first independent error, preserve Steps 1\u20133, and mark Step 5 as downstream-invalid rather than a separate independent error."
+    },
+    "probe-046": {
+      "status": "partial",
+      "matched": 12,
+      "matched_loose": 12,
+      "expected": 14,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "audit_findings.credit_branch.status",
+        "buffer_summary.downstream_errors.0.field"
+      ],
+      "pass_condition": "Must keep market=$5.0M and liquidity shortfall=$0, correct credit EL to $0.80M, and total to $5.80M; Step 7 is downstream-invalid."
+    },
+    "probe-047": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must discard $85M, use $75M stressed capacity, and report a $7M shortfall."
+    },
+    "probe-048": {
+      "status": "pass",
+      "matched": 15,
+      "matched_loose": 15,
+      "expected": 15,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must trigger 20% haircut, cap debt at $75.6M, find $6.4M cash gap, $0.336842M sale loss, 2.5486\u00d7 leverage, and $0.576842M equity injection."
+    },
+    "probe-051": {
+      "status": "pass",
+      "matched": 13,
+      "matched_loose": 13,
+      "expected": 13,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report $40k, $160k, $400k and weighted expected ECL $112k with no cross-scenario leakage."
+    },
+    "probe-052": {
+      "status": "pass",
+      "matched": 23,
+      "matched_loose": 23,
+      "expected": 23,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report scenario ECLs $70k/$360k/$1.2M, only Severe margin call $1.4M and cash shortfall $0.4M, and weighted ECL $270k."
+    },
+    "probe-053": {
+      "status": "pass",
+      "matched": 5,
+      "matched_loose": 5,
+      "expected": 5,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must classify as Adequate."
+    },
+    "probe-054": {
+      "status": "pass",
+      "matched": 15,
+      "matched_loose": 15,
+      "expected": 15,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must assign +1,+1,\u22121,\u22121,\u22121 = \u22121 and classify Heightened supervisory concern."
+    },
+    "probe-055": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must approve Project B despite its lower NPV."
+    },
+    "probe-056": {
+      "status": "pass",
+      "matched": 13,
+      "matched_loose": 13,
+      "expected": 13,
+      "mode": "keyed",
+      "schema_ok": false,
+      "pass_condition": "Must report A: CET1\u22489.184%, LCR\u2248112.07% (infeasible); B: CET1\u22489.890%, LCR=123% (feasible); select B."
+    },
+    "probe-058": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must compute 4.00\u00d7 and compliant, using only gross funded debt, unrestricted cash and adjusted EBITDA."
+    },
+    "probe-059": {
+      "status": "pass",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 7,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must infer HQLA=$40M and LCR=125%; refusing because the total is not explicitly printed is incorrect."
+    },
+    "probe-060": {
+      "status": "pass",
+      "matched": 11,
+      "matched_loose": 11,
+      "expected": 11,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must give pre-LCR 37.5%\u2013125%, post-dividend 25%\u2013112.5%, and state dividend eligibility is indeterminate."
+    },
+    "probe-061": {
+      "status": "pass",
+      "matched": 1,
+      "matched_loose": 1,
+      "expected": 1,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must score 6; probes 061 and 062 must produce the same score despite opposite narrative framing."
+    },
+    "probe-063": {
+      "status": "pass",
+      "matched": 3,
+      "matched_loose": 3,
+      "expected": 3,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report NIM 3.2%\u21923.1% (\u221210bp) and reject the claim that improved funding conditions raised the margin."
+    },
+    "probe-064": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true,
+      "pass_condition": "Must report ROE 8%\u219210%, CET1\u22489.239% with $24M shortfall, LCR=110% with $100M HQLA shortfall, and reject the overall-risk-improved claim."
+    },
+    "long-001": {
+      "status": "partial",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "post_draw_debt_equity_ratio"
+      ]
+    },
+    "long-002": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-003": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-004": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-005": {
+      "status": "pass",
+      "matched": 7,
+      "matched_loose": 7,
+      "expected": 7,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-006": {
+      "status": "pass",
+      "matched": 13,
+      "matched_loose": 13,
+      "expected": 13,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-007": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-008": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-009": {
+      "status": "pass",
+      "matched": 11,
+      "matched_loose": 11,
+      "expected": 11,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-010": {
+      "status": "pass",
+      "matched": 11,
+      "matched_loose": 11,
+      "expected": 11,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-011": {
+      "status": "pass",
+      "matched": 18,
+      "matched_loose": 18,
+      "expected": 18,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-012": {
+      "status": "pass",
+      "matched": 17,
+      "matched_loose": 17,
+      "expected": 17,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-013": {
+      "status": "pass",
+      "matched": 10,
+      "matched_loose": 10,
+      "expected": 10,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-014": {
+      "status": "fail_close",
+      "matched": 12,
+      "matched_loose": 13,
+      "expected": 13,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-015": {
+      "status": "pass",
+      "matched": 52,
+      "matched_loose": 52,
+      "expected": 52,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-016": {
+      "status": "pass",
+      "matched": 43,
+      "matched_loose": 43,
+      "expected": 43,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-017": {
+      "status": "pass",
+      "matched": 44,
+      "matched_loose": 44,
+      "expected": 44,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-018": {
+      "status": "pass",
+      "matched": 25,
+      "matched_loose": 25,
+      "expected": 25,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-019": {
+      "status": "pass",
+      "matched": 11,
+      "matched_loose": 11,
+      "expected": 11,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-020": {
+      "status": "pass",
+      "matched": 31,
+      "matched_loose": 31,
+      "expected": 31,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-021": {
+      "status": "pass",
+      "matched": 9,
+      "matched_loose": 9,
+      "expected": 9,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-022": {
+      "status": "pass",
+      "matched": 36,
+      "matched_loose": 36,
+      "expected": 36,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-023": {
+      "status": "pass",
+      "matched": 17,
+      "matched_loose": 17,
+      "expected": 17,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-024": {
+      "status": "pass",
+      "matched": 12,
+      "matched_loose": 12,
+      "expected": 12,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-025": {
+      "status": "partial",
+      "matched": 40,
+      "matched_loose": 40,
+      "expected": 43,
+      "mode": "keyed",
+      "schema_ok": true,
+      "missed": [
+        "sequence.0.event",
+        "sequence.2.event",
+        "sequence.5.event"
+      ]
+    },
+    "long-026": {
+      "status": "pass",
+      "matched": 14,
+      "matched_loose": 14,
+      "expected": 14,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-027": {
+      "status": "pass",
+      "matched": 19,
+      "matched_loose": 19,
+      "expected": 19,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-028": {
+      "status": "fail_close",
+      "matched": 20,
+      "matched_loose": 23,
+      "expected": 23,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-029": {
+      "status": "pass",
+      "matched": 8,
+      "matched_loose": 8,
+      "expected": 8,
+      "mode": "keyed",
+      "schema_ok": true
+    },
+    "long-030": {
+      "status": "pass",
+      "matched": 14,
+      "matched_loose": 14,
+      "expected": 14,
+      "mode": "keyed",
+      "schema_ok": true
+    }
+  }
+}

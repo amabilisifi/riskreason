@@ -1,0 +1,1896 @@
+Eval ID,User Prompt (Input),Ground Truth (Expected),formal_notation,reasoning_DAG,type of answer,domain,subdomain,financial_concept,reasoning_type,operator_sequence,reasoning_steps,data_representation,temporal_reasoning,probabilistic_reasoning,conditional_reasoning,unit_conversion,required_domain_knowledge,answer_type,reasoning_depth_score,reasoning_structure_score,representation_score,temporal_score,probabilistic_score,conditional_score,unit_conversion_score,domain_knowledge_score,difficulty_score,cross_risk_archetype,cross_risk_mechanism
+risk-001,"
+Compute the mean, median, mode, sample variance, and population variance for the following set of values: -20%, -10%, -5%, -5%, 0%, 10%, 10%, 10%, 19%. Present the results in that order.","results_decimal = {
+    ""mean"": 0.01,
+    ""median"": 0.0,
+    ""mode"": 0.10,
+    ""sample_variance"": 0.015025,
+    ""population_variance"": 0.013355555555555556,
+}","Given: R = {r_1,...,r_9} ⊂ ℝ (return sample, n=9).
+Find: μ, Med(R), Mode(R), σ²_pop, σ²_sample.
+Formalize: μ = (1/n)Σr_i; σ²_pop = (1/n)Σ(r_i−μ)²; σ²_sample = (1/(n−1))Σ(r_i−μ)²; Med(R) = middle value of sort(R); Mode(R) = argmax_v |{i : r_i=v}|.","Return sample → [Mean | Sort → Median | Frequency count → Mode | Mean + returns → Squared deviations → {Population variance, Sample variance}] → Final statistics",number,Investments & Portfolio Management,Return Statistics,Descriptive statistics of returns,descriptive_statistics,parse returns → compute mean → sort → median/mode → compute variance,5,numeric_list,none,none,none,percent_decimal,Low,multi_numeric,3,0,1,0,0,0,1,0,5,,
+risk-002,"Calculate the log returns for the provided stock data from 2026-07-06 to 2026-07-17 using the closing prices.
+
+Date,Open,High,Low,Close
+2026-07-06,311.00,314.50,310.20,312.66
+2026-07-07,312.85,314.90,311.40,314.15
+2026-07-08,314.20,316.60,313.10,315.80
+2026-07-09,315.60,318.05,314.75,317.20
+2026-07-10,317.00,317.80,314.30,315.10
+2026-07-13,315.40,317.90,313.80,316.45
+2026-07-14,316.70,319.40,315.60,318.90
+2026-07-15,319.10,322.30,318.25,321.40
+2026-07-16,321.20,323.00,319.50,320.65
+2026-07-17,320.90,324.15,320.10,323.50","log_returns_full = {
+    ""2026-07-07"": 0.004754388836511413,
+    ""2026-07-08"": 0.005238779919574163,
+    ""2026-07-09"": 0.004423405374465499,
+    ""2026-07-10"": -0.006642398579930773,
+    ""2026-07-13"": 0.004275210748133543,
+    ""2026-07-14"": 0.007712398864771457,
+    ""2026-07-15"": 0.007808803730248889,
+    ""2026-07-16"": -0.0023361836585973876,
+    ""2026-07-17"": 0.008848972147113111,
+}","Given: {P_t}, t=0,...,n (ordered daily closing prices).
+Find: {R_t} (log-return series).
+Formalize: R_t = ln(P_t / P_{t−1}), t = 1,...,n.",Closing-price series → Adjacent price ratios P_t/P_{t-1} → Natural log → Log-return series,table,Investments & Portfolio Management,Equity Returns,Log return calculation,time_series_transformation,order observations → pair adjacent closes → ln(P_t/P_t-1) → format returns,4,time_series,sequential_periods,none,none,percent_decimal,Low,table,2,1,1,1,0,0,1,0,6,,
+risk-003,"Based on the provided dataset, determine the cumulative return from 2026-07-06 through 2026-07-17.
+Date,,,Ticker,,,Open ($),,,High ($),,,Low ($),,,Close ($),,,Volume
+2026-07-06,,,SPY,,,552.14,,,554.85,,,550.92,,,554.10,,,47820000
+2026-07-07,,,SPY,,,553.90,,,555.20,,,551.45,,,552.88,,,42150000
+2026-07-08,,,SPY,,,553.12,,,556.70,,,552.05,,,555.94,,,45630000
+2026-07-09,,,SPY,,,556.80,,,558.42,,,555.10,,,557.25,,,51200000
+2026-07-10,,,SPY,,,557.60,,,560.15,,,556.32,,,559.02,,,48910000
+2026-07-13,,,SPY,,,559.45,,,561.30,,,557.80,,,560.48,,,44300000
+2026-07-14,,,SPY,,,559.80,,,560.95,,,556.12,,,557.34,,,49850000
+2026-07-15,,,SPY,,,558.25,,,562.40,,,557.90,,,561.80,,,58420000
+2026-07-16,,,SPY,,,562.10,,,564.75,,,560.85,,,563.92,,,53110000
+2026-07-17,,,SPY,,,563.50,,,565.30,,,561.40,,,562.15,,,56780000","{  
+        ""cumulative_return_decimal"": 0.014528,
+        ""cumulative_return_percentage"": ""1.4528%""
+    }","Given: P_0 (first close), P_T (last close).
+Find: R_cum.
+Formalize: R_cum = (P_T − P_0) / P_0.",Start and end closing prices → Price ratio P_T/P_0 → Subtract 1 → Cumulative simple return,number,Investments & Portfolio Management,Performance Measurement,Holding-period cumulative return,return_aggregation,identify start close → identify end close → compute (P_T-P_0)/P_0,3,time_series,single_horizon,none,none,ratio_percentage,Low,scalar_numeric,1,0,1,1,0,0,1,0,4,,
+risk-004,"Find the highest possible return an investor could earn from a single trade based on this stock data.
+Date,Ticker,Open ($),High ($),Low ($),Close ($),Volume
+2026-07-06,SPY,550.81,555.22,548.87,553.11,81155900
+2026-07-07,SPY,552.34,554.49,547.45,550.04,63520500
+2026-07-08,SPY,550.40,555.80,549.49,554.60,93946200
+2026-07-09,SPY,559.27,564.08,558.10,562.90,75780200
+2026-07-10,SPY,561.42,563.85,557.51,559.71,64388400
+2026-07-13,SPY,558.75,559.62,551.48,554.76,57803600
+2026-07-14,SPY,561.07,569.07,559.63,567.89,78809100
+2026-07-15,SPY,570.62,574.65,567.56,571.59,85091200
+2026-07-16,SPY,569.17,570.47,562.66,564.55,87332200
+2026-07-17,SPY,566.27,569.36,562.33,567.14,70498100","{
+""return_pct"": 4.9685
+    }","Given: {L_t, H_t}, t=1,...,n (daily intraday low/high series).
+Find: R* = max achievable holding-period return with buy-before-sell constraint.
+Formalize: R* = max_{i≤j} (H_j − L_i)/L_i, s.t. buy executes at t=i strictly before sell at t=j.",Daily lows/highs + dates → Feasible buy-before-sell pairs → Return for each feasible pair → Maximum return → Optimal buy/sell dates + return,number,Investments & Portfolio Management,Performance Measurement,Maximum achievable holding-period return,optimization_allocation,scan candidate buy lows → enforce buy-before-sell → scan later highs → maximize return,4,time_series,event_ordering,none,rule_based,ratio_percentage,Low,scalar_numeric,2,2,1,2,0,1,1,0,9,,
+risk-005,"A bond portfolio consists of two $100 bonds. If a bond defaults, it is worth $30, otherwise $100. Both default probability is 15%, neither default is 50%. Calculate the mean, median, and mode of the year-end portfolio value.","{
+""mean"": 154.50,
+    ""median"": 165.0,
+    ""mode"": 200,
+}","Given: states s ∈ {DD, 1D, ND} with p(DD)=0.15, p(ND)=0.50, p(1D)=1−p(DD)−p(ND); state values V(DD)=2×30, V(1D)=30+100, V(ND)=2×100.
+Find: μ=E[V], Med(V), Mode(V).
+Formalize: μ = Σ_s p_s·V_s; Med(V) = value at which cumulative probability over sort(V_s) first reaches 0.5; Mode(V) = argmax_s p_s.",Default probabilities + bond payoffs → Complete three-state portfolio distribution → [Expected value | Cumulative distribution → Median | Highest-probability state → Mode] → Final mean/median/mode,number,Credit Risk,Portfolio Credit Risk,Discrete default-loss distribution,scenario_analysis,derive remaining scenario probability → map default states to values → expected value → median → mode,5,scenario_set,single_horizon,discrete_probability,branching,none,Moderate,multi_numeric,3,1,1,1,1,2,0,1,10,,
+risk-007,"Using the provided daily closing prices for (Aug 7 – Sep 4, 2026), calculate the final-day EWMA (α=0.2) for both price levels and daily simple returns. Evaluate each under two seed conditions: the first observation vs. the arithmetic mean.calculate the exact final-day values.
+
+Here is the daily closing price data to use:
+* Aug 07, 2026: 313.33
+* Aug 10, 2026: 315.62
+* Aug 11, 2026: 313.41
+* Aug 12, 2026: 316.89
+* Aug 13, 2026: 318.12
+* Aug 14, 2026: 315.75
+* Aug 17, 2026: 314.11
+* Aug 18, 2026: 316.48
+* Aug 19, 2026: 319.74
+* Aug 20, 2026: 317.82
+* Aug 21, 2026: 316.55
+* Aug 24, 2026: 319.49
+* Aug 25, 2026: 321.12
+* Aug 26, 2026: 322.95
+* Aug 27, 2026: 320.18
+* Aug 28, 2026: 323.09
+* Aug 31, 2026: 321.84
+* Sep 01, 2026: 324.97
+* Sep 02, 2026: 323.10
+* Sep 03, 2026: 326.68
+* Sep 04, 2026: 324.42","{
+    ""price_levels"": {
+        ""first_observation"": 322.995437734609,
+        ""arithmetic_mean"": {
+            ""seed_as_s1"": 323.06446479212053,
+            ""seed_as_s0"": 323.05065938061824,
+        },
+    },
+    ""daily_simple_returns"": {
+        ""first_observation"": 0.0012264559389448262,
+        ""arithmetic_mean"": {
+            ""seed_as_s1"": 0.001146605218965643,
+            ""seed_as_s0"": 0.00116257536296148,
+        },
+    },
+}","Given: ordered closing prices {P_t}; simple returns r_t=P_t/P_{t-1}−1; α=0.20.
+Find: final EWMA of {P_t} and {r_t} under two initialization rules.
+Formalize: y_t=αx_t+(1−α)y_{t−1}.
+Method A: y_1=x_1, then update using x_2,...,x_N.
+Method B: y_0=mean(x_1,...,x_N), then update using x_1,...,x_N.
+Apply each method separately to the price series and the return series.",Closing prices → Simple-return series; Closing prices → {Price EWMA: first seed | Price EWMA: mean seed}; Simple returns → {Return EWMA: first seed | Return EWMA: mean seed} → Final four EWMAs,number,Market Risk,Time-Series Risk Measures,EWMA of prices and simple returns under alternative initialization,time_series_transformation,compute simple returns → initialize two price EWMAs → recurse through prices → initialize two return EWMAs → recurse through returns → report four terminal values,6,time_series,sequential_periods,none,none,percent_decimal,Moderate,scalar_numeric,4,1,1,1,0,0,1,1,9,,
+risk-008,"Given an $8,000,000 exposure at default, an annual default likelihood of 3.0%, and a loss given default of 40%, find the total expected credit loss over a one-year horizon.","{  
+    ""expected_credit_loss"": 96000.0,
+}","Given: EAD=$8,000,000, PD=3%, LGD=40%.
+Find: EL.
+Formalize: EL = PD·LGD·EAD.",PD + LGD + EAD → Expected loss rate (PD×LGD) → Expected credit loss (loss rate×EAD),number,Credit Risk,Expected Loss,PD–LGD–EAD expected credit loss,risk_measurement,normalize PD and LGD percentage inputs → compute the expected-loss rate PD×LGD → multiply the loss rate by EAD,3,scalar_parameters,single_horizon,discrete_probability,none,percent_decimal_and_currency,Moderate,scalar_numeric,1,1,0,0,2,0,1,1,6,,
+risk-009,"Calculate the price of a default-free, 2-year bond with a $100 face value and a 5% annual coupon. Discount the cash flows using a 1-year spot rate of 3% and a 2-year spot rate of 4%, rounding your final answer to two decimal places.","{
+""bond_price_exact"": 101.932771,
+    ""bond_price_rounded"": 101.93
+}","Given: F=100 (face), c=5% (coupon rate), spot rates z_1=3%, z_2=4%, T=2.
+Find: Bond price P.
+Formalize: P = (c·F)/(1+z_1)^1 + (F + c·F)/(1+z_2)^2.",Face value + coupon rate → Bond cash flows; cash flows + spot rates → {PV of year-1 cash flow | PV of year-2 cash flow} → Bond price,number,Fixed Income,Bond Valuation,Default-free bond pricing with spot rates,discounted_cash_flow,compute coupon → discount year-1 cash flow → discount maturity cash flow → sum present values,4,scalar_parameters,scheduled_events,none,none,percent_decimal,Moderate,scalar_numeric,2,2,0,2,0,0,1,1,8,,
+risk-010,"Calculate the 1-year default probability as an exact percentage using the Merton structural model for a firm with $172 in market equity, $100 in debt face value, 40% asset volatility, and an 8% risk-free rate. Assume Assume total firm value equals the sum of equity and debt.","{
+  ""default_probability_percentage"": 0.62
+}","Given: proxy asset value V_0 (from equity E=172 and debt face D=100), σ_A=40%, r=8%, T=1.
+Find: PD (1-year probability of default).
+Formalize: d_2 = [ln(V_0/D) + (r − σ_A²/2)T] / (σ_A√T); PD = Φ(−d_2).",Equity + debt → Asset-value proxy V0=E+D → Merton d2 (distance to default) → Normal tail Φ(-d2) → One-year PD,number,Credit Risk,Structural Credit Models,Merton one-year probability of default,probabilistic_modeling,normalize inputs → compute distance-to-default → evaluate normal tail probability → convert to PD,4,scalar_parameters,single_horizon,structural_stochastic,threshold,mixed,High,scalar_numeric,2,2,0,1,3,1,2,2,13,,
+risk-011,"You are managing the risk for a portfolio with three strategies, A, B, and C. Strategy B has four positions... [VaR
+iVaR
+Strategy A
+$500
+$400
+Strategy B
+$800
+$700
+ Position 1
+$200
+$300
+ Position 2
+$500
+−$200
+ Position 3
+$600
+?
+ Position 4
+$300
+$100
+Strategy C
+$800
+?
+Total
+$1,400] ...Fill in the missing values for Position 3 iVaR, Strategy C iVaR, and Total iVaR.","{
+        ""position_3_ivar"": 500,
+        ""strategy_c_ivar"": 300,
+        ""total_ivar"": 1400,
+    }","Given: hierarchical additivity constraint Σ_i iVaR_i = iVaR_parent at position→strategy→portfolio levels, with some entries unknown.
+Find: missing iVaR entries x.
+Formalize: for each parent node, x_missing = iVaR_parent − Σ_{i known} iVaR_i; propagate bottom-up and verify Σ = Total.",Known iVaR hierarchy + portfolio total → [Position-3 iVaR from Strategy-B additivity | Strategy-C iVaR from portfolio additivity | Total iVaR = portfolio VaR] → Final missing values,number,Market Risk,VaR Attribution,Incremental VaR reconciliation,risk_measurement,apply attribution relationships → solve missing position iVaR → solve strategy residual → verify portfolio total,4,table,none,none,none,currency_scaling,Moderate,multi_numeric,2,2,1,0,0,0,1,1,7,,
+risk-012,"You have measured the VaR of a portfolio as $2.4 million. One of the positions in the portfolio, a hedge, has an iVaR of −$4 million. If you increase the size of the hedge by 5%, what will the VaR of the portfolio be, in millions?","{""new_portfolio_var_million"": 2.2}","Given: VaR_0 = $2.4mm, iVaR_hedge = −$4mm, Δw = +5% (hedge size increase).
+Find: VaR_1 (approx.).
+Formalize: VaR_1 ≈ VaR_0 + Δw·iVaR_hedge (first-order/linear sensitivity approximation).",Initial portfolio VaR + hedge iVaR + 5% size change → Marginal VaR change (Δw×iVaR) → Updated portfolio VaR,number,Market Risk,VaR Sensitivity,Portfolio VaR change from incremental VaR,sensitivity_counterfactual,scale iVaR by position change → add marginal change to portfolio VaR,2,scalar_parameters,none,none,none,mixed,Moderate,scalar_numeric,0,1,0,0,0,0,2,1,4,,
+risk-013,"You are tasked with evaluating the risk of a portfolio containing a single call option with a strike price of 110 and three months to expiration. The underlying price is 100, and the risk‐free rate is 3%. Both the expected and implied variance are 4%.
+
+Please calculate the one‐day 95% VaR using both the delta‐normal method and the Cornish‐Fisher method, reporting the values both with and without the daily theta drift. Use 365 days per year for theta and 256 days per year for standard deviation, and walk through the step-by-step calculations.","
+{
+  ""delta_normal"": {
+    ""without_theta"": 0.4190,
+    ""with_theta"": 0.4361
+  },
+  ""cornish_fisher"": {
+    ""without_theta"": 0.3594,
+    ""with_theta"": 0.3765
+  }
+}
+","Given: K=110, S=100, T=0.25, r=3%, σ²=4% (so σ=20%), one-day horizon, confidence c=95%.
+Find: one-day delta-normal and Cornish-Fisher VaR, each with and without theta drift.
+Formalize: compute Black–Scholes Greeks Δ, Γ, Θ using σ=20%. Scale annual volatility by σ_{1d}=σ/√256. Delta-normal VaR uses the 95% normal quantile and the option's delta exposure. For the Cornish-Fisher branch, derive the delta-gamma P&L moments, obtain skewness/kurtosis, apply the Cornish-Fisher adjusted quantile z_CF, and map it to the one-day P&L distribution. Daily theta drift is μ_θ=Θ/365; the with-theta loss quantile shifts by −μ_θ relative to the zero-drift VaR.","Option inputs → Black–Scholes Greeks (Δ, Γ, Θ); annual volatility → one-day volatility (256-day scaling); Greeks + one-day volatility → [Delta-normal VaR | Delta-gamma moments → Cornish–Fisher quantile → CF VaR]; one-day theta shift adjusts each branch → Final four VaRs",number,Market Risk,Derivatives Risk,Option VaR: delta-normal vs Cornish-Fisher,risk_measurement,derive option sensitivity → scale risk to one day → compute delta-normal quantile → apply Cornish-Fisher adjustment → compare,5,scalar_parameters,single_horizon,quantile_tail,none,mixed,High,multi_numeric,3,2,0,1,3,0,2,2,13,,
+risk-014,"Using the provided dataset from July 7 to July 17, 2026, determine the total cumulative return through the final date (2026-07-17). Please provide your result as a percentage rounded to two decimal places
+.| Date | Standard Return (%) | 
+| --- | --- | --- |
+| 2026-07-06 | — | — |
+| 2026-07-07 | -0.3241% | 
+| 2026-07-08 | 0.4512% | 
+| 2026-07-09 | 0.1835% | 
+| 2026-07-10 | -0.5620% | 
+| 2026-07-13 | 0.7145% | 
+| 2026-07-14 | -0.2189% | 
+| 2026-07-15 | 0.8420% | 
+| 2026-07-16 | -0.4012% | 
+| 2026-07-17 | 0.2974% | ","{
+""cumulative_return_pct"": 0.98,
+    ""cumulative_return_decimal"": 0.009763
+}","Given: {r_t} (ordered simple periodic returns).
+Find: R_cum.
+Formalize: R_cum = ∏_{t=1}^{n}(1+r_t) − 1.",Daily simple returns → Growth factors (1+r_t) → Product of growth factors → Cumulative simple return,number,Investments & Portfolio Management,Return Aggregation,Cumulative return from simple periodic returns,return_aggregation,parse ordered returns → convert percentages → compound ∏(1+r_t) → subtract 1,4,time_series,sequential_periods,none,none,percent_decimal,Low,scalar_numeric,2,0,1,1,0,0,1,0,5,,
+risk-015,"Using the provided stock dataset from July 6, 2026, to July 17, 2026, calculate the cumulative log return across the entire period and express the final value as a percentage rounded to two decimal places.
+| Date | Log Return (%) |
+| --- | --- |
+| 2026-07-06 | — |
+| 2026-07-07 | -0.6417% |
+| 2026-07-08 | 0.8749% |
+| 2026-07-09 | 0.8990% |
+| 2026-07-10 | -0.2850% |
+| 2026-07-13 | 0.6291% |
+| 2026-07-14 | -0.7751% |
+| 2026-07-15 | 3.9361% |
+| 2026-07-16 | 1.7435% |
+| 2026-07-17 | 0.1439% |","{
+""value_percent"": 6.52,
+    ""exact_value_percent"": 6.5247
+}","Given: {R_t} (ordered log returns).
+Find: R_cum,log.
+Formalize: R_cum,log = Σ_{t=1}^{n} R_t.",Daily log returns → Sum across periods → Cumulative log return,number,Investments & Portfolio Management,Return Aggregation,Cumulative log return,return_aggregation,parse ordered log returns → sum log returns → report cumulative log return,3,time_series,sequential_periods,none,none,percent_decimal,Low,scalar_numeric,1,0,1,1,0,0,1,0,4,,
+risk-016,"Using the provided unadjusted year-end stock prices and annual dividends, calculate the total annual return for each year from 2016 to 2025. Express all returns as percentages rounded to two decimal places. 
+
+Year,Unadjusted Year-End Price,Annual Dividend per Share
+2025,$624.15,$7.42
+2024,$585.80,$7.08
+2023,$475.31,$6.58
+2022,$382.43,$6.32
+2021,$474.96,$5.72
+2020,$373.88,$5.66
+2019,$321.86,$5.62
+2018,$249.92,$5.10
+2017,$266.86,$4.80
+2016,$223.53,$4.54
+2015,$203.87,$4.25"," {
+    2016: ""11.87%"",
+    2017: ""21.53%"",
+    2018: ""-4.44%"",
+    2019: ""31.03%"",
+    2020: ""17.92%"",
+    2021: ""28.57%"",
+    2022: ""-18.15%"",
+    2023: ""26.01%"",
+    2024: ""24.74%"",
+    2025: ""7.81%""
+}","Given: {P_t}, {D_t} (year-end price and per-share dividend series).
+Find: {r_t} (annual total-return series).
+Formalize: r_t = (P_t − P_{t−1} + D_t) / P_{t−1}.",Year-end prices + current-year dividends → Adjacent-year total-return calculation → Annual total-return series,table,Investments & Portfolio Management,Equity Returns,Annual total return with dividends,return_aggregation,order years → pair adjacent year-end prices → add current-year dividend → divide by prior-year price → format returns,5,time_series,sequential_periods,none,none,ratio_percentage,Low,table,3,0,1,1,0,0,1,0,6,,
+risk-017,"Calculate the cumulative total return from year-end 2015 to year-end 2025 using the data below. Assume all annual cash dividends are fully reinvested at the year-end stock price of the year received, and express the final cumulative return as a percentage rounded to two decimal places.
+
+Year,Unadjusted Year-End Price,Annual Dividend per Share
+2025,$612.40,$7.85
+2024,$585.34,$7.39
+2023,$475.31,$6.58
+2022,$382.43,$6.32
+2021,$474.96,$5.66
+2020,$373.88,$5.72
+2019,$321.86,$5.62
+2018,$249.92,$5.11
+2017,$266.86,$4.80
+2016,$223.53,$4.54
+2015,$203.87,$4.19","{
+""cumulative_total_return_pct"": 251.78
+}","Given: {r_t} (annual total returns (as in risk-016) ).
+Find: R_cum.
+Formalize: R_cum = ∏_{t}(1+r_t) − 1.",Year-end prices + dividends → Annual total returns → Growth factors (1+r_t) → Compound across years → Cumulative total return,number,Investments & Portfolio Management,Performance Measurement,Multi-period cumulative total return,return_aggregation,order years → compute annual total returns → convert to growth factors → compound across years → subtract 1,5,time_series,sequential_periods,none,none,percent_decimal,Low,scalar_numeric,3,0,1,1,0,0,1,0,6,,
+risk-018,"Using the historical price and dividend data provided below, calculate the total cumulative return. Account for a 2-for-1 stock split that took place in 2020, and present the final answer as a percentage rounded to two decimal places. With standard dividend reinvestment
+ and Without dividend reinvestment:
+
+Year,Unadjusted Year-End Price,Annual Dividend per Share
+2025,$612.40,$7.85
+2024,$585.34,$7.39
+2023,$475.31,$6.58
+2022,$382.43,$6.32
+2021,$474.96,$5.66
+2020,$373.88,$5.72
+2019,$321.86,$5.62
+2018,$249.92,$5.11
+2017,$266.86,$4.80
+2016,$223.53,$4.54
+2015,$203.87,$4.19"," {
+        ""without_dividend_reinvestment"": {
+            ""cumulative_return_pct"": 549.39,
+            ""cumulative_return_formatted"": ""549.39%"",
+            },
+        ""with_dividend_reinvestment"": {
+            ""cumulative_return_pct"": 603.56,
+            ""cumulative_return_formatted"": ""603.56%"",
+        }","Given: year-end prices P_y and dividends D_y for 2015–2025; one share initially; a 2-for-1 split in 2020.
+Find: cumulative holding-period return with and without dividend reinvestment.
+Formalize:
+Without reinvestment, let q_y be the share count (q=1 before the split and q=2 after the split). CashDiv=Σ_y q_yD_y, Terminal=q_2025P_2025, and R_noDRIP=(Terminal+CashDiv)/P_2015−1.
+With reinvestment, start q_2015=1; apply the 2-for-1 split when it occurs, and at each year-end update q_y=q_y^-+(q_y^-D_y/P_y), where q_y^- is the pre-reinvestment share count. Then R_DRIP=(q_2025P_2025)/P_2015−1.",Price/dividend history + 2-for-1 split → Initialize one-share position → Update share count at split → [No-reinvestment branch: accumulate cash dividends + terminal stock value | Reinvestment branch: reinvest each dividend at year-end price to increase shares] → Ending wealth under each branch → Cumulative returns,number,Investments & Portfolio Management,Corporate Actions & Returns,Cumulative return with stock split adjustment,return_aggregation,order years → initialize one-share position → apply the 2-for-1 split to share count → compute no-reinvestment ending wealth → recursively reinvest dividends for the DRIP branch → convert both ending wealth values to cumulative returns,6,time_series,event_ordering,none,rule_based,mixed,Moderate,scalar_numeric,4,0,1,2,0,1,2,1,11,,
+risk-019,"I started with an initial investment of $1,000 at the start of 2000. Based on the annual returns provided below, calculate only the final portfolio ending value at the end of 2025 and the total cumulative return for the entire 2000–2025 period. Report both values rounded to two decimal places.
+
+Year,Total Return
+2025,14.62%
+2024,23.35%
+2023,24.18%
+2022,-16.45%
+2021,26.90%
+2020,16.22%
+2019,28.74%
+2018,-3.82%
+2017,19.50%
+2016,12.05%
+2015,2.15%
+2014,12.80%
+2013,30.15%
+2012,15.22%
+2011,3.45%
+2010,14.10%
+2009,24.85%
+2008,-35.40%
+2007,6.80%
+2006,14.90%
+2005,5.65%
+2004,11.35%
+2003,27.12%
+2002,-20.85%
+2001,-10.55%
+2000,-8.45%","{
+    ""final_portfolio_ending_value"": 7018.26,
+    ""total_cumulative_return_pct"": 601.83
+}","Given: P_0=1000, {r_t} (annual total-return series (chronological) ).
+Find: {P_t} (implied price path, R_cum).
+Formalize: P_t = P_{t−1}(1+r_t) (applied recursively); R_cum = (P_n−P_0)/P_0 = ∏(1+r_t) − 1.",Initial index level + annual return series → Recursive year-end index updates → Wealth-index path → Terminal index level → Cumulative return,table,Investments & Portfolio Management,Wealth Index & Performance,Synthetic price path and cumulative return,sequential_state_update,start from index value → order returns chronologically → apply P_t=P_{t-1}(1+r_t) recursively → compute terminal cumulative return,4,time_series,state_transition,none,none,mixed,Low,table,2,2,1,3,0,0,2,0,10,,
+risk-020,A bank estimates that its profit next year is normally distributed with a mean of 0.8% of assets and the standard deviation of 2% of assets. How much equity (as a percentage of assets) does the company need to be (a) 99% sure that it will have a positive equity at the end of the year and (b) 99.9% sure that it will have positive equity at the end of the year? Ignore taxes.,"{
+    ""99.0%"": ""3.85% ,
+    ""99.9%"": ""5.38%"",
+    }","Given: end-of-year bank profit X ~ N(μ=0.008, σ=0.02), expressed as a fraction of assets; confidence levels c ∈ {0.99, 0.999}.
+Find: required equity buffer b_c (as % of assets), each c.
+Formalize: Ending equity fraction = b + X; require P(b+X<0) ≤ 1−c ⇒ b_c = z_c·σ − μ, z_c = Φ⁻¹(c).","Normal profit distribution + confidence targets → Normal quantiles {99%, 99.9%} → Required equity buffers b=zσ−μ → Final buffers",number,Banking & ALM,Economic Capital,Capital buffer from profit distribution quantiles,risk_measurement,express ending equity condition → map confidence level to lower-tail normal quantile → compute required buffer for 99% → repeat for 99.9%,4,scalar_parameters,single_horizon,quantile_tail,threshold,mixed,Moderate,multi_numeric,2,2,0,1,3,1,2,1,12,,
+risk-021,The expected return on the market is 12% and the risk-free rate is 7%. The standard deviation of the return on the market is 15%. One investor creates a portfolio on the efficient frontier with an expected return of 10%. Another creates a portfolio on the efficient frontier with an expected return of 20%. What is the standard deviation of the return on each of the two portfolios?," {
+    ""portfolio_1"": {
+        ""standard_deviation"": 0.09,
+
+    },
+    ""portfolio_2"": {
+        ""standard_deviation"": 0.39,
+    },
+}","Given: E[R_m]=12%, r_f=7%, σ_m=15%; target portfolio expected returns E[R_p]∈{10%,20%}.
+Find: market-portfolio weight w and portfolio standard deviation σ_p for each target on the Capital Market Line.
+Formalize: E[R_p]=r_f+w(E[R_m]−r_f), so w=(E[R_p]−r_f)/(E[R_m]−r_f); because the risk-free asset has zero volatility, σ_p=|w|σ_m.",Risk-free rate + market return/volatility + target returns → Market risk premium → {Market weights for each target} → {Portfolio volatilities} → Final standard deviations,number,Investments & Portfolio Management,Portfolio Theory,Capital Market Line risk-return scaling,financial_formula_application,compute market risk premium → infer risky-asset weight from target return → scale market volatility → repeat for second target,4,scalar_parameters,none,none,none,percent_decimal,Moderate,multi_numeric,2,1,0,0,0,0,1,1,5,,
+risk-022,he return from the market last year was 10% and the risk-free rate was 5%. A hedge fund manager with a beta of 0.6 has an alpha of 4%. What return did the hedge fund manager earn?,"{
+""hedge_fund_return"": 0.12
+}","Given: E[R_m]=10%, r_f=5%, β=0.6, α=4%.
+Find: E[R_p].
+Formalize: E[R_p] = r_f + β·(E[R_m]−r_f) + α.",Market return + risk-free rate → Market excess return → Beta-scaled systematic return → CAPM return → Add alpha → Hedge-fund return,number,Investments & Portfolio Management,Performance Attribution,CAPM expected return with alpha,financial_formula_application,compute market excess return → multiply by beta → add risk-free rate → add alpha,4,scalar_parameters,none,none,none,percent_decimal,Moderate,scalar_numeric,2,1,0,0,0,0,1,1,5,,
+risk-023,"The bidders in a Dutch auction are as follows:
+
+BidderNumber of SharesPrice
+A20,000$100.00|B30,000$93.00|C50,000$110.00|D70,000$88.00|E60,000$80.00|F10,000$105.00|G90,000$70.00|H80,000$125.00
+
+The number of shares being auctioned is 150,000. How many shares does each investor receive? give the result in a list for A B C D E F G H.","{
+    ""A"": 10000,
+    ""B"": 0,
+    ""C"": 50000,
+    ""D"": 0,
+    ""E"": 0,
+    ""F"": 10000,
+    ""G"": 0,
+    ""H"": 80000,
+}","Given: bids {(q_i, p_i)}, total shares offered Q.
+Find: clearing price p*, allocation x_i for each bidder.
+Formalize: sort bids by p_i descending; p* = min{p_k : Σ_{i: p_i≥p_k} q_i ≥ Q}; x_i = q_i for p_i>p*; x_k = Q − Σ_{p_i>p*} q_i for the marginal bidder at p*; x_i = 0 for p_i<p*.",Auction bids + share supply → Sort bids by price → Cumulative demand → Identify marginal bid / clearing price → [Full allocations above | Residual at clearing | Zero below] → Final allocations,number,Capital Markets & Trading,Auction & Issuance,Dutch auction clearing price and allocation,optimization_allocation,sort bids by price descending → cumulatively allocate shares → identify marginal bid/clearing price → allocate residual shares → assign zero below clearing price,5,table,none,none,rule_based,currency_scaling,Moderate,structured_multi_output,3,2,1,0,0,1,1,1,9,,
+risk-024,"Use Table o calculate the minimum premium(2 decimal point) an insurance company should charge for a $1 million two-year term life insurance policy issued to a woman age 50. Assume that the premium is paid at the beginning of each year and that the interest rate is zero.
+
+
+Age (Years),Male Probability of Death within 1 Year,Male Survival Probability,Male Life Expectancy,Female Probability of Death within 1 Year,Female Survival Probability,Female Life Expectancy
+0,0.005740,1.00000,77.10,0.004810,1.00000,82.05
+1,0.000390,0.99426,76.54,0.000315,0.99519,81.44
+2,0.000245,0.99387,75.57,0.000198,0.99488,80.47
+3,0.000185,0.99363,74.59,0.000152,0.99468,79.48
+...,...,...,...,...,...,...
+30,0.001655,0.97540,48.65,0.000755,0.98710,53.02
+31,0.001712,0.97379,47.73,0.000810,0.98635,52.06
+32,0.001775,0.97212,46.81,0.000870,0.98555,51.10
+33,0.001842,0.97039,45.89,0.000935,0.98469,50.15
+...,...,...,...,...,...,...
+40,0.002410,0.95610,39.52,0.001340,0.97720,43.50
+41,0.002525,0.95380,38.61,0.001420,0.97589,42.56
+42,0.002652,0.95139,37.71,0.001508,0.97450,41.62
+43,0.002791,0.94887,36.81,0.001605,0.97303,40.68
+...,...,...,...,...,...,...
+50,0.004615,0.92640,30.55,0.002810,0.95920,34.20
+51,0.005020,0.92212,29.69,0.003062,0.95650,33.29
+52,0.005470,0.91749,28.83,0.003340,0.95357,32.39
+53,0.005985,0.91247,27.99,0.003650,0.95039,31.50
+...,...,...,...,...,...,...
+60,0.010850,0.86310,22.35,0.006520,0.91950,25.38
+61,0.011710,0.85373,21.59,0.007070,0.91350,24.54
+62,0.012580,0.84373,20.83,0.007605,0.90704,23.71
+63,0.013420,0.83312,20.09,0.008100,0.90014,22.88
+...,...,...,...,...,...,...
+70,0.021280,0.74120,15.08,0.013980,0.83850,17.25
+71,0.023010,0.72543,14.39,0.015460,0.82678,16.48
+72,0.024980,0.70874,13.72,0.017080,0.81399,15.73
+73,0.027250,0.69104,13.05,0.018820,0.80009,14.99
+...,...,...,...,...,...,...
+80,0.053720,0.52840,8.78,0.039200,0.66310,10.15
+81,0.059600,0.50001,8.24,0.043950,0.63711,9.54
+82,0.066210,0.47021,7.72,0.049300,0.60911,8.95
+83,0.073550,0.43908,7.23,0.055250,0.57908,8.38
+...,...,...,...,...,...,...
+90,0.155400,0.20130,4.31,0.123200,0.32040,5.08
+91,0.172100,0.17002,4.00,0.137450,0.28093,4.72
+92,0.190100,0.14076,3.71,0.152800,0.24231,4.38
+93,0.209400,0.11399,3.44,0.169300,0.20528,4.07
+
+
+","{
+""minimum_annual_premium"": 2935.82
+}","Given: mortality probabilities q_x, q_{x+1} for age x=50; face F=$1,000,000; interest rate r=0; premium π paid at t=0,1 while alive.
+Find: π (minimum level premium).
+Formalize: EPV(premiums) = π·[1 + p_x/(1+r)]; EPV(claims) = F·[q_x/(1+r) + p_x·q_{x+1}/(1+r)²]; solve π = EPV(claims)/EPV(premiums) (with r=0 here, discount factors collapse to 1).",Age-specific mortality probabilities → Survival/death-path probabilities → [Expected claim cost | Expected premium-payment factor] → Break-even level premium,number,Insurance & Actuarial,Life Insurance Pricing,Two-year term-life net premium,probabilistic_modeling,lookup age-specific death probabilities → compute year-2 survival-and-death probability → compute expected claim cost → compute expected premium payments → solve premium,5,table,state_transition,survival_probability,sequential_branching,mixed,High,scalar_numeric,3,2,1,3,2,3,2,2,18,,
+risk-025,"what is the probability that a man age 30 will live to 90? What is the same probability for a woman age 30? ""Please round the answers to two decimal places.
+
+
+
+
+Age (Years),Male Probability of Death within 1 Year,Male Survival Probability,Male Life Expectancy,Female Probability of Death within 1 Year,Female Survival Probability,Female Life Expectancy
+0,0.005740,1.00000,77.10,0.004810,1.00000,82.05
+1,0.000390,0.99426,76.54,0.000315,0.99519,81.44
+2,0.000245,0.99387,75.57,0.000198,0.99488,80.47
+3,0.000185,0.99363,74.59,0.000152,0.99468,79.48
+...,...,...,...,...,...,...
+30,0.001655,0.97540,48.65,0.000755,0.98710,53.02
+31,0.001712,0.97379,47.73,0.000810,0.98635,52.06
+32,0.001775,0.97212,46.81,0.000870,0.98555,51.10
+33,0.001842,0.97039,45.89,0.000935,0.98469,50.15
+...,...,...,...,...,...,...
+40,0.002410,0.95610,39.52,0.001340,0.97720,43.50
+41,0.002525,0.95380,38.61,0.001420,0.97589,42.56
+42,0.002652,0.95139,37.71,0.001508,0.97450,41.62
+43,0.002791,0.94887,36.81,0.001605,0.97303,40.68
+...,...,...,...,...,...,...
+50,0.004615,0.92640,30.55,0.002810,0.95920,34.20
+51,0.005020,0.92212,29.69,0.003062,0.95650,33.29
+52,0.005470,0.91749,28.83,0.003340,0.95357,32.39
+53,0.005985,0.91247,27.99,0.003650,0.95039,31.50
+...,...,...,...,...,...,...
+60,0.010850,0.86310,22.35,0.006520,0.91950,25.38
+61,0.011710,0.85373,21.59,0.007070,0.91350,24.54
+62,0.012580,0.84373,20.83,0.007605,0.90704,23.71
+63,0.013420,0.83312,20.09,0.008100,0.90014,22.88
+...,...,...,...,...,...,...
+70,0.021280,0.74120,15.08,0.013980,0.83850,17.25
+71,0.023010,0.72543,14.39,0.015460,0.82678,16.48
+72,0.024980,0.70874,13.72,0.017080,0.81399,15.73
+73,0.027250,0.69104,13.05,0.018820,0.80009,14.99
+...,...,...,...,...,...,...
+80,0.053720,0.52840,8.78,0.039200,0.66310,10.15
+81,0.059600,0.50001,8.24,0.043950,0.63711,9.54
+82,0.066210,0.47021,7.72,0.049300,0.60911,8.95
+83,0.073550,0.43908,7.23,0.055250,0.57908,8.38
+...,...,...,...,...,...,...
+90,0.155400,0.20130,4.31,0.123200,0.32040,5.08
+91,0.172100,0.17002,4.00,0.137450,0.28093,4.72
+92,0.190100,0.14076,3.71,0.152800,0.24231,4.38
+93,0.209400,0.11399,3.44,0.169300,0.20528,4.07
+
+
+","{
+    ""male"": {
+        ""probability"": 0.21,
+        ""percentage"": 20.64,
+    },
+    ""female"": {
+        ""probability"": 0.32,
+        ""percentage"": 32.46,
+    },
+}","Given: survival-function values S_m(30), S_m(90), S_f(30), and S_f(90) from the mortality table.
+Find: P(survive to age 90 | alive at age 30) for a man and a woman.
+Formalize: P_m=S_m(90)/S_m(30); P_f=S_f(90)/S_f(30).",Survival proportions at ages 30 and 90 → {S(90)/S(30) for male | S(90)/S(30) for female} → Conditional survival probabilities,number,Insurance & Actuarial,Life Contingencies,Conditional survival probability between ages,probabilistic_modeling,lookup survival at age 30 → lookup survival at age 90 → divide S(90) by S(30) → repeat by sex → format percentages,5,table,single_horizon,conditional_probability,none,percent_decimal,Moderate,multi_numeric,3,2,1,1,2,0,1,1,11,,
+risk-026,"Suppose that in a certain defined benefit pension plan: Employees work for 40 years earning wages that increase with inflation. They retire with a pension equal to 75% of their final salary, increasing with inflation. The pension is received for 20 years. The pension fund’s income is invested in bonds that earn the inflation rate. Estimate the percentage of an employee’s salary that must be contributed to the pension plan if it is to remain solvent (Hint: Do all calculations in real rather than nominal dollars).","{
+""required_contribution_rate_decimal"": 0.375,
+    ""required_contribution_rate_percentage"": ""37.5%""
+}","Given: 40 working years, 20 retirement years, pension replacement ratio ρ=75%, wages and pension both indexed to inflation, and investment return equal to inflation.
+Find: constant contribution rate c as a fraction of salary.
+Formalize in real dollars: real salary is constant and the real investment return is 0, so total real contributions=40·c·S and total real pension benefits=20·0.75·S. Solvency requires 40cS=15S, hence c=0.375.",Salary + work/retirement horizons + replacement ratio → [Career contribution value | Retirement benefit value] → Funding equality → Required contribution rate,number,Retirement & Pensions,Defined Benefit Funding,Contribution rate for a real-valued defined benefit pension,algebraic_inference,convert assumptions to real terms → total 40 years of contributions → total 20 years of pension payments → equate inflows and outflows → solve contribution rate,5,scalar_parameters,sequential_periods,none,none,ratio_percentage,Moderate,scalar_numeric,3,1,0,1,0,0,1,1,7,,
+risk-027,"An insurance company’s losses per year are normally distributed with mu = 150$ million and sigma = 50$ million. The one-year risk-free rate is 5% per annum with annual compounding. Estimate the cost (in million) of:
+(a) A contract paying 60% of losses pro rata in one year.
+(b) A contract paying 100$ million in one year if losses exceed 200$ million.","{
+    ""contract_a"": {
+      
+        ""cost_million"": 85.71,
+    },
+    ""contract_b"": {
+       
+        ""cost_million"": 15.11,
+    },
+}","""Given: L~N(μ=$150M, σ=$50M), r=5%.
+(a) payoff Y_a=0.60L.
+(b) payoff Y_b=$100M·1[L>$200M].
+Find: EPV(Y_a), EPV(Y_b).
+Formalize: EPV(Y_a)=0.60μ/(1+r). For (b), P(L>200)=1−Φ((200−150)/50)=1−Φ(1), so EPV(Y_b)=$100M·[1−Φ(1)]/(1+r).""",Normal loss distribution + discount rate → [A: Expected 60% loss payout → Discounted PV | B: Standardize loss threshold → Normal tail probability → Expected fixed payout → Discounted PV] → Final contract values,number,Insurance & Actuarial,Insurance Contract Valuation,Expected present value of proportional and threshold loss contracts,probabilistic_modeling,compute expected proportional payout → discount one year → standardize loss threshold → evaluate normal tail probability → compute expected contingent payout → discount,6,scalar_parameters,single_horizon,continuous_distribution,threshold,mixed,High,multi_numeric,4,2,0,1,2,1,2,2,14,,
+risk-028,"A hedge fund operates under a '2 and 20' fee structure, charging a 2% annual management fee and a 20% incentive fee on returns net of the management fee. If investors require a net return of 20.00% after all fees, what gross return must the fund achieve before fees? Calculate the result to two decimal places.","{""percentage"": ""27.00%""}","Given: management fee m=2%, incentive fee k=20% on post-management-fee net return, target investor net return after all fees = 20%.
+Find: gross return g.
+Formalize: net_after_mgmt = g−m; net_after_all = (1−k)·(g−m) = target; solve g = target/(1−k) + m.",Target after-fee return + fee terms → Return after management fee → Return after incentive fee → Set equal to target → Solve required gross return,number,Investments & Portfolio Management,Hedge Fund Fees,Gross return required under management and incentive fees,algebraic_inference,represent gross return → subtract management fee → apply incentive fee to post-management return → set investor net return target → solve gross return,5,scalar_parameters,none,none,rule_based,percent_decimal,Moderate,scalar_numeric,3,1,0,0,0,1,1,1,7,,
+risk-029,"An investor enters into a short forward contract to sell 100,000 British pounds for U.S. dollars at an exchange rate of 1.3000 U.S. dollars per pound. How much does the investor gain or lose if the exchange rate at the end of the contract is: (a) 1.2900 (b) 1.3200"," {
+    ""a"": {
+      
+        ""payoff_usd"": 1000.0,
+        
+    },
+    ""b"": {
+
+        ""payoff_usd"": -2000.0,
+   
+    },
+}","Given: short forward on N=100,000 GBP at contract rate F=1.3000 USD/GBP; terminal spot S_T (two scenarios).
+Find: Gain/Loss to the short-forward holder, each scenario.
+Formalize: Payoff_short = N·(F − S_T).",Short-forward terms + terminal spot scenarios → {Forward-rate differences} → {N(F−S_T) payoffs} → Gain/loss outputs,number,Derivatives,FX Forwards,Short foreign-exchange forward payoff,conditional_payoff,compare contracted forward rate with terminal spot rate → compute rate difference → multiply by foreign-currency notional → determine gain/loss sign → repeat by scenario,5,scenario_set,single_horizon,none,branching,mixed,Moderate,multi_numeric,3,1,1,1,0,2,2,1,11,,
+risk-030,"A stock is trading at $29. A 3-month $30 call costs $2.90. With a $5,800 budget, evaluate two strategies to speculate on a price increase: outright stock purchase vs. call options.
+
+Tabulate the terminal payoff, net profit, and percentage return for both strategies at expiration across stock prices from $25 to $35 (in $1 increments, including the options break-even price). State the break-even price and maximum loss for each.","```python
+strategy_evaluation = {
+    ""parameters"": {
+        ""budget"": 5800.0,
+        ""spot_price"": 29.0,
+        ""call_strike"": 30.0,
+        ""call_premium"": 2.90,
+        ""stock_strategy"": {
+            ""shares_purchased"": 200.0,
+            ""break_even"": 29.0,
+            ""max_loss"": 5800.0,
+        },
+        ""call_strategy"": {
+            ""contracts_purchased"": 20.0,
+            ""shares_controlled"": 2000.0,
+            ""break_even"": 32.90,
+            ""max_loss"": 5800.0,
+        },
+        ""crossover_price"": 33.33,
+    },
+    ""expiration_payoffs"": [
+        {
+            ""stock_price"": 25.00,
+            ""stock_payoff"": 5000.00,
+            ""stock_profit"": -800.00,
+            ""stock_return_pct"": -13.79,
+            ""call_payoff"": 0.00,
+            ""call_profit"": -5800.00,
+            ""call_return_pct"": -100.00,
+        },
+        {
+            ""stock_price"": 26.00,
+            ""stock_payoff"": 5200.00,
+            ""stock_profit"": -600.00,
+            ""stock_return_pct"": -10.34,
+            ""call_payoff"": 0.00,
+            ""call_profit"": -5800.00,
+            ""call_return_pct"": -100.00,
+        },
+        {
+            ""stock_price"": 27.00,
+            ""stock_payoff"": 5400.00,
+            ""stock_profit"": -400.00,
+            ""stock_return_pct"": -6.90,
+            ""call_payoff"": 0.00,
+            ""call_profit"": -5800.00,
+            ""call_return_pct"": -100.00,
+        },
+        {
+            ""stock_price"": 28.00,
+            ""stock_payoff"": 5600.00,
+            ""stock_profit"": -200.00,
+            ""stock_return_pct"": -3.45,
+            ""call_payoff"": 0.00,
+            ""call_profit"": -5800.00,
+            ""call_return_pct"": -100.00,
+        },
+        {
+            ""stock_price"": 29.00,
+            ""stock_payoff"": 5800.00,
+            ""stock_profit"": 0.00,
+            ""stock_return_pct"": 0.00,
+            ""call_payoff"": 0.00,
+            ""call_profit"": -5800.00,
+            ""call_return_pct"": -100.00,
+        },
+        {
+            ""stock_price"": 30.00,
+            ""stock_payoff"": 6000.00,
+            ""stock_profit"": 200.00,
+            ""stock_return_pct"": 3.45,
+            ""call_payoff"": 0.00,
+            ""call_profit"": -5800.00,
+            ""call_return_pct"": -100.00,
+        },
+        {
+            ""stock_price"": 31.00,
+            ""stock_payoff"": 6200.00,
+            ""stock_profit"": 400.00,
+            ""stock_return_pct"": 6.90,
+            ""call_payoff"": 2000.00,
+            ""call_profit"": -3800.00,
+            ""call_return_pct"": -65.52,
+        },
+        {
+            ""stock_price"": 32.00,
+            ""stock_payoff"": 6400.00,
+            ""stock_profit"": 600.00,
+            ""stock_return_pct"": 10.34,
+            ""call_payoff"": 4000.00,
+            ""call_profit"": -1800.00,
+            ""call_return_pct"": -31.03,
+        },
+        {
+            ""stock_price"": 32.90,
+            ""stock_payoff"": 6580.00,
+            ""stock_profit"": 780.00,
+            ""stock_return_pct"": 13.45,
+            ""call_payoff"": 5800.00,
+            ""call_profit"": 0.00,
+            ""call_return_pct"": 0.00,
+        },
+        {
+            ""stock_price"": 33.00,
+            ""stock_payoff"": 6600.00,
+            ""stock_profit"": 800.00,
+            ""stock_return_pct"": 13.79,
+            ""call_payoff"": 6000.00,
+            ""call_profit"": 200.00,
+            ""call_return_pct"": 3.45,
+        },
+        {
+            ""stock_price"": 34.00,
+            ""stock_payoff"": 6800.00,
+            ""stock_profit"": 1000.00,
+            ""stock_return_pct"": 17.24,
+            ""call_payoff"": 8000.00,
+            ""call_profit"": 2200.00,
+            ""call_return_pct"": 37.93,
+        },
+        {
+            ""stock_price"": 35.00,
+            ""stock_payoff"": 7000.00,
+            ""stock_profit"": 1200.00,
+            ""stock_return_pct"": 20.69,
+            ""call_payoff"": 10000.00,
+            ""call_profit"": 4200.00,
+            ""call_return_pct"": 72.41,
+        },
+    ],
+}
+
+```","Given: S_0=29, K=30, call premium c=2.90, T=3mo, Capital=5,800.
+Find: terminal payoff functions Π(S_T) for the stock strategy and the option strategy.
+Formalize: n_stock = Capital/S_0, Π_stock(S_T) = n_stock·(S_T−S_0); n_opt = Capital/c, Π_opt(S_T) = n_opt·[max(S_T−K,0) − c].",Capital + stock/option terms → [Stock branch: shares purchased → terminal stock profit / break-even / max loss / upside | Call branch: call units purchased → terminal call payoff → call profit / break-even / max loss / upside] → Strategy comparison,number,Derivatives,Equity Options,Stock-versus-call speculative strategy and leverage,conditional_payoff,allocate capital → compute stock/option positions → derive terminal profit/loss functions → compare downside and upside exposure,4,scalar_parameters,single_horizon,none,branching,mixed,Moderate,structured_multi_output,2,1,0,1,0,2,2,1,9,,
+risk-031,"A U.S. investor writes five call option contracts (i.e., options to buy 500 shares). The option price is $3.50, the strike price is $60, and the stock price is $57. What is the initial margin requirement?","""margin_requirement"": {
+        ""initial_margin_total"": 5950.00 
+    },","Given: contracts=5 (500 shares), premium=3.50, K=60, S=57.
+Find: initial margin requirement.
+Formalize: OTM = max(K−S, 0); Margin/share = max[ premium + 0.20·S − OTM , premium + 0.10·S ]; Margin = Margin/share × shares.",Option terms + uncovered-call margin rule → Out-of-the-money amount → [20% stock value − OTM | 10% stock value floor] → Binding base margin → Add option premium per share → Scale by 500 shares → Total initial margin,number,Derivatives,Equity Options & Margin,Initial margin for a written call position,rule_based_accounting,identify short-option margin rule → compute premium value → compute underlying-based margin components → compare rule alternatives → obtain required margin,5,scalar_parameters,none,none,rule_based,currency_scaling,High,scalar_numeric,3,1,0,0,0,1,1,2,8,,
+risk-032,A trader shorts 500 shares of a stock when the price is $50$. The initial margin is 160% and the maintenance margin is 130%. How much margin is required from the investor initially? How high does the price of the stock have to rise for there to be a margin call?,"{
+""investor_deposit_required"": 15000.00,
+""rounded_price_threshold"": 61.54,
+        ""condition"": ""Price strictly exceeds $61.54"",","Given: shares=500 (short), P_0=50, initial margin IM=160%, maintenance margin MM=130%.
+Find: initial margin $, trigger price P* for a margin call.
+Formalize: Equity_0 = (IM−1)·P_0·shares; Equity(P) = Equity_0 − (P−P_0)·shares; solve P*: Equity(P*)/(P*·shares) = MM.",Short-sale terms → Initial short market value → Required initial equity / additional cash → Equity as stock price rises → Maintenance-margin ratio → Solve trigger price where ratio = 130% → Initial cash + margin-call price,number,Capital Markets & Trading,Margin & Short Selling,Initial margin and maintenance-margin trigger for a short sale,algebraic_inference,compute short-position market value → determine initial margin/equity → express maintenance-margin ratio after price change → solve trigger stock price,4,scalar_parameters,none,none,threshold,mixed,Moderate,multi_numeric,2,1,0,0,0,1,2,1,7,,
+risk-033,"An investor pays $50,000 on Jan 15, receives $8,000 on Apr 10, invests another $12,000 on Sep 3, receives $15,000 on Dec 20, and sells the investment for $48,000 on Mar 5 of the following year. Calculate the annualized money-weighted return using the exact dates.","
+""annualized_mwr_decimal"": 0.169611,
+    ""annualized_mwr_percentage"": ""16.96%""
+}","Given: dated cash flows {(t_i, CF_i)}, actual calendar dates.
+Find: r such that NPV=0 (annualized money-weighted return, XIRR).
+Formalize: Σ_i CF_i·(1+r)^{−(t_i−t_0)/365} = 0; solve for r.",Dated investment cash flows → Exact year fractions from initial date → Discount each cash flow at candidate annual rate → Sum to NPV equation → Solve NPV(r)=0 → Annualized money-weighted return,number,Investments & Portfolio Management,Performance Measurement,Money-weighted return with irregularly dated cash flows (XIRR),discounted_cash_flow,order the dated cash flows → convert each date to a year fraction from the initial date → construct the discounted NPV(r) equation → identify the numerical root-solving problem → solve for the annual rate with NPV=0,5,cash_flow_schedule,irregular_timing,none,none,mixed,High,scalar_numeric,3,2,1,2,0,0,2,2,12,,
+risk-034,"A portfolio begins with $100,000. It rises to $108,000 before a $40,000 contribution on March 31, falls to $142,000 before a $20,000 withdrawal on September 30, and ends the year at $128,000. Calculate both the time-weighted return and the money-weighted return and present the final answer as a percentage rounded to two decimal places.","{
+""annual_percentage"": 8.72,
+""effective_annual_percentage"": 6.41
+}","Given: portfolio value path with two external cash flows (contribution, withdrawal) at known interim dates.
+Find: TWR, MWR.
+Formalize: TWR = ∏_j (1+r_j) − 1, r_j = (V_j^{end}−CF_j)/V_{j−1}^{end} − 1 (sub-periods split at each cash-flow date, cash-flow-neutral linking); MWR solves Σ_i CF_i·(1+r)^{−t_i} = 0 (dollar-weighted / IRR).",Portfolio values + external cash flows + dates → [TWR branch: split at cash-flow dates → subperiod returns → geometrically link returns | MWR branch: build dated cash-flow equation → solve annual IRR] → Compare TWR and MWR,number,Investments & Portfolio Management,Performance Measurement,Time-weighted versus money-weighted portfolio return,return_aggregation,split performance at external cash-flow dates → compute subperiod returns → geometrically link TWR → construct investor cash-flow stream → solve MWR,5,cash_flow_schedule,event_ordering,none,none,ratio_percentage,High,multi_numeric,3,0,1,2,0,0,1,2,9,,
+risk-035,"Two investors experience the same annual portfolio returns of +20%, -10%, and +15%. Investor A contributes $20,000 before the first year; Investor B contributes the same amount immediately before the third year. Both start with $50,000. Compare their ending wealth.","{
+""difference"": 1840.0
+}","Given: W_0=50,000, contribution C=20,000 at time t*, returns {r_1,r_2,r_3} = {+20%,−10%,+15%}, two timing scenarios (t*=1 vs t*=3).
+Find: W_T^A, W_T^B.
+Formalize: W_t = W_{t−1}(1+r_t) + C·1[t=t*] (applied recursively t=1,...,3 for each timing scenario); compare W_3^A vs W_3^B.",Initial wealth + identical return path + contribution timing → [Investor A: contribute before Year 1 → recursive annual wealth path → ending wealth | Investor B: contribute before Year 3 → recursive annual wealth path → ending wealth] → Compare ending wealth and timing effect,number,Investments & Portfolio Management,Performance Measurement,Effect of contribution timing on terminal wealth,sensitivity_counterfactual,initialize wealth → apply Investor A cash flow and returns in chronological order → apply Investor B sequence → compare terminal wealth → explain timing effect,5,cash_flow_schedule,event_ordering,none,none,mixed,Moderate,multi_numeric,3,1,1,2,0,0,2,1,10,,
+risk-036,"A 6% bond with $1,000 face value pays coupons every March 15 and September 15. A trade settles on July 2. Using Actual/Actual and the specified coupon dates, calculate the accrued interest and convert a quoted clean price of 101.20 into the dirty price."," {
+        ""quoted_pct"": 102.9772,
+        ""dollar_value"": 1029.77,","Given: 6% semiannual coupon, $1,000 face, coupon dates Mar 15/Sep 15, settlement Jul 2, Act/Act; clean price=101.20.
+Find: accrued interest AI, dirty price.
+Formalize: AI = (C/2)·(days since last coupon)/(days in coupon period); Dirty = Clean + AI (Clean, Dirty expressed as $ price on $1,000 face).",Bond coupon terms + settlement date → Identify surrounding coupon dates and actual day counts → Accrual fraction → Accrued interest → Convert clean quote to dollar clean price → Add accrued interest → Dirty price,number,Fixed Income,Bond Pricing & Settlement,Accrued interest and clean-to-dirty bond price conversion,calendar_time_reasoning,identify surrounding coupon dates → count accrued and coupon-period days → compute accrued coupon fraction → convert clean quote to currency price → add accrued interest,5,cash_flow_schedule,scheduled_events,none,none,mixed,High,multi_numeric,3,2,1,2,0,0,2,2,12,,
+risk-037,"A $5 million loan runs from February 17 to August 6 at 6.2%. Calculate interest using ACT/360, ACT/365, and 30/360 conventions. Calculate the interest charge under:ACT/360, ACT/365, and 30/360.
+","{
+    ""ACT/360"": 146388.89,
+    ""ACT/365"": 144383.56,
+    ""30/360"": 145527.78,
+}","Given: N=$5,000,000, rate=6.2%, start=Feb 17, end=Aug 6.
+Find: interest under three day-count conventions, and the largest.
+Formalize: I_{ACT/360} = N·rate·(actual days)/360; I_{ACT/365} = N·rate·(actual days)/365; I_{30/360} = N·rate·(30/360-days)/360; compare {I_{ACT/360}, I_{ACT/365}, I_{30/360}}.",Loan notional + rate + start/end dates → Day-count measures → [ACT/360 interest | ACT/365 interest | 30/360 interest] → Compare three charges → Convention with largest interest,number,Banking & ALM,Loan Interest & Day-Count Conventions,"Interest under ACT/360, ACT/365, and 30/360",calendar_time_reasoning,count actual elapsed days → compute ACT/360 interest → compute ACT/365 interest → apply 30/360 date rule → compare interest amounts,5,scalar_parameters,irregular_timing,none,rule_based,calendar_day_count,Moderate,multi_numeric,3,2,0,2,0,1,2,1,11,,
+risk-038,The 6-month and 18-month zero rates are 3.0% and 4.2% with annual compounding. Calculate the one-year forward rate beginning six months from today.,"{
+""decimal"": 0.048052,
+        ""percentage"": ""4.8052%"",
+        ""rounded_percentage"": ""4.81%""
+}","Given: z_{0.5}=3.0%, z_{1.5}=4.2%, both annually compounded spot rates.
+Find: f (1-year forward rate starting in 6 months).
+Formalize: (1+z_{1.5})^{1.5} = (1+z_{0.5})^{0.5}·(1+f)^{1.0}; f = [(1+z_{1.5})^{1.5} / (1+z_{0.5})^{0.5}] − 1.",6-month and 18-month zero rates + maturities → [0.5-year accumulation factor | 1.5-year accumulation factor] → Ratio isolates 1-year forward accumulation → Convert to one-year forward rate,number,Fixed Income,Term Structure & Forward Rates,Implied forward interest rate from spot rates,financial_formula_application,map spot rates to their maturities → compute 18-month accumulation factor → remove first 6-month accumulation factor → annualize implied 12-month forward rate,4,scalar_parameters,scheduled_events,none,none,mixed,Moderate,scalar_numeric,2,1,0,2,0,0,2,1,8,,
+risk-039,"A company entered a 3×9 FRA on $10 million at 4.5%. Three months later, the six-month reference rate fixes at 5.4%. Calculate the FRA settlement amount paid at the beginning of the six-month loan period.","{
+""settlement_amount"": 43816.94
+}","Given: N=$10,000,000, contract rate K=4.5%, 3×9 FRA (fixes in 3mo, covers 6mo), reference rate R=5.4%, accrual τ=0.5.
+Find: settlement amount paid at the start of the loan period.
+Formalize: Settlement = N·(R−K)·τ / (1+R·τ).",FRA notional + contract rate + fixing rate + accrual → Rate differential (R−K) → Undiscounted interest differential → Discount to start of loan period using fixing rate → Signed settlement amount → Determine receiving party,number,Derivatives,Interest-Rate Derivatives,Forward rate agreement (FRA) settlement,financial_formula_application,identify FRA fixing and loan period → compute reference-minus-contract rate → apply notional and accrual fraction → discount interest differential to period start → determine payment direction,5,scalar_parameters,scheduled_events,none,branching,mixed,High,scalar_numeric,3,1,0,2,0,2,2,2,12,,
+risk-040,"A floating-rate note resets every three months at SOFR + 1.2%, but each payment uses the SOFR observed at the previous reset date. Using actual 2025 SOFR data published by the Federal Reserve Bank of New York (first published rate of each month): January 2025 SOFR = 4.40%, April 2025 SOFR = 4.39%, July 2025 SOFR = 4.44%. The note has a notional of $1,000,000 and each accrual period is treated as exactly one quarter (τ=0.25). Calculate the coupon paid on each subsequent payment date (using the January rate for the April payment, the April rate for the July payment, and the July rate for the October payment).","{
+    ""April 2025"": 14000.00,
+    ""July 2025"": 13975.00,
+    ""October 2025"": 14100.00
+}","Given: SOFR observations {S_{t_0},S_{t_1},S_{t_2},S_{t_3}} at quarterly reset dates, spread=1.2%, one-period observation lag.
+Find: coupon rate/payment at each subsequent payment date.
+Formalize: Coupon_i = (S_{t_{i−1}} + spread)·τ (rate observed at the PRIOR reset date applied to the current accrual period).",SOFR observations + spread + quarterly payment dates → Map each payment to prior reset observation → Coupon rate = lagged SOFR + spread → Coupon amount = notional × rate × 0.25 → Payment schedule,table,Fixed Income,Floating-Rate Instruments,Lagged SOFR reset mapping for floating-rate coupons,calendar_time_reasoning,order observation/reset dates → map each payment to the preceding reset observation → add contractual spread → compute each subsequent coupon rate/payment,4,mixed,lagged_dependency,none,none,basis_points,High,table,2,2,2,3,0,0,1,2,12,,
+risk-041,"A $300,000 30-year mortgage starts at 3.5%. After five years, the rate resets to 5.2% and the remaining balance is amortized over the remaining 25 years. Calculate the payment before and after the reset.","mortgage_summary = {
+    ""payment_before_reset"": 1347.13,
+    ""payment_after_reset"": 1604.60
+}","Given: Loan L=$300,000, initial annual rate i_1=3.5%, term=30yr (n=360mo), reset after 5yr (60mo) to i_2=5.2%, remaining term n_2=25yr (300mo).
+Find: PMT_1 (initial payment), B_60 (balance at reset), PMT_2 (post-reset payment).
+Formalize: PMT = L·i/(1−(1+i)^{−n}) (i, n on the matching periodicity); B_60 = balance remaining after amortizing PMT_1 for 60 months; PMT_2 = B_60·i_2/(1−(1+i_2)^{−n_2}).",Mortgage principal + initial rate + 30-year term → Initial monthly rate → Initial monthly payment → Amortize 60 months → Remaining balance at reset → New monthly rate + remaining 25-year term → New monthly payment → Payment increase,number,Banking & ALM,Mortgages,Adjustable-rate mortgage payment reset,sequential_state_update,convert initial annual rate to periodic rate → compute initial payment → amortize to balance after five years → apply reset rate over remaining term → compute new payment,5,scalar_parameters,state_transition,none,state_transition,mixed,High,multi_numeric,3,2,0,3,0,2,2,2,14,,
+risk-042,"A firm has a $20 million revolver at 6%. It starts April with $5 million drawn, draws $4 million on April 8, repays $3 million on April 19, and draws $2 million on April 27. Calculate April interest using actual daily balances.Using the commercial bank standard (an Actual/360 day count)","{
+""total_interest"": 35666.67
+}","Given: revolver limit $20mm, rate=6%, dated draws/repayments through April.
+Find: total April interest under actual daily balances.
+Formalize: I = Σ_k Balance_k · (rate/365) · d_k, where Balance_k is the piecewise-constant outstanding balance between consecutive transaction dates and d_k is the number of days at that balance.",Initial revolver balance + dated draws/repayments + annual rate → Sort events chronologically → Sequential outstanding-balance path → Days at each balance → Interest for each balance interval using ACT/365 → Sum interval interest → April interest expense,number,Corporate Finance,Treasury & Liquidity,Revolving-credit interest from dated draws and repayments,sequential_state_update,sort transactions by date → update outstanding balance after each event → determine days at each balance → accrue interest for each interval → sum monthly interest,5,event_sequence,event_ordering,none,none,mixed,Moderate,scalar_numeric,3,2,2,2,0,0,2,1,12,,
+risk-043,"A valuation date is September 30. Forecast free cash flow of $12m on December 31, $16m one year later, and $20m the following year. With a 9% annual discount rate, calculate the present value using the exact fractional timing of the first stub period.Report your final result in millions, rounded to two decimal places.","{
+""total_pv_millions"": 42.58
+}","Given: valuation date t_0=Sep 30; cash flows CF_1=$12m at Dec 31, CF_2=$16m one year later, CF_3=$20m the following year; r=9%.
+Find: PV.
+Formalize: PV = Σ_i CF_i / (1+r)^{t_i}, t_i = exact year fraction from t_0 to each cash-flow date (first t_i is a fractional stub, later t_i = stub + integer years).",Valuation date + dated free cash flows + discount rate → Exact year fractions including first stub → {Discount each cash flow at its own fractional horizon} → Present values of individual cash flows → Sum → Enterprise value contribution / total PV,number,Corporate Finance,Valuation,Discounted cash flow with a stub period,discounted_cash_flow,compute fractional time from valuation date to first cash flow → assign discount times to later cash flows → discount each forecast cash flow → sum present values,4,cash_flow_schedule,irregular_timing,none,none,mixed,High,scalar_numeric,2,2,1,2,0,0,2,2,11,,
+risk-044,"Project A costs $100m today and generates $35m annually for four years starting one year from today. Project B generates the same four cash flows but they begin two years from today. At an 8% discount rate, quantify the value lost purely because of the one-year delay. Report your final result in millions, rounded to two decimal places.","{
+""value_lost_m"": 8.59
+}","Given: identical 4-year annuity CF=$35m (t=1..4) for Project A; the same stream shifted one year later (t=2..5) for Project B; r=8%.
+Find: ΔPV = PV(A) − PV(B).
+Formalize: PV(A) = Σ_{t=1}^{4} CF/(1+r)^t; PV(B) = PV(A)/(1+r) (pure one-period shift of an identical stream); ΔPV = PV(A)·[1 − 1/(1+r)] = PV(A)·r/(1+r).",Identical four-year cash-flow stream + discount rate → Present value of Project A (t=1…4) → Shift identical stream one year to obtain Project B PV → Difference PV(A)−PV(B) → Value lost from one-year delay,number,Corporate Finance,Capital Budgeting,Value impact of delaying an identical project cash-flow stream,sensitivity_counterfactual,discount Project A cash flows → shift identical cash-flow stream one year for Project B → discount Project B cash flows → subtract present values,4,cash_flow_schedule,scheduled_events,none,none,mixed,Moderate,scalar_numeric,2,1,1,2,0,0,2,1,9,,
+risk-045,"An inflation-linked bond has $1,000 original principal and a 4% annual coupon paid semiannually. The base CPI is 280.0, and principal is indexed using CPI with a three-month lag.For an October 1 coupon payment, the relevant lagged CPI is the July 1 CPI of 294.0.Calculate the inflation-adjusted principal and the coupon paid on October 1.","{
+""inflation_adjusted_principal"": 1050.0,
+    ""semiannual_coupon_payment"": 21.0,
+}","Given: principal F, monthly CPI series {CPI_t}, indexation lag = 3 months, payment date t_p.
+Find: adjusted principal, coupon due at t_p.
+Formalize: IndexRatio = CPI_{t_p−3mo} / CPI_{base}; Principal_adj = F·IndexRatio; Coupon = c·Principal_adj.",Original principal + base CPI + October payment date + 3-month lag → Select July CPI → Index ratio (lagged CPI / base CPI) → Inflation-adjusted principal → Apply semiannual coupon rate → Adjusted coupon payment,number,Fixed Income,Inflation-Linked Securities,CPI-indexed principal and coupon with indexation lag,calendar_time_reasoning,identify payment date → map to CPI from three months earlier → compute index ratio → adjust principal → compute coupon,5,mixed,lagged_dependency,none,none,mixed,Moderate,multi_numeric,3,2,2,3,0,0,2,1,13,,
+risk-046,"An investor buys a bond for $980 and holds it for 18 months. The bond pays a $30 coupon at month 6 and another $30 coupon at month 12, and is sold for $1,010 at month 18.
+The first coupon is reinvested at 3% annually until the sale date, and the second at 4% annually until the sale date. Calculate the realized 18-month holding-period return.","{
+realized_18m_hpr_percentage"": ""9.337%""
+}","Given: coupons c_1, c_2 received at dates t_1, t_2, reinvested at rates ρ_1, ρ_2 respectively; sale at date T for price P_T; purchase price P_0.
+Find: realized holding-period return HPR.
+Formalize: FV_coupons = c_1(1+ρ_1)^{(T−t_1)} + c_2(1+ρ_2)^{(T−t_2)} (time in years); HPR = (P_T + FV_coupons − P_0) / P_0.",Purchase price + coupon dates/amounts + reinvestment rates + sale price/date → [Compound coupon 1 to sale date | Compound coupon 2 to sale date] → Reinvested coupon value at sale → Ending wealth = sale price + coupon future values → Realized holding-period return,number,Fixed Income,Bond Performance,Realized holding-period return with coupon reinvestment,return_aggregation,identify coupon dates → compound each coupon to sale date at its reinvestment rate → add sale proceeds → compare with initial investment,4,cash_flow_schedule,scheduled_events,none,none,mixed,Moderate,scalar_numeric,2,0,1,2,0,0,2,1,8,,
+risk-047,"A down-and-out call has strike $100 and barrier $75. The underlying prices at monthly monitoring dates are 96, 88, 79, 74, 91, and 112. Determine whether the option survives and, if applicable, its maturity payoff.","{
+""maturity_payoff"": 0
+}","Given: K=100, barrier H=75, monitored prices {S_{t_1},...,S_{t_6}}.
+Find: survives (Y/N), maturity payoff.
+Formalize: KnockedOut = 1[∃ i : S_{t_i} ≤ H]; Payoff = 1[¬KnockedOut] · max(S_T − K, 0).","Barrier level + strike + monitored price path → Scan monitoring dates chronologically → Test whether any observed price breaches barrier → [If breached: option knocked out → payoff 0 | If never breached: terminal intrinsic value max(S_T−K,0)] → Survival status + maturity payoff",number,Derivatives,Exotic Options,Down-and-out barrier activation and payoff,path_dependent_reasoning,scan monitored prices in time order → compare each with barrier → detect knock-out → if surviving compare terminal price with strike → compute payoff,5,mixed,path_dependency,none,stopping_condition,none,Moderate,categorical_and_numeric,3,2,2,3,0,3,0,1,14,,
+risk-048,"An arithmetic-average call has a strike price of $105 and uses only the stock price on the final trading day of each month.The four required month-end prices are $106, $110, $100, and $116.Calculate the arithmetic average and the option payoff at maturity.","{
+    ""arithmetic_average"": 108.0,
+    ""payoff"": 3.0
+}","Given: month-end observation prices {S_{t_1},...,S_{t_4}}, K=105.
+Find: arithmetic-average call payoff.
+Formalize: A = (1/4)Σ_j S_{t_j}; Payoff = max(A − K, 0).","Scheduled month-end observation prices + strike → Select required observation prices → Arithmetic average → Compare average with strike → Payoff = max(average−strike,0)",number,Derivatives,Exotic Options,Arithmetic-average Asian option payoff with scheduled observations,path_dependent_reasoning,identify month-end observation dates → extract corresponding prices → average observations → subtract strike → apply payoff floor at zero,5,mixed,scheduled_events,none,threshold,currency_scaling,Moderate,multi_numeric,3,2,2,2,0,1,1,1,12,,
+risk-049,"A note is observed quarterly. If the stock is at least 105% of its initial price on an observation date, it terminates and pays principal plus a 3% coupon for each elapsed quarter. Given prices of 98%, 101%, 108%, and 90% of initial value at successive observation dates, determine when the note terminates and its payoff.","{
+""elapsed_quarters"": 3,
+""total_payoff_pct"": 109.0
+}","Given: S_0, trigger level = 1.05·S_0, quarterly observation prices {S_{t_1},...,S_{t_4}} as % of S_0, coupon rate 3%/elapsed quarter.
+Find: first trigger date τ (if any), redemption payoff.
+Formalize: τ = min{ j : S_{t_j} ≥ 1.05·S_0 }; Payoff = Principal·(1 + 0.03·τ) paid at t_τ if triggered.",Initial stock value + 105% trigger + quarterly observations + 3% coupon per elapsed quarter → Compute trigger level → Scan observation dates in order → Identify first date meeting trigger → Count elapsed quarters → Accrued coupon + principal → Autocall termination date + redemption payoff,number,Derivatives,Structured Products,Autocall trigger and accrued-coupon payoff,path_dependent_reasoning,compute trigger level → scan observation dates chronologically → compare each observation with trigger → stop at first trigger → count elapsed quarters → compute redemption payoff,6,mixed,path_dependency,none,stopping_condition,mixed,Moderate,categorical_and_numeric,4,2,2,3,0,3,2,1,17,,
+risk-050,"A cliquet option records quarterly stock returns, caps each quarterly return at +8%, floors each at -5%, and sums the four adjusted returns. Given quarterly returns of +12%, -9%, +4%, and +7%, calculate the final payoff rate.","{
+""final_payoff_rate"": 0.14
+}","Given: quarterly returns {r_1,...,r_4}, cap=+8%, floor=−5%.
+Find: aggregate payoff rate.
+Formalize: r_i^{adj} = min(max(r_i, floor), cap); Payoff = Σ_{i=1}^{4} r_i^{adj}.",Quarterly return series + local cap/floor → {Apply cap and floor to each quarterly return} → Adjusted quarterly returns → Sum adjusted returns → Cliquet payoff rate,number,Derivatives,Exotic Options,Locally capped and floored cliquet return aggregation,conditional_payoff,parse quarterly returns → cap each return at +8% → floor each return at −5% → sum adjusted returns,4,mixed,sequential_periods,none,threshold,percent_decimal,Moderate,scalar_numeric,2,1,2,1,0,1,1,1,9,,
+risk-051,"A trader is long two futures contracts. The initial settlement price is 100, followed by daily settlement prices of 98, 95, 97, 94, and 96. The contract multiplier is $1,000 per price point per contract.The margin account starts at the $20,000 initial margin, with a $15,000 maintenance margin. If the balance falls below maintenance, it is immediately restored to $20,000.Calculate the margin balance after each day and identify the first margin call and its amount.","{
+""day"": 2,
+        ""amount"": 10000
+}","Given: n=2 long contracts, multiplier m, settlement prices {S_0,...,S_5}, initial margin IM, maintenance margin MM.
+Find: margin balance after each day, first margin-call day.
+Formalize: PnL_t = n·m·(S_t − S_{t−1}); Balance_t = Balance_{t−1} + PnL_t; MarginCall_t = 1[Balance_t < MM]; report min{t : MarginCall_t=1}.",Initial margin + maintenance margin + settlement-price path + contracts/multiplier → Daily futures P&L → Update margin-account balance → Compare balance with maintenance margin → [If below: margin call restores balance to initial margin | Otherwise: carry balance forward] → Repeat across days → Balance path + first margin call,table,Derivatives,Futures & Margining,Daily mark-to-market and maintenance-margin call,sequential_state_update,compute daily futures P&L from settlement changes → scale by contracts and multiplier → update margin balance → compare with maintenance margin → identify first margin call,5,mixed,state_transition,none,threshold,currency_scaling,Moderate,table,3,2,2,3,0,1,1,1,13,,
+risk-052,"A $100,000 portfolio starts with target weights of 60% stocks and 40% bonds and is rebalanced back to target weights at the end of each quarter.
+The quarterly returns are:
+Quarter        Stock Return        Bond Return
+Q1        +10%        +2%
+Q2        -5%        +1%
+Q3        +8%        -2%
+Q4        +4%        +3%
+A transaction cost of 0.25% is incurred on the one-way traded value transferred between the two assets and is deducted before resetting the portfolio to its target weights.
+Calculate the portfolio value after each quarter and report the final portfolio value after one year.","{
+""final_portfolio_value"": 112062.46
+}","Given: target weights w*=(0.6, 0.4), quarterly returns {r^s_q, r^b_q} for q=1..4, transaction-cost rate τ=0.25% on traded value.
+Find: portfolio value after one year.
+Formalize: V^s_q = V^{s,post}_{q−1}(1+r^s_q), V^b_q = V^{b,post}_{q−1}(1+r^b_q); V_q = V^s_q+V^b_q; Traded_q = |w*·V_q − V^s_q|; Cost_q = τ·Traded_q·2 (both legs traded); V_q^{net} = V_q − Cost_q; rebalance to (w*·V_q^{net}, (1−w*)·V_q^{net}) and repeat for q=1..4.",Initial 60/40 holdings + quarterly stock/bond returns + transaction-cost rate → [Apply stock return | Apply bond return] → Pre-rebalance portfolio value/weights → Required transfer to restore 60/40 → Transaction cost on one-way transferred amount → Net portfolio value → Reset 60/40 holdings → Repeat quarterly → Year-end value,number,Investments & Portfolio Management,Portfolio Rebalancing,Periodic target-weight rebalancing with transaction costs,sequential_state_update,apply quarterly asset returns → compute pre-rebalance holdings/weights → trade back to 60/40 target → calculate transaction cost → update portfolio value → repeat,6,mixed,state_transition,none,none,mixed,Moderate,scalar_numeric,4,2,2,3,0,0,2,1,14,,
+risk-053,"An investor buys 100 shares at $40 in January, 80 at $55 in March, and 120 at $48 in June, then sells 180 shares at $60 in September. Calculate realized gain using FIFO and average-cost methods.","{
+    ""fifo"": {
+        ""realized_gain"": 2400.0,
+    },
+    ""average_cost"": {
+        ""realized_gain"": 2304.0,
+    },
+}","Given: purchase lots {(q_1,p_1)=(100,40), (q_2,p_2)=(80,55), (q_3,p_3)=(120,48)}, sold quantity Q=180 at P_s=60.
+Find: Gain_FIFO, Gain_AvgCost.
+Formalize: FIFO: allocate Q sequentially from earliest lots ⇒CostBasis_FIFO = Σ(allocated q_i·p_i); Gain_FIFO = Q·P_s − CostBasis_FIFO. AvgCost: p̄ = Σq_ip_i / Σq_i; Gain_avg = Q·(P_s − p̄).",Chronological purchase lots + sale quantity/price → Sale proceeds → [FIFO branch: allocate sold shares to earliest lots → FIFO cost basis → FIFO gain | Average-cost branch: weighted average purchase cost → average cost basis → average-cost gain] → Compare realized gains,number,Investments & Portfolio Management,Tax Lots & Cost Basis,Realized capital gain under FIFO and average-cost methods,rule_based_accounting,order purchases → allocate sold shares under FIFO → compute FIFO cost basis and gain → compute weighted-average cost basis → compute average-cost gain,5,event_sequence,event_ordering,none,rule_based,currency_scaling,Moderate,multi_numeric,3,1,2,2,0,1,1,1,11,,
+risk-054,"SOFR+2% loan; a >4x leverage breach at quarter-end steps the spread to 3% the next quarter, until the next compliant test. Q1 lev=3.8x/SOFR=5.20%, Q2 lev=4.3x/SOFR=5.15%, Q3 lev=3.9x/SOFR=5.00%, Q4 lev=4.5x/SOFR=5.05%, Q5 lev=4.2x/SOFR=4.95%. Q1 starts at base spread. Calculate the all-in rate each quarter."," {
+    ""Q1"": 7.20,
+    ""Q2"": 7.15,
+    ""Q3"": 8.00,
+    ""Q4"": 7.05,
+    ""Q5"": 7.95,
+}","Given: base spread s_B=2%, step-up spread s_U=3%, leverage threshold 4.0×, quarterly leverage L_q and SOFR_q, with a one-quarter application lag. Q1 begins at the base spread.
+Find: all-in loan rate for Q1–Q5.
+Formalize: s_1=s_B. For q≥2, s_q=s_U if L_{q−1}>4.0 and s_q=s_B otherwise. AllIn_q=SOFR_q+s_q.",Quarterly leverage tests + quarterly SOFR + base/step-up spreads + one-quarter lag → Initialize Q1 spread at 2% → At each quarter-end compare leverage with 4.0× → Set next-quarter spread to 3% after breach or 2% after compliance → Add quarter-specific SOFR → All-in rate path Q1–Q5,table,Credit Risk,Loan Pricing & Covenants,Covenant-triggered spread step-up with one-quarter lag,sequential_state_update,initialize Q1 at the base spread → evaluate each quarter-end leverage test → set the following quarter’s spread using the one-quarter lag rule → add the applicable spread to that quarter’s SOFR → report the Q1–Q5 all-in rate path,5,event_sequence,lagged_dependency,none,state_transition,percent_decimal,Moderate,table,3,2,2,3,0,2,1,1,14,,
+risk-055,A $10 million CDS pays a 150-bp annual premium quarterly. Default occurs 47 days after the previous premium date and recovery is 35%. Calculate the protection payment and the accrued premium owed at default.,"{
+
+    ""protection_payment"": 6500000.0,
+    ""accrued_premium"": {
+        ""actual_360"": 19583.33,
+        ""actual_365"": 19315.07
+    },","Given: N=$10,000,000 CDS, annual premium spread s=150bp paid quarterly, default at day 47 after the last premium date, recovery R=35%.
+Find: protection payment, accrued premium owed at default.
+Formalize: LGD = N·(1−R) (= protection payment); AccruedPremium = N·s·(47/360).",CDS notional + recovery rate + annual premium spread + days since last premium → [Protection leg: LGD = notional×(1−recovery) | Premium leg: ACT/360 accrual fraction → accrued premium] → Default settlement amounts,number,Credit Risk,Credit Derivatives,CDS default settlement and accrued premium,conditional_payoff,compute loss-given-default → calculate protection payment → prorate annual premium for 47 days → calculate accrued premium,4,mixed,scheduled_events,none,state_transition,basis_points_percent_and_currency,High,multi_numeric,2,1,2,2,0,2,2,2,13,,
+risk-056,"A loan requires Debt/EBITDA ≤ 4.0× at each quarter-end, where EBITDA is measured on a trailing-four-quarter basis. Given the quarterly EBITDA figures of Q1 $18M, Q2 $20M, Q3 $22M, Q4 $25M, Q5 $24M, and Q6 $23M, and ending debt balances of Q4 $330M, Q5 $380M, and Q6 $365M, calculate the covenant ratio at each possible test date and identify the first breach.","{
+    ""first_breach"": ""Q5"",
+""Q4"": 3.8824,
+    ""Q5"": 4.1758,
+    ""Q6"": 3.8830
+}","Given: quarterly EBITDA {E_1,...,E_6}, debt balance Debt_t at each quarter-end, covenant threshold=4.0×.
+Find: Debt/EBITDA ratio at each eligible test date, first breach.
+Formalize: TTM_EBITDA_t = Σ_{k=t−3}^{t} E_k; Ratio_t = Debt_t / TTM_EBITDA_t; Breach = min{ t : Ratio_t > 4.0 }.",Quarterly EBITDA series + quarter-end debt balances + 4.0× covenant → Rolling trailing-four-quarter EBITDA at each eligible test date → Debt / TTM EBITDA ratio → Compare each ratio with 4.0× → Identify first covenant breach,table,Credit Risk,Loan Covenants,Debt/EBITDA covenant using trailing-twelve-month EBITDA,rolling_window_reasoning,compute trailing-four-quarter EBITDA at each test date → pair with debt balance → compute Debt/EBITDA → compare with 4.0× threshold → identify first breach,5,mixed,rolling_window,none,threshold,ratio_percentage,Moderate,table_and_categorical,3,2,2,3,0,1,1,1,13,,
+risk-057,"A loan charges SOFR + 2% normally. If leverage exceeds 4× at a quarter-end test, the spread increases to 3% beginning the next quarter and remains there until the following compliant test. Given quarterly leverage and SOFR data, calculate the applicable rate each quarter.A loan charges SOFR + 2.0% normally. If leverage exceeds 4.0× at a quarter-end test, the spread increases to 3.0% beginning the next quarter and remains there until a later quarter-end test is compliant. Q1 begins at the normal 2.0% spread.
+
+Given the quarterly leverage and SOFR data below, determine the applicable spread and all-in interest rate for Q1 through Q5:
+
+**Leverage tests:**
+
+* Q1: 3.8×
+* Q2: 4.3×
+* Q3: 4.2×
+* Q4: 3.7×
+
+**SOFR:**
+
+* Q1: 4.5%
+* Q2: 4.7%
+* Q3: 4.6%
+* Q4: 4.4%
+* Q5: 4.2%","loan_schedule = {
+    ""Q1"": {""SOFR"": 0.045, ""spread"": 0.020, ""all_in_rate"": 0.065},
+    ""Q2"": {""SOFR"": 0.047, ""spread"": 0.020, ""all_in_rate"": 0.067},
+    ""Q3"": {""SOFR"": 0.046, ""spread"": 0.030, ""all_in_rate"": 0.076},
+    ""Q4"": {""SOFR"": 0.044, ""spread"": 0.030, ""all_in_rate"": 0.074},
+    ""Q5"": {""SOFR"": 0.042, ""spread"": 0.020, ""all_in_rate"": 0.062},
+}","Given: base spread=2%, step-up spread=3%, leverage threshold=4×, one-quarter application lag, quarterly leverage {L_t} and SOFR_t.
+Find: applicable all-in rate each quarter.
+Formalize: Compliant_t = 1[L_t ≤ 4]; Spread_{t+1} = 2% if Compliant_t else 3% (persists until the next compliant test); Rate_t = SOFR_t + Spread_t.",Quarterly leverage tests + SOFR + base/step-up spreads → Initialize Q1 spread → Evaluate each quarter-end leverage threshold → Update covenant state for next quarter (breach keeps/sets 3%; compliant test resets 2%) → Add SOFR → Applicable spread and all-in rate path Q1–Q5,table,Credit Risk,Loan Pricing & Covenants,Covenant-triggered spread step-up with one-quarter lag,sequential_state_update,evaluate leverage at each quarter-end → determine compliance state → apply resulting spread in next quarter → add spread to SOFR → repeat through quarters,5,mixed,lagged_dependency,none,state_transition,percent_decimal,High,table,3,2,2,3,0,2,1,2,15,,
+risk-058,"Monthly payments are due on the first day of each month. A borrower misses January and February payments, pays one installment on March 10, and another on April 20. Under a rule that the oldest unpaid installment is settled first, calculate the peak days-past-due reached across this timeline and identify when a 90-DPD default threshold is first reached, if ever. Use a standard 365-day calendar year.","dpd_results = {
+    ""peak_date"": ""April 20"",
+    ""threshold_90_dpd_reached_in_timeline"": False,
+}","Given: monthly due dates {d_1,d_2,...}, missed Jan/Feb installments, payments on Mar 10 and Apr 20, oldest-unpaid-first allocation rule.
+Find: DPD after each event, first date DPD ≥ 90.
+Formalize: each payment retires the oldest unpaid installment first; DPD(t) = t − (due date of the oldest still-unpaid installment); Breach = min{ t : DPD(t) ≥ 90 }.","Monthly due dates + missed installments + payment dates + oldest-unpaid-first rule → Maintain outstanding-installment set → Apply each payment to oldest unpaid installment → Identify oldest remaining due date → Compute DPD after each event → Compare with 90-day threshold → If not breached, project first future 90-DPD date",number,Credit Risk,Loan Delinquency,Days-past-due under oldest-installment-first payment allocation,sequential_state_update,create installment due dates → process payments chronologically → allocate each payment to oldest unpaid installment → update oldest outstanding due date → compute DPD → test 90-DPD threshold,6,event_sequence,state_transition,none,sequential_branching,calendar_day_count,Moderate,categorical_and_numeric,4,2,2,3,0,3,2,1,17,,
+risk-059,"A borrower owes a payment on the first of every month. They miss their payments in January and February, but make one payment on March 10 and another on April 20. If every payment goes toward clearing the oldest unpaid bill first, what are their overdue statuses on February 1 and March 1, and on what date do they officially become 90 days overdue?","
+{
+  ""status_on_february_1"": {
+    ""days_overdue"": 31,
+    ""unpaid_payments"": 1
+  },
+  ""status_on_march_1"": {
+    ""days_overdue"": 59,
+    ""unpaid_payments"": 2
+  },
+  ""date_officially_90_days_overdue"": ""May 30""
+}
+","Given: monthly due dates d_j on the first day of each month; missed Jan 1 and Feb 1 installments; one-installment payments on Mar 10 and Apr 20; no other payments; oldest-unpaid-first allocation.
+Find: DPD after each payment and first date DPD≥90.
+Formalize: each payment removes the oldest unpaid due date from the outstanding set U_t. After processing an event at date t, DPD(t)=t−min(U_t). FirstDefault=min{t:DPD(t)≥90}.","Monthly due dates + missed installments + payment dates + oldest-unpaid-first rule → Maintain outstanding-installment set → Apply each payment to oldest unpaid installment → Identify oldest remaining due date → Compute DPD after each event → Compare with 90-day threshold → If not breached, project first future 90-DPD date",number,Credit Risk,Loan Delinquency,Days-past-due under oldest-installment-first payment allocation,sequential_state_update,create installment due dates → process payments chronologically → allocate each payment to oldest unpaid installment → update oldest outstanding due date → compute DPD → test 90-DPD threshold,6,event_sequence,state_transition,none,sequential_branching,calendar_day_count,Moderate,categorical_and_numeric,4,2,2,3,0,3,2,1,17,,
+risk-060,"Form 10-K discloses the following ""Condensed Static Gap"" table as of December 31 (dollar amounts in thousands): Interest-earning assets: 0–3 months = $274,365; 3–6 months = $54,871; 6–12 months = $116,188; total = $1,195,419. Interest-bearing liabilities: 0–3 months = $429,142; 3–6 months = $75,959; 6–12 months = $105,119; total = $965,824. Treating the residual (total minus the three disclosed buckets) as the ""beyond 12 months"" bucket for both assets and liabilities, compute the net and cumulative gap for each of the four buckets (0–3 months, 3–6 months, 6–12 months, beyond 12 months) and identify the earliest bucket where the cumulative gap is negative.","{
+    ""net_gap"": {
+        ""0–3 months"": -154777,
+        ""3–6 months"": -21088,
+        ""6–12 months"": 11069,
+        ""beyond 12 months"": 394391,
+    },
+    ""cumulative_gap"": {
+        ""0–3 months"": -154777,
+        ""3–6 months"": -175865,
+        ""6–12 months"": -164796,
+        ""beyond 12 months"": 229595,
+    },
+    ""earliest_negative_cumulative_gap_bucket"": ""0–3 months"",
+}","Given: interest-earning assets A_b and interest-bearing liabilities L_b for buckets b∈{0–3m,3–6m,6–12m}, plus total assets A_T and liabilities L_T. Define >12m as the residual.
+Find: net repricing gap and cumulative gap by bucket, and the first negative cumulative gap.
+Formalize: A_{>12}=A_T−Σ_{b≤12m}A_b; L_{>12}=L_T−Σ_{b≤12m}L_b; Gap_b=A_b−L_b; CumGap_b=Σ_{k≤b}Gap_k; FirstNegative=min{b:CumGap_b<0}.",Reported repricing buckets + asset/liability totals → Residual >12-month assets and liabilities → {Net gap = assets−liabilities for each bucket} → Sequential cumulative gap across maturities → Compare cumulative gap with zero → Earliest negative cumulative-gap bucket,table,Banking & ALM,Interest Rate Risk / Repricing Gap,Repricing-gap and cumulative-gap analysis,sequential_state_update,derive residual >12-month bucket → compute asset-minus-liability gap per bucket → cumulatively sum gaps → identify first negative cumulative gap,4,table,sequential_periods,none,threshold,currency_scaling,Moderate,table,2,2,1,1,0,1,1,1,9,,
+risk-061,"Using actual closing prices from Jul 21 through Sep 1, 202 compute the 30 daily returns from these 31 consecutive trading days: 
+Date,Close
+Jul 21,327.74
+Jul 22,325.89
+Jul 23,321.66
+Jul 24,333.02
+Jul 27,336.91
+Jul 28,340.08
+Jul 29,338.19
+Jul 30,333.43
+Jul 31,308.91
+Aug 3,303.42
+Aug 4,309.38
+Aug 5,311.00
+Aug 6,312.41
+Aug 7,313.33
+Aug 10,308.26
+Aug 11,304.91
+Aug 12,302.25
+Aug 13,305.26
+Aug 14,305.93
+Aug 17,305.59
+Aug 18,310.03
+Aug 19,316.83
+Aug 20,311.30
+Aug 21,309.35
+Aug 24,310.34
+Aug 25,309.90
+Aug 26,313.45
+Aug 27,314.58
+Aug 28,319.70
+Aug 31,316.85
+Sep 1,324.35
+
+Calculate the 5-day rolling annualized volatility (sample standard deviation of each trailing 5-day return window × √252), starting from the 5th return in the series. Determine the first day on which volatility exceeds 30% and how long that first episode remains above the threshold. calculate for log returns and returns please.
+
+","{
+    ""simple_returns"": {
+        ""first_day_exceeding_30_percent"": ""Jul 30"",
+        ""volatility_on_first_day"": 0.3002,
+        ""episode_duration_trading_days"": 6,
+        ""episode_start_date"": ""Jul 30"",
+        ""episode_end_date"": ""Aug 6""
+    },
+    ""log_returns"": {
+        ""first_day_exceeding_30_percent"": ""Jul 31"",
+        ""volatility_on_first_day"": 0.5701,
+        ""episode_duration_trading_days"": 5,
+        ""episode_start_date"": ""Jul 31"",
+        ""episode_end_date"": ""Aug 6""
+    }
+}","Given: {r_t}, t=1,...,30 daily returns; rolling window w=5; threshold=30%.
+Find: rolling annualized volatility series (from day 5), first exceedance date, duration above threshold.
+Formalize: σ_t = std({r_{t−w+1},...,r_t})·√252; Exceed_t = 1[σ_t > 0.30]; first t* = min{t : Exceed_t=1}; Duration = length of the maximal consecutive run of Exceed_t=1 starting at t*.",Ordered AAPL prices → Daily simple-return series → Rolling 5-return windows → Sample volatility in each window → Annualize by √252 → Compare each rolling volatility with 30% → First exceedance → Count consecutive above-threshold dates until first break,number,Market Risk,Time-Series Risk Measures,Rolling annualized volatility and threshold-duration detection,rolling_window_reasoning,order daily returns → form each 5-day window → compute window volatility → annualize volatility → compare with 30% threshold → identify first exceedance and duration,6,mixed,rolling_window,none,threshold,rate_horizon,Moderate,structured_multi_output,4,2,2,3,0,1,2,1,15,,
+risk-062,"Using actual closing prices over the 20 trading days from Aug 5 through Sep 1, 2026  
+Step,Daily_Return Close Price
+Day 1,+0.82%,313.55
+Day 2,+0.06%,313.72
+Day 3,+1.00%,316.86
+Day 4,+2.04%,323.40
+Day 5,-0.06%,323.21
+Day 6,-0.06%,323.02
+Day 7,+2.11%,329.91
+Day 8,+1.14%,333.68
+Day 9,-0.34%,332.55
+Day 10,+0.87%,335.46
+Day 11,-0.33%,334.34
+Day 12,-0.34%,333.22
+Day 13,+0.51%,334.93
+Day 14,-2.07%,328.08
+Day 15,-1.84%,322.09
+Day 16,-0.45%,320.64
+Day 17,-0.99%,317.48
+Day 18,+0.60%,319.38
+Day 19,-0.86%,316.63
+Day 20,-1.47%,312.02
+ Calculate the maximum drawdown, identify the peak and trough days responsible for it, and determine how many trading days it takes the price to recover its previous peak.","{
+    ""maximum_drawdown_percentage"": -6.99,
+    ""maximum_drawdown_dollar"": -23.44,
+    ""recovery_trading_days"": None
+}","Given: ordered closing prices {P_t}, t=1,...,20.
+Find: maximum drawdown MDD, corresponding peak/trough dates, and trough-to-recovery trading-session count.
+Formalize: RunningPeak_t=max_{k≤t}P_k; DD_t=(P_t−RunningPeak_t)/RunningPeak_t; MDD=min_t DD_t. Let t_trough be the minimizing date and t_peak the date of the running peak used at t_trough. Recovery date t_rec=min{t>t_trough:P_t≥P_{t_peak}}; RecoverySessions=index(t_rec)−index(t_trough).",Ordered closing-price path → Running peak at each date → Drawdown series relative to running peak → Minimum drawdown → Identify peak and trough producing MDD → Scan forward from trough until price ≥ prior peak → Recovery-session count,number,Investments & Portfolio Management,Performance & Drawdown,"Maximum drawdown, peak-trough identification, and recovery duration",path_dependent_reasoning,order portfolio values → track running peak → compute drawdown series → locate maximum drawdown and its peak/trough → scan forward for recovery → count trading days,6,time_series,path_dependency,none,threshold,ratio_percentage,Moderate,structured_multi_output,4,2,1,3,0,1,1,1,13,,
+risk-063,"Using the daily closing prices — the 20 trading days from Aug 5 through Sep 1, 2026 :
+ Aug5:311.00, Aug6:313.44, Aug7:311.82, Aug10:310.23, Aug11:313.68, Aug12:315.42, Aug13:312.87, Aug14:314.15, Aug17:317.02, Aug18:315.74, Aug19:314.39, Aug20:318.10, Aug21:316.92, Aug24:319.46, Aug25:321.34, Aug26:320.19, Aug27:322.95, Aug28:325.21, Aug31:323.88, Sep1:326.60. A strategy starts fully in cash ($10,000) and buys when the 3-day moving average crosses above the 7-day moving average, and sells when it crosses below — both moving averages become available starting the 7th trading day (Aug 13). Trades execute at the next day's closing price and incur a 0.2% transaction cost on the traded value. Determine the executed trades and the final portfolio value at the close on Sep 1."," {
+    ""executed_trades"": [
+        {
+            ""action"": ""BUY"",
+            ""date"": ""2026-08-14"",
+            ""price"": 314.15,
+            ""shares"": 31.768391,
+            ""fee"": 19.96,
+        }
+    ],
+    ""final_portfolio_value"": 10375.56,
+}","Given: closing prices {P_t}; MA windows 3 and 7; one-trading-day execution lag; transaction-fee rate τ=0.002; initial cash C_0=10,000.
+Find: executed trades and terminal marked-to-market value.
+Formalize: MA3_t=(1/3)Σ_{k=t−2}^{t}P_k; MA7_t=(1/7)Σ_{k=t−6}^{t}P_k. A crossover at t is detected from the sign change of MA3_t−MA7_t, excluding the first date both MAs exist; execute at P_{t+1}. If buying with all cash C, shares q=C/[P_{t+1}(1+τ)] and cash becomes 0. If selling all q, cash=qP_{t+1}(1−τ). Terminal value equals cash plus any open shares marked at P_T, with no hypothetical terminal transaction fee.",Closing-price path → [3-day moving average | 7-day moving average] → MA spread/sign series → Detect valid crossovers after initialization → Shift each signal one trading day for execution → Update cash/share state with 0.2% transaction fee → Repeat through signal path → Mark any open position at Sep 1 close → Executed trades + terminal portfolio value,table,Capital Markets & Trading,Technical Trading Strategies,Moving-average crossover strategy with execution lag and transaction costs,rolling_window_reasoning,compute 3-day and 7-day moving averages → establish initial relative state → detect crossover signals → shift each order to next trading day → apply gross-value transaction fees → update all-in cash/share position → mark final open position to market,7,mixed,rolling_window,none,sequential_branching,mixed,Moderate,structured_multi_output,4,2,2,3,0,3,2,1,17,,
+risk-064,"A firm has a capital budget of $70 million and is evaluating five independent, indivisible projects:
+Project A: cost $30M, NPV $12M
+Project B: cost $50M, NPV $22M
+Project C: cost $40M, NPV $19M
+Project D: cost $20M, NPV $11M
+Project E: cost $10M, NPV $6M
+Which combination of projects maximizes total NPV without exceeding the budget, and what is the resulting total NPV?","{
+""selected_projects"": [""C"", ""D"", ""E""],
+""total_npv_million"": 36
+}","Given: projects P={A,...,E}, cost_i, npv_i, budget B=70.
+Find: subset S⊆P maximizing Σ_{i∈S} npv_i subject to Σ_{i∈S} cost_i ≤ B.
+Formalize: binary knapsack — x_i∈{0,1}; maximize Σx_i·npv_i s.t. Σx_i·cost_i≤B.",Project costs + NPVs + $70M budget → Generate feasible project subsets → Sum cost and NPV for each subset → Reject subsets exceeding budget → Compare feasible total NPVs → Select maximizing subset → Optimal projects + total cost + total NPV,number,Corporate Finance,Capital Budgeting,Capital rationing under a budget constraint (0/1 knapsack),optimization_allocation,enumerate candidate project subsets → compute total cost for each subset → reject subsets that exceed the budget → compute total NPV for each feasible subset → select the feasible subset with maximum NPV,5,table,none,none,rule_based,currency_scaling,Moderate,structured_multi_output,3,2,1,0,0,1,1,1,9,,
+risk-065,"A company is considering a project requiring an initial investment of $200,000. It generates constant annual cash flows for 5 years, with the amount depending on the economic scenario: Recession (25% probability): $40,000/year. Base case (50% probability): $55,000/year. Expansion (25% probability): $70,000/year. Using a 10% discount rate, calculate the NPV under each scenario and the probability-weighted expected NPV.","{""expected_npv"": 8493.27}","Given: I_0=200,000; scenarios s with probabilities p_s∈{0.25,0.50,0.25}; constant year-end cash flow CF_s for years 1,...,5; r=0.10.
+Find: NPV_s and E[NPV].
+Formalize: NPV_s=Σ_{t=1}^{5}CF_s/(1+r)^t−I_0 = CF_s·[1−(1+r)^−5]/r−I_0; E[NPV]=Σ_s p_s·NPV_s.",Initial investment + discount rate + scenario probabilities/cash flows → 5-year annuity factor → [Recession NPV | Base NPV | Expansion NPV] → Probability-weight each scenario NPV → Sum weighted NPVs → Expected NPV,number,Corporate Finance,Capital Budgeting,Scenario-weighted NPV of a capital project,scenario_analysis,compute the 5-year annuity present-value factor → compute present value of cash flows in each scenario → subtract the initial investment to obtain scenario NPVs → probability-weight the scenario NPVs → sum to expected NPV,5,scenario_set,single_horizon,discrete_probability,none,mixed,Moderate,structured_multi_output,3,2,1,1,1,0,1,1,10,,
+risk-066,"An insurer tracks claims for two accident years using the rule: Ultimate Losses = Reported Losses × Loss Development Factor (LDF); Case Reserve = Reported − Paid; IBNR Reserve = Ultimate − Reported; Total Reserve = Ultimate − Paid.
+Accident Year 2024: Reported = $3.0M, Paid = $1.8M, LDF = 1.10.
+Accident Year 2025: Reported = $2.4M, Paid = $1.5M, LDF = 1.15.
+Calculate the case reserve, IBNR reserve, and total reserve for each accident year, and the combined total reserve across both years.","{
+    ""AY_2024"": {
+        ""case_reserve"": 1.20,
+        ""ibnr_reserve"": 0.30,
+        ""total_reserve"": 1.50,
+    },
+    ""AY_2025"": {
+        ""case_reserve"": 0.90,
+        ""ibnr_reserve"": 0.36,
+        ""total_reserve"": 1.26,
+    },
+    ""combined_total_reserve"": 2.76,
+}","Given: accident years y∈{2024,2025} with Reported_y, Paid_y, LDF_y.
+Find: CaseReserve_y, IBNR_y, TotalReserve_y, ΣTotalReserve_y.
+Formalize: Ultimate_y=Reported_y·LDF_y; CaseReserve_y=Reported_y−Paid_y; IBNR_y=Ultimate_y−Reported_y; TotalReserve_y=Ultimate_y−Paid_y.",Reported loss + paid loss + LDF by accident year → {For each AY: Ultimate = Reported×LDF → [Case reserve = Reported−Paid | IBNR = Ultimate−Reported] → Total reserve = Ultimate−Paid} → Sum accident-year total reserves → Combined reserve,table,Insurance & Actuarial,Loss Reserving,Case reserve and IBNR reserve calculation under a development-factor rule,rule_based_accounting,apply LDF to reported losses per year → compute case reserve → compute IBNR → compute total reserve per year → sum across years,5,table,none,none,rule_based,currency_scaling,Moderate,structured_multi_output,3,2,1,0,0,2,1,1,10,,
+risk-067,"An insurer's quarterly claims and premiums (in $000s) over six quarters are:
+Q1: claims=120, premium=300
+Q2: claims=150, premium=310
+Q3: claims=90, premium=320
+Q4: claims=200, premium=330
+Q5: claims=130, premium=340
+Q6: claims=110, premium=350
+Calculate the trailing-4-quarter (TTM) claims total, TTM premium total, and TTM loss ratio (TTM claims / TTM premium) for each rolling window ending at Q4, Q5, and Q6."," {
+    ""Q4"": {
+        ""ttm_claims"": 560,
+        ""ttm_premium"": 1260,
+        ""ttm_loss_ratio"": 0.4444,
+    },
+    ""Q5"": {
+        ""ttm_claims"": 570,
+        ""ttm_premium"": 1300,
+        ""ttm_loss_ratio"": 0.4385,
+    },
+    ""Q6"": {
+        ""ttm_claims"": 530,
+        ""ttm_premium"": 1340,
+        ""ttm_loss_ratio"": 0.3955,
+    },
+}","Given: quarterly claims {C_1,...,C_6}, quarterly premium {P_1,...,P_6}.
+Find: TTM claims, TTM premium, and loss ratio for windows ending at t=4,5,6.
+Formalize: TTMClaims_t=Σ_{k=t−3}^{t} C_k; TTMPremium_t=Σ_{k=t−3}^{t} P_k; LossRatio_t=TTMClaims_t/TTMPremium_t.",Quarterly claims + premium series → Rolling 4-quarter windows ending Q4/Q5/Q6 → [TTM claims sum | TTM premium sum] for each window → TTM loss ratio = claims/premium → Rolling loss-ratio table,table,Insurance & Actuarial,Loss Ratio Analysis,Trailing-twelve-month (TTM) loss ratio from quarterly claims and premium,time_series_transformation,compute rolling 4-quarter sum of claims → compute rolling 4-quarter sum of premium → divide to get rolling loss ratio → repeat for each window,4,time_series,rolling_window,none,none,ratio_percentage,Moderate,table,2,1,2,2,0,0,1,1,9,,
+risk-068,"A trading desk records daily share volume (in thousands) for 10 consecutive days: Day1=100, Day2=110, Day3=95, Day4=105, Day5=300, Day6=120, Day7=115, Day8=108, Day9=290, Day10=102. Starting from Day 4, compute the trailing 3-day average volume (using the prior 3 days, not including the current day) for each day, and identify the first day on which volume exceeds 150% of that trailing average.","{
+  ""daily_metrics"": {
+    ""Day 4"": {
+      ""trailing_3day_avg"": 101.67
+    },
+    ""Day 5"": {
+      ""volume"": 300,
+      ""trailing_3day_avg"": 103.33
+    },
+    ""Day 6"": {
+      ""volume"": 120,
+      ""trailing_3day_avg"": 166.67
+    },
+    ""Day 7"": {
+      ""volume"": 115,
+      ""trailing_3day_avg"": 175.0
+    },
+    ""Day 8"": {
+      ""volume"": 108,
+      ""trailing_3day_avg"": 178.33
+    },
+    ""Day 9"": {
+      ""volume"": 290,
+      ""trailing_3day_avg"": 114.33
+    },
+    ""Day 10"": {
+      ""trailing_3day_avg"": 171.0
+    }
+  },
+  ""first_day_exceeding_threshold"": ""Day 5""
+}","Given: {V_t}, t=1,...,10 daily volumes.
+Find: rolling 3-day average (from day 4, using days t−3..t−1), first day where V_t>1.5·avg_t.
+Formalize: avg_t=(1/3)Σ_{k=t−3}^{t−1} V_k; Exceed_t=1[V_t>1.5·avg_t]; first t*=min{t:Exceed_t=1}.",Daily volume series → For each day from Day4: prior-3-day average → 150% threshold → Compare current volume with threshold → Flag exceedance dates → Earliest flagged day,table,Capital Markets & Trading,Volume Analysis,Rolling-average volume spike detection,rolling_window_reasoning,compute trailing 3-day average per day → compare current volume to 1.5x threshold → flag exceedances → identify first exceedance,4,time_series,rolling_window,none,threshold,ratio_percentage,Low,structured_multi_output,2,2,2,2,0,1,1,0,10,,
+risk-069,"A bank has $500 million of rate-sensitive assets and $350 million of rate-sensitive liabilities repricing within one year. Using the simple gap model , estimate the change in net interest income over the next year if (a) interest rates rise by 100 basis points, and (b) interest rates instead fall by 75 basis points.","{
+    ""a"": 1_500_000.0,  # +$1.5 million
+    ""b"": -1_125_000.0,  # -$1.125 million
+}","Given: RSA=500, RSL=350 ($M), Δr scenarios.
+Find: ΔNII for each Δr.
+Formalize: Gap=RSA−RSL; ΔNII=Gap·Δr.",Rate-sensitive assets + rate-sensitive liabilities → Repricing gap (RSA−RSL) → [Apply +100 bp shock | Apply −75 bp shock] → ΔNII under each scenario,number,Banking & ALM,Interest Rate Risk,Net interest income sensitivity via simple gap analysis,sensitivity_counterfactual,compute repricing gap → multiply by each rate-shock scenario → report ΔNII per scenario,3,scalar_parameters,single_horizon,none,none,basis_points,Moderate,multi_numeric,1,1,0,1,0,0,2,1,6,,
+risk-070,"A trading desk has 20 equally likely historical daily P&L scenarios (in $000s): −85, −60, −45, −30, −20, −15, −10, −8, −5, −2, 3, 5, 8, 10, 15, 20, 25, 30, 40, 55. Calculate the 90% Value at Risk (VaR) and 90% Expected Shortfall (ES) of the desk's daily P&L.","risk_metrics = {
+    ""Expected_Shortfall"": 72500
+}","Given P&L outcomes X_i, i=1,...,20. Define losses L_i=−X_i. At 90% confidence with n=20, tail size m=(1−0.90)n=2. Let L^[1]≥L^[2]≥... be losses sorted descending. VaR_90=L^[2]; ES_90=(L^[1]+L^[2])/2.",Historical P&L sample → Convert P&L to loss convention → Sort losses from worst to best → Select two-observation 10% tail → [90% VaR = smaller loss in tail | 90% ES = average tail loss] → VaR and ES,number,Market Risk,Value at Risk,Historical-simulation VaR and Expected Shortfall from a discrete P&L sample,risk_measurement,sort P&L outcomes ascending → identify worst 10% tail → read off VaR boundary → average tail for Expected Shortfall,4,numeric_list,none,quantile_tail,threshold,currency_scaling,Moderate,multi_numeric,2,2,1,0,2,1,1,1,10,,
+risk-071,"An employee will retire in exactly one year and will then receive a fixed pension of $45,000 per year for 20 years, with the first payment made one year after retirement. Using a discount rate of 3% per year, calculate the present value of this pension (valued as of the retirement date).","{
+    ""present_value_at_retirement"": 669486.37,
+}","Given: pmt=45,000, n=20 years, r=3%, ordinary annuity (first payment at t=1).
+Find: PV at retirement date.
+Formalize: PV = pmt·(1−(1+r)^{−n})/r.",Annual pension payment + 20-year horizon + 3% discount rate → Ordinary-annuity present-value factor → Multiply by annual payment → Pension value at retirement,number,Retirement & Pensions,Pension Valuation,Present value of a fixed pension annuity,discounted_cash_flow,identify annuity parameters → apply ordinary annuity PV formula → compute result,3,cash_flow_schedule,scheduled_events,none,none,percent_decimal,Low,scalar_numeric,1,1,1,1,0,0,1,0,5,,
+risk-072,"A stock currently trades at $150. The continuously-compounded risk-free rate is 5% per year. A 6-month forward contract on the stock is quoted at $151.50. Using the cost-of-carry relationship F = S·e^{(r−q)T}, solve for the stock's implied continuous dividend yield q."," {
+    ""implied_dividend_yield"": 0.03009934,
+    ""implied_dividend_yield_percent"": 3.009934,
+}","Given: S=150, r=5%, T=0.5, F=151.50.
+Find: continuous dividend yield q.
+Formalize: F=S·e^{(r−q)T} ⇒ q = r − ln(F/S)/T.",Spot price + forward price + continuous risk-free rate + maturity → Forward/spot ratio → Natural log of ratio → Annualized net carry ln(F/S)/T → Implied dividend yield q = r − net carry,number,Derivatives,Forward Pricing,Implied dividend yield from a forward price via cost-of-carry,algebraic_inference,write the cost-of-carry equation → take the log of both sides → isolate q → compute,4,scalar_parameters,single_horizon,none,none,mixed,Moderate,scalar_numeric,2,1,0,1,0,0,2,1,7,,
+risk-073,"A bond has a Macaulay Duration of 7.5 years and a yield to maturity of 6% (annual compounding). The bond currently trades at $980. Using modified duration, estimate the percentage price change and the new price if the yield rises by 50 basis points."," {  
+    ""new_price"": 945.33,
+}","Given: MacD=7.5, YTM=6%, Price=980, Δy=0.50%.
+Find: ModD, %ΔPrice, new price.
+Formalize: ModD=MacD/(1+YTM); %ΔPrice≈−ModD·Δy; NewPrice=Price·(1+%ΔPrice).",Macaulay duration + YTM + current price + yield shock → Modified duration = MacD/(1+YTM) → Approximate percentage price change = −ModD×Δy → Apply percentage change to current price → Estimated new bond price,number,Fixed Income,Duration & Convexity,Modified-duration approximation of bond price sensitivity,financial_formula_application,convert Macaulay duration to modified duration → apply linear price-sensitivity approximation → compute new price,3,scalar_parameters,none,none,none,basis_points,Moderate,multi_numeric,1,1,0,0,0,0,2,1,5,,
+risk-074,"A portfolio holds three assets with weights 50% (A), 30% (B), and 20% (C). Their volatilities are 20% (A), 30% (B), and 40% (C), and their pairwise correlations are ρ(A,B)=0.3, ρ(A,C)=0.1, ρ(B,C)=0.5. Calculate the portfolio variance and portfolio standard deviation.","{
+""portfolio_variance"": 0.0387,
+    ""portfolio_variance_pct"": ""3.87%"",
+    ""portfolio_std_dev"": 0.196723,
+    ""portfolio_std_dev_pct"": ""19.67%""
+}","Given: w=(0.5,0.3,0.2); σ=(0.20,0.30,0.40); ρ_AB=0.3, ρ_AC=0.1, ρ_BC=0.5.
+Find: σ_p², σ_p.
+Formalize: Cov_ij=ρ_ij·σ_i·σ_j; σ_p²=Σ_i w_i²σ_i² + 2Σ_{i<j} w_iw_j·Cov_ij; σ_p=√σ_p².",Portfolio weights + asset volatilities + pairwise correlations → Convert each correlation to covariance → [Individual variance contributions w_i²σ_i² | Pairwise covariance contributions 2w_iw_jCov_ij] → Sum all variance contributions → Portfolio variance → Square root → Portfolio standard deviation,number,Investments & Portfolio Management,Portfolio Theory,Three-asset portfolio variance and standard deviation from a correlation-based covariance matrix,algebraic_inference,convert pairwise correlations to covariances → compute individual weighted-variance contributions → compute pairwise weighted-covariance contributions → sum to portfolio variance → take the square root for portfolio volatility,5,mixed,none,none,none,ratio_percentage,High,multi_numeric,3,2,2,0,0,0,2,2,11,,
+risk-075,"A bank has a derivative exposure to a counterparty over 2 years. Expected exposure (EE) is $2,000,000 at the end of year 1 and $3,500,000 at the end of year 2. The probability of default in year 1 is 1.5%, and the probability of default in year 2 (given survival through year 1) is 2.0%. The recovery rate on default is 40%, and the risk-free discount factors are 0.97 (year 1) and 0.94 (year 2). Using CVA = (1−Recovery) × Σ EE_i × PD_i × DF_i, calculate the credit valuation adjustment (CVA).","{
+""total_cva"": 56347.80
+}","Given EE_1=2,000,000, EE_2=3,500,000; p_1=0.015; p_2|survival=0.020; DF_1=0.97, DF_2=0.94; Recovery=0.40. Let ΔPD_1=p_1 and ΔPD_2=(1−p_1)p_2|survival=0.0197. CVA=(1−Recovery)·[EE_1·ΔPD_1·DF_1 + EE_2·ΔPD_2·DF_2].",Expected exposures + Year-1 default probability + Year-2 conditional default probability + recovery + discount factors → LGD = 1−recovery → [Year-1 marginal PD | Year-2 marginal PD = survival through Y1 × conditional Y2 PD] → Discounted expected loss for each year → Sum period losses → Multiply by LGD → CVA,number,Counterparty Credit Risk,Credit Valuation Adjustment,Credit valuation adjustment (CVA) from expected exposure and default probabilities,probabilistic_modeling,compute survival through Year 1 → convert the Year-2 conditional PD to a marginal default probability → compute discounted EE×marginal-PD terms for both years → sum the period terms → multiply by LGD (1−Recovery),5,table,scheduled_events,conditional_probability,none,currency_scaling,High,scalar_numeric,3,2,1,2,2,0,1,2,13,,
+risk-076,"Spot quotes are EUR/USD = 1.10 (1 EUR = 1.10 USD) and GBP/USD = 1.30 (1 GBP = 1.30 USD). A separate market quotes the GBP/EUR cross rate directly at 1.15 (1 GBP = 1.15 EUR). Is there a triangular arbitrage opportunity? If so, state which route is profitable and compute the arbitrage profit starting from €1,000,000, ignoring transaction costs.","{
+    ""arbitrage_opportunity"": True,
+    ""profitable_route"": ""EUR -> GBP -> USD -> EUR"",
+    ""return_percentage"": 2.7668,
+}","Given: EUR/USD=1.10, GBP/USD=1.30, quoted GBP/EUR=1.15.
+Find: whether arbitrage exists, profitable direction, profit on €1,000,000.
+Formalize: implied_GBPEUR = GBPUSD/EURUSD; if quoted_GBPEUR < implied_GBPEUR, GBP is cheap via the cross quote → route EUR→GBP(market)→USD→EUR; profit = (start_EUR/quoted_GBPEUR)·GBPUSD/EURUSD − start_EUR.",EUR/USD + GBP/USD + quoted GBP/EUR → Implied GBP/EUR = GBP/USD ÷ EUR/USD → Compare implied and quoted cross rates → Determine mispriced currency / profitable direction → Convert €1M EUR→GBP→USD→EUR → Final EUR amount → Arbitrage profit and return,number,Capital Markets & Trading,FX Arbitrage,Triangular arbitrage detection and profit calculation across three currencies,algebraic_inference,compute the implied cross rate from the two direct quotes → compare to the quoted cross rate → determine the profitable direction → run the 3-leg conversion → compute profit,5,scalar_parameters,none,none,threshold,mixed,Moderate,categorical_and_numeric,3,2,0,0,0,2,2,1,10,,
+risk-077,"A loan agreement requires Debt/EBITDA ≤ 3.5x, tested quarterly. If the covenant is breached, the borrower has one quarter to cure it before an event of default is triggered. Q1: Debt=$210M, EBITDA=$55M. Q2 (after the borrower's remediation efforts): Debt=$195M, EBITDA=$58M. Was the covenant breached in Q1? Was it cured within the grace period? Is the loan in default as of the end of Q2?","{
+    ""covenant_threshold"": 3.5,
+    ""q1"": {
+        ""debt_to_ebitda"": 3.82,
+        ""breached"": True,
+    },
+    ""q2"": {
+        ""debt_to_ebitda"": 3.36,
+        ""cured"": True,
+    },
+    ""in_default_as_of_end_of_q2"": False,
+}","Given: covenant threshold=3.5x; Q1 Debt=210, EBITDA=55; Q2 Debt=195, EBITDA=58; cure period=1 quarter.
+Find: Q1 breach status, cure status, Q2 default status.
+Formalize: Ratio_t=Debt_t/EBITDA_t; Breach_t=1[Ratio_t>3.5]; if Breach_{t} and ¬Breach_{t+1} → cured, no default; if Breach_t persists past the grace period → default.",Q1 debt + EBITDA + 3.5× covenant → Q1 leverage ratio → Compare with threshold → Q1 breach state → Q2 debt + EBITDA → Q2 leverage ratio → Compare with threshold during cure period → [If cured: no default | If still breached: default] → Cure/default conclusion,number,Credit Risk,Loan Covenants,Leverage-covenant breach and cure-period determination,rule_based_accounting,compute Q1 leverage ratio → test against covenant threshold → compute Q2 leverage ratio → test again → apply the cure-period rule to determine default status,5,table,sequential_periods,none,sequential_branching,none,Moderate,categorical_and_numeric,3,2,1,1,0,2,0,1,10,,
+risk-078,"A bank holds a $40 million bond portfolio with modified duration 5.0 and a $30 million equity portfolio with beta 1.2 to the broad equity market. Under a stress scenario, market yields rise by 100 basis points and the broad equity market falls by 8%. Ignore bond convexity and idiosyncratic equity effects.Approximate the bond loss using ΔP/P ≈ −D_mod×Δy, estimate the equity loss using beta×market return, compute the total stress loss, and determine whether a $4.0 million stress-loss limit is breached.","{
+""total_stress_loss_million"": 4.88,
+    ""stress_loss_limit_million"": 4.00,
+    ""limit_breached"": True,
+  }","Given bond value B=40M, modified duration D_mod=5, yield shock Δy=+1%; equity value E=30M, beta=1.2, market shock R_m=−8%.
+Bond ΔB/B≈−D_modΔy.
+Equity return≈beta·R_m.
+StressLoss=−ΔB−ΔE.
+Compare with limit L=4M.",Bond value + modified duration + +100 bp yield shock → Bond percentage loss → Bond dollar loss; Equity value + beta + −8% market shock → Stressed equity return → Equity dollar loss → Sum bond and equity losses → Compare total loss with $4M limit → Breach amount / status,number,Market Risk,Stress Testing,Integrated rate-and-equity stress loss,scenario_analysis,convert the yield shock into the bond percentage price change → convert that change to the bond dollar loss → map the equity market shock through beta to an equity dollar loss → aggregate bond and equity losses → compare total stress loss with the limit,5,scenario_parameters,single_horizon,none,threshold,basis_points_percent_and_currency,Moderate,structured_multi_output,3,2,1,1,0,2,2,2,13,,
+risk-079,"A risk manager wants to calculate the 1-day 99% Value at Risk (VaR) of a $10,000,000 equity position using the delta-normal (variance-covariance) method. The position has a beta of 1.2 relative to the S&P 500, and the current 3-month T-bill rate is 4.25% per year. Calculate the 1-day 99% VaR of the position. use Volatility as 15.0% and 252 trading days and z-score to 4 deciimal places and with and without Zero-Drift Assumption.","""var_zero_drift"": {
+            ""dollar_amount"": 219814.69,
+            ""percentage"": 2.1981,
+        },
+        ""var_with_drift"": {
+            ""dollar_amount"": 218128.18,
+            ""percentage"": 2.1813,
+        },","Given: N=$10,000,000, annual volatility σ_ann=15%, annual drift proxy r_f=4.25%, T=252 trading days, z_0.99=2.3263. The supplied beta is not used when the stated 15% volatility is treated as the position volatility, consistent with the stored ground truth.
+Find: 1-day 99% delta-normal VaR with zero drift and with drift.
+Formalize: σ_1d=σ_ann/√T; μ_1d=r_f/T; VaR_zero=N·z_0.99·σ_1d; VaR_drift=N·(z_0.99·σ_1d−μ_1d).",Position value + annual volatility + trading-day convention + 99% z-score + annual drift proxy → Scale annual volatility to 1-day volatility → Compute zero-drift VaR → Convert annual drift to daily drift → Compute drift-adjusted VaR → Report both dollar and percentage VaR; ignore beta as a distractor under the benchmark's stated volatility convention,number,Market Risk,Value at Risk,Delta-normal VaR with and without drift,risk_measurement,normalize annual volatility to daily volatility → compute zero-drift 99% VaR → convert annual drift to daily drift → compute drift-adjusted VaR → report both VaR results and ignore the beta distractor,5,scalar_parameters,single_horizon,quantile_tail,none,mixed,Moderate,multi_numeric,3,2,0,1,2,0,2,1,11,,
+risk-080,"Compute the present value of a single $10,000 cash flow to be received in exactly 3 years, first using an annual discount rate of 6.00%, and then using an annual discount rate of 6.25% (a 25 basis point increase). Report both present values and the exact dollar difference between them.","{
+""dollar_difference"": 59.13
+}","Given: FV=10,000, n=3, r_1=6.00%, r_2=6.25%.
+Find: PV(r_1), PV(r_2), and PV decrease.
+Formalize: PV(r)=FV/(1+r)^n; ΔPV=PV(r_1)−PV(r_2).","$10,000 terminal cash flow + 3-year horizon + {6.00%, 6.25% discount rates} → [PV at 6.00% | PV at 6.25%] → Difference PV(6.00%)−PV(6.25%) → Dollar sensitivity to +25 bp",number,Investments & Portfolio Management,Time Value of Money,Present-value sensitivity to discount-rate perturbation,sensitivity_counterfactual,compute PV at the base rate → compute PV at the perturbed rate → take the exact difference,3,scalar_parameters,single_horizon,none,none,basis_points,Low,multi_numeric,1,1,0,0,0,0,2,0,4,,
+risk-081,"A private equity fund raises $10,000,000 of committed capital from a single limited partner (LP) and holds the investment for exactly 3 years before exiting, distributing a total of $15,500,000. The distribution waterfall pays out in this strict order: (1) Return of Capital — LP receives back the full $10,000,000 first. (2) Preferred Return — LP then receives an 8% simple annual preferred return on committed capital for the 3-year hold. (3) GP Catch-up — the general partner (GP) then receives 100% of further distributions until the GP has received 20% of total profits distributed so far  (4) Remaining distributions split 80% LP / 20% GP. Calculate exactly how much of the $15,500,000 total distribution goes to the LP and how much goes to the GP.","{
+    ""LP"": 14400000,
+    ""GP"": 1100000
+}","Given: Capital=10.0M, TotalDist=15.5M, pref=8% simple for 3 years, carry=20%.
+Find: LP and GP total distributions.
+Formalize: Tier1=min(TotalDist,Capital); Rem1=TotalDist−Tier1; Pref=Capital·pref·3; Tier2=min(Rem1,Pref); Rem2=Rem1−Tier2; Catchup=Pref·carry/(1−carry); Tier3=min(Rem2,Catchup); Rem3=Rem2−Tier3; LP=Tier1+Tier2+(1−carry)Rem3; GP=Tier3+carry·Rem3.",Total distribution + LP capital + 8% simple pref + 3-year hold + 20% carry → Tier 1 return of capital → Remaining proceeds → Tier 2 preferred return → Remaining proceeds → Tier 3 GP catch-up amount → Remaining proceeds → Tier 4 80/20 split → Sum LP tiers and GP tiers → Final LP/GP distributions,number,Investments & Portfolio Management,Private Equity Waterfall,Private-equity distribution waterfall,path_dependent_reasoning,return LP capital first → compute and pay the preferred return from remaining proceeds → compute and pay the GP catch-up from the next remainder → split any final remainder 80/20 → sum LP distributions across tiers → sum GP distributions across tiers,6,cash_flow_schedule,event_ordering,none,rule_based,currency_scaling,High,multi_numeric,4,2,2,1,0,2,1,2,14,,
+risk-082,"A corporate bond has a face value of $1,000, an annual coupon rate of 5%, and currently trades at a market price of $950. The bond carries a BBB+ credit rating, the issuing company's common stock trades at $45 per share, and the bond has 8 years remaining to maturity. Calculate the bond's current yield.","{""current_yield_percentage"": 5.2632,
+    ""formatted_yield"": ""5.26%""}","Given: Face=1000, coupon rate=5%, market price=950; rating, stock price, and maturity are distractors.
+Find: current yield.
+Formalize: CurrentYield=(Face·CouponRate)/Price=50/950.",Face value + coupon rate + market price + irrelevant rating/stock-price/maturity fields → Identify current-yield formula inputs → Discard distractors → Annual coupon = face×coupon rate → Current yield = annual coupon ÷ market price,number,Fixed Income,Bond Yields,Bond current yield,financial_formula_application,select the inputs required by current yield and ignore distractors → compute annual coupon = face value×coupon rate → divide annual coupon by market price,3,scalar_parameters,none,none,none,ratio_percentage,Low,scalar_numeric,1,1,0,0,0,0,1,0,3,,
+risk-083,"A brokerage statement lists the following 15 executed trades this quarter (Ticker, Buy Price, Sell Price, Shares):
+(Ticker, Buy Price, Sell Price, Shares):
+A, $150, $165, 100
+B, $285, $310, 50
+C, $2,420, $2,380, 12
+D, $3,120, $3,080, 20
+B, $295, $305, 80
+A, $160, $155, 60
+C, $2,510, $2,600, 15
+B, $300, $295, 40
+D, $3,210, $3,300, 10
+A, $145, $150, 120
+C, $2,450, $2,480, 8
+B, $290, $320, 70
+D, $3,050, $3,000, 25
+A, $155, $170, 90
+C, $2,550, $2,500, 10
+Calculate the total realized gain or loss from D trades only.","{
+""total_realized_pnl"": -1150
+}","Given: trades {(ticker_i,buy_i,sell_i,shares_i)}.
+Find: realized P&L for ticker=MSFT.
+Formalize: P&L_MSFT=Σ_{i:ticker_i='MSFT'}(sell_i−buy_i)·shares_i.",15-row executed-trade table → Filter rows where ticker = MSFT → For each retained trade compute (sell−buy)×shares → Sum MSFT trade P&Ls → Total realized MSFT gain/loss,number,Capital Markets & Trading,Trade Reconciliation,Trade-table filtering and P&L aggregation,return_aggregation,filter the trade table to MSFT rows → compute realized P&L for each retained trade → sum the MSFT trade P&Ls,3,table,none,none,none,currency_scaling,Low,scalar_numeric,1,1,2,0,0,0,1,0,5,,
+risk-085,"A colleague computed the price of a 2-year, $100 face-value bond with a 5% annual coupon, discounted at a flat 4% annual rate, as follows:
+'Step 1: PV of Year-1 coupon = 5 / 1.04 = 4.81.
+Step 2: PV of Year-2 coupon = 5 / 1.04 = 4.81.
+Step 3: PV of face value = 100 / 1.04² = 92.46.
+Step 4: Total price = 4.81 + 4.81 + 92.46 = 102.08.'
+Identify the specific error in this calculation and provide the corrected bond price.","{
+""corrected_price_exact"": 101.8861,
+        ""corrected_price_rounded"": 101.89
+}","Given: worked pricing steps for a 2-year, $100 face bond, 5% annual coupon, r=4%.
+Find: first incorrect step and corrected price.
+Formalize: each cash flow at time t must be discounted by (1+r)^t. P=5/(1.04)+105/(1.04)^2; compare each reported step with its correct timing and identify the earliest mismatch.",Worked bond-pricing steps + correct 2-year cash-flow timing → Recompute correct discount horizon for each cash flow → Compare reported Step 1 with correct value → Compare Step 2 and identify first mismatch → Recompute Year-2 coupon + principal PV → Correct total bond price → Explain downstream Step-4 error,number,Fixed Income,Bond Valuation,Bond pricing with correct discount periods,error_detection,identify the bond cash flows and their correct payment times → derive the correct discount factor for each cash flow → compare them with the colleague’s stated steps → locate the first incorrect step → recompute the corrected bond price,5,cash_flow_schedule,scheduled_events,none,none,none,Moderate,categorical_and_numeric,3,2,1,1,0,0,0,1,8,,
+risk-086,"A company reports revenue of $2.4 billion for the year. Its cost of goods sold is $1,850 million. It also incurred $45,000,000 in SG&A expenses. Convert all figures to a consistent unit and calculate the company's operating margin , where Operating Income .","{
+""operating_income"": 505.0,
+    ""operating_margin_pct"": 21.04
+}","Given: Revenue=2.4bn, COGS=1,850mm, SG&A=$45,000,000.
+Find: operating income and operating margin.
+Formalize: convert to a common unit; OpInc=Revenue−COGS−SG&A; Margin=OpInc/Revenue.",Revenue in billions + COGS in millions + SG&A in dollars → Convert all figures to common unit → Operating income = revenue−COGS−SG&A → Operating margin = operating income ÷ revenue → Report income and margin,number,Corporate Finance,Profitability Analysis,Operating margin with mixed-unit inputs,financial_formula_application,convert billions/millions/plain-dollar figures to a common unit → compute operating income → divide by revenue for margin,3,scalar_parameters,none,none,none,currency_scaling,Low,scalar_numeric,1,1,0,0,0,0,2,0,4,,
+risk-087,"A bank's standardized-approach risk-weight table (as prescribed by its regulator) assigns the following risk weights by counterparty type and external credit rating:
+• Sovereign, AAA to AA−: 0%
+• Sovereign, A+ to A−: 20%
+• Bank, AAA to AA−: 20%
+• Bank, A+ to A−: 50%
+• Corporate, AAA to AA−: 20%
+• Corporate, A+ to A−: 50%
+• Corporate, BBB+ to BB−: 100%
+• Corporate, below BB−: 150%
+• Retail exposures: 75%
+The bank holds the following exposures: (1) $50,000,000 to a Sovereign rated AA. (2) $30,000,000 to a Bank rated A. (3) $80,000,000 to a Corporate rated BBB. (4) $20,000,000 in Retail exposures. Using an 8% minimum capital ratio, calculate each exposure's risk-weighted assets (RWA), the total RWA, and the minimum required regulatory capital."," {
+    ""exposures_rwa"": {
+        ""sovereign_aa"": 0,
+        ""bank_a"": 15_000_000,
+        ""corporate_bbb"": 80_000_000,
+        ""retail"": 15_000_000,
+    },
+    ""total_rwa"": 110_000_000,
+    ""minimum_capital"": 8_800_000,
+}","Given: exposures (counterparty type, rating, amount), stated risk-weight table RW(type,rating), minimum capital ratio=8%.
+Find: each RWA, total RWA, minimum capital.
+Formalize: RWA_i=Exposure_i·RW_i; TotalRWA=Σ_i RWA_i; MinCapital=0.08·TotalRWA.",Exposure table + stated counterparty/rating risk-weight table → For each exposure: classify counterparty and rating band → Look up prescribed risk weight → RWA_i = exposure_i×risk weight_i → Sum individual RWAs → Total RWA → Apply 8% capital ratio → Minimum regulatory capital,number,Credit Risk,Regulatory Capital,Standardized credit-risk RWA and minimum capital,rule_based_accounting,classify each exposure by counterparty type and rating band → look up its prescribed risk weight → multiply exposure by risk weight to obtain RWA → sum individual RWAs → apply the 8% minimum capital ratio,5,table,none,none,rule_based,percent_decimal_and_currency,Moderate,multi_numeric,3,2,2,0,0,1,1,1,10,,
+risk-088,"Under a simplified standardized approach for equity risk capital, positions are grouped into buckets by market-cap and region, each with a prescribed risk weight, and a prescribed correlation parameter applies between buckets. Rules: Bucket 1 (Large-cap, Developed Markets) risk weight = 15%. Bucket 2 (Small-cap, Developed Markets) risk weight = 25%. Correlation between Bucket 1 and Bucket 2: ρ=0.15. Net sensitivities: Bucket 1 = $40,000,000, Bucket 2 = $10,000,000. Bucket-level capital charge. Aggregate capital charge. Calculate the aggregate equity risk capital charge.","{
+""aggregate_capital_charge"": 6837397.17
+}","Given: S1=$40M, S2=$10M, RW1=15%, RW2=25%, ρ=0.15.
+Find: aggregate equity-risk capital charge.
+Formalize: K1=S1·RW1; K2=S2·RW2; K=√(K1²+K2²+2ρK1K2).",Bucket sensitivities + prescribed risk weights + inter-bucket correlation → [K1 = S1×RW1 | K2 = S2×RW2] → Correlation-weighted quadratic aggregation K²=K1²+K2²+2ρK1K2 → Square root → Aggregate equity-risk capital charge,number,Market Risk,Regulatory Capital,Simplified FRTB standardized equity-risk capital,rule_based_accounting,compute the first bucket capital K1=S1×RW1 → compute the second bucket capital K2=S2×RW2 → apply the correlation-weighted quadratic aggregation → take the square root to obtain aggregate capital,4,rule_text_plus_parameters,none,none,none,percent_decimal_and_currency,High,scalar_numeric,2,2,2,0,0,0,2,2,10,,
+risk-089,A colleague computed the required return on a stock using CAPM as follows: 'Risk-free rate = 3%. Market return = 11%. Beta = 1.4. Required return = 3% + 11% × 1.4 = 18.4%.' Identify the error in this calculation and provide the corrected required return.,"{
+""result"": 0.142,
+        ""result_percent"": ""14.2%""
+}","Given: r_f=3%, E[R_m]=11%, β=1.4.
+Find: the error in r_f+βE[R_m] and the corrected CAPM required return.
+Formalize: r_req=r_f+β(E[R_m]−r_f)=14.2%.",Colleague CAPM calculation + r_f + market return + beta → Recall correct CAPM structure r_f+β(E[R_m]−r_f) → Compare colleague formula with correct formula → Identify use of total market return instead of market risk premium → Recompute market risk premium → Correct required return,number,Investments & Portfolio Management,Asset Pricing,CAPM required return and market risk premium,error_detection,recall the correct CAPM formula → compare against the colleague’s substituted terms → identify the risk-premium substitution error → recompute correctly,4,scalar_parameters,none,none,none,percent_decimal,Moderate,categorical_and_numeric,2,1,0,0,0,0,1,1,5,,
+risk-090,"A risk analyst computed the 10-day 99% VaR from a 1-day 99% VaR of $500,000 as follows: '10-day VaR = 1-day VaR × 10 = $5,000,000.' Identify the error in this calculation and provide the corrected 10-day VaR,","{
+""value_exact"": 1581138.83,
+        ""value_rounded"": 1581139
+}","Given: VaR_1=$500,000 and T=10 days.
+Find: error and corrected VaR_10.
+Formalize: VaR_T=VaR_1√T, so VaR_10=$500,000√10=$1,581,138.83.",Reported 10-day VaR + 1-day VaR + 10-day horizon → Recall square-root-of-time scaling assumption → Compare analyst's linear ×10 scaling with √10 rule → Identify scaling error → Compute 1-day VaR×√10 → Correct 10-day VaR,number,Market Risk,Value at Risk,Square-root-of-time VaR scaling,error_detection,recall the square-root-of-time VaR scaling rule → diagnose the analyst’s linear ×10 scaling as the error → recompute 10-day VaR using √10,3,scalar_parameters,single_horizon,none,none,rate_horizon,Moderate,categorical_and_numeric,1,1,0,0,0,0,1,1,4,,
+risk-091,"A portfolio manager's mandate caps portfolio volatility at 12% annualized. The portfolio currently holds two assets: Asset A ($6,000,000, volatility 10%) and Asset B ($4,000,000, volatility 25%), with a correlation of 0.2 between them. (a) Calculate the portfolio's current annualized volatility. (b) State whether this breaches the 12% mandate limit. (c) If it breaches the limit, the manager's rule is to reduce the position in the higher-volatility asset (Asset B) by 20% (selling into cash, which has zero volatility and zero correlation to the remaining assets) and recompute the portfolio volatility. Provide the manager's required action and the resulting portfolio volatility after the adjustment, if required.","{
+    ""a_current_annualized_volatility"": 0.1265,
+    ""b_breaches_mandate"": True,
+    ""c_manager_action"": ""Sell $800,000 of Asset B into cash"",
+    ""c_new_portfolio_volatility"": 0.1092,
+}","Given: V=$10M; A=$6M, σ_A=10%; B=$4M, σ_B=25%; ρ_AB=0.20; limit=12%.
+Find: initial σ_p, breach status, and conditional post-adjustment σ_p.
+Formalize: σ_p=√(w_A²σ_A²+w_B²σ_B²+2w_Aw_Bρσ_Aσ_B). If σ_p>12%, set B'=0.8B, Cash=0.2B, with σ_cash=0, then recompute using w_A=0.60 and w_B=0.32.",Asset values + volatilities + correlation + 12% limit → Convert dollar positions to initial weights → Compute initial two-asset portfolio volatility → Compare with 12% limit → [If no breach: stop | If breach: sell 20% of Asset B into cash] → Update B and cash weights → Recompute volatility with zero-risk cash → Compliance decision and required action,number,Investments & Portfolio Management,Portfolio Theory,Portfolio volatility limit and rule-triggered rebalancing,dynamic_constraint_reasoning,compute the initial two-asset portfolio volatility → compare against the 12% mandate → recognize the breach → apply the stated corrective rule (cut B by 20%) → recompute the portfolio volatility with the new weights,5,mixed,none,none,sequential_branching,ratio_percentage,High,structured_multi_output,3,2,1,0,0,2,1,2,11,,
+risk-092,"A hedge fund reports total assets of $500,000,000, equity capital of $100,000,000, and gross notional derivatives exposure of $200,000,000 (in addition to the $500,000,000 total assets). Calculate the fund's 'leverage ratio.'","
+{
+  ""ratio"": 7.0
+}
+","Given: Assets=$500M, Equity=$100M, GrossDerivativesNotional=$200M.
+Find: whether a unique 'leverage ratio' is identifiable.
+Possible conventions: Assets/Equity=5.0×; (Assets−Equity)/Equity=4.0×; if explicitly defined, (Assets+GrossNotional)/Equity=7.0×.
+Conclusion: the requested metric is underdefined without a stated leverage convention.","Assets + equity + gross derivatives notional + undefined request for 'leverage ratio' → Recognize leverage has multiple valid definitions → Construct plausible conventions {assets/equity, debt/equity, gross-exposure/equity} → Compute each plausible ratio → Determine that prompt does not specify which convention → Return ambiguity instead of selecting one silently",number,Investments & Portfolio Management,Leverage Analysis,Alternative definitions of leverage ratio,insufficient_information,recognize that ‘leverage ratio’ has no single universally agreed definition in this context → enumerate the legitimate readings → compute each → present all three rather than silently choosing one,4,scalar_parameters,none,none,none,ratio_percentage,Moderate,multi_numeric,2,2,0,0,0,0,1,1,6,,
+risk-093,"An employee currently has $300,000 in a retirement account and plans to retire in 15 years, with no further contributions. Three market scenarios are considered for the account's annualized real return: Bear (2%, probability 25%), Base (5%, probability 50%), Bull (8%, probability 25%). Calculate the account's projected value at retirement under each scenario, and the probability-weighted expected value.","
+{
+  ""bear"": 403760.50,
+  ""base"": 623678.45,
+  ""bull"": 951650.73,
+  ""expected_value"": 650692.04
+}","Given: PV=$300,000; n=15; scenarios s with (r_s,p_s)={(2%,25%),(5%,50%),(8%,25%)} and a constant scenario return for all 15 years.
+Find: FV_s and E[FV].
+Formalize: FV_s=PV(1+r_s)^15; E[FV]=Σ_s p_sFV_s.",Current retirement balance + 15-year horizon + three return scenarios/probabilities → [Compound balance at 2% | Compound at 5% | Compound at 8%] → Scenario retirement values → Probability-weight each scenario value → Sum weighted values → Expected retirement value,number,Retirement & Pensions,Retirement Planning,Probability-weighted retirement account projection across three market-return scenarios,scenario_analysis,compute future value under each scenario’s return → weight each by its probability → sum for the expected value,3,scenario_set,single_horizon,discrete_probability,none,percent_decimal,Low,structured_multi_output,1,2,1,1,1,0,1,0,7,,
+risk-094,"A company's quarterly free cash flow (FCF) and revenue over six quarters (in $ millions) are:
+Q1: FCF=15, Revenue=120
+Q2: FCF=18, Revenue=125
+Q3: FCF=12, Revenue=118
+Q4: FCF=22, Revenue=130
+Q5: FCF=16, Revenue=128
+Q6: FCF=20, Revenue=135
+Calculate the trailing-4-quarter (TTM) FCF margin for each rolling window ending at Q4, Q5, and Q6."," {
+    ""Q4"": round(67 / 493, 4),  # 0.1359 (13.59%)
+    ""Q5"": round(68 / 501, 4),  # 0.1357 (13.57%)
+    ""Q6"": round(70 / 511, 4),  # 0.1370 (13.70%)
+}","Given: quarterly FCF F_t and revenue R_t for t=1,...,6.
+Find: four-quarter TTM FCF, TTM revenue, and FCF margin for t=4,5,6.
+Formalize: TTMFCF_t=Σ_{k=t−3}^tF_k; TTMRev_t=Σ_{k=t−3}^tR_k; Margin_t=TTMFCF_t/TTMRev_t.",Quarterly FCF + revenue series → Rolling four-quarter windows ending Q4/Q5/Q6 → [TTM FCF sum | TTM revenue sum] for each window → TTM FCF margin = FCF/revenue → Rolling margin table,table,Corporate Finance,Cash Flow Analysis,Trailing-twelve-month free cash flow margin from quarterly FCF and revenue,time_series_transformation,compute rolling 4-quarter sum of FCF → compute rolling 4-quarter sum of revenue → divide for the rolling margin → repeat for each window,4,time_series,rolling_window,none,none,ratio_percentage,Moderate,table,2,1,2,2,0,0,1,1,9,,
+risk-095,"An insurer is deciding how much of a $50,000,000 property risk to retain versus cede to a reinsurer. The reinsurance premium costs 3% of the ceded amount; the capital charge on retained risk costs 8% of the retained amount. The insurer must retain at least $10,000,000 (minimum retention requirement) and cede at least $5,000,000  Determine the retention amount that minimizes total cost  and the resulting minimum total cost.","{
+""minimum_total_cost"": 2000000
+}","Given: T=50M, reinsurance rate c=0.03, retained-risk capital-cost rate k=0.08, R≥10M, T−R≥5M.
+Find: R* and Cost*.
+Formalize: Cost(R)=c(T−R)+kR=cT+(k−c)R, with 10M≤R≤45M. Since k−c=0.05>0, R*=10M and Cost*=2.0M.","$50M exposure + retention R + cession 50−R + 3% reinsurance cost + 8% capital cost + treaty bounds → Express feasible interval 10≤R≤45 → Build total-cost function 0.03(50−R)+0.08R → Simplify slope with respect to R → Since slope >0, choose minimum feasible R → Retain $10M / cede $40M → Compute minimum total cost",number,Insurance & Actuarial,Reinsurance,Optimal risk retention vs. cession under linear cost trade-offs and treaty constraints,optimization_allocation,derive the feasible retention interval from the treaty constraints → express total cost as a function of retained amount → determine the cost function’s slope with respect to retention → choose the cost-minimizing feasible boundary → compute the minimum cost,5,scalar_parameters,none,none,rule_based,percent_decimal_and_currency,High,structured_multi_output,3,2,0,0,0,1,1,2,9,,
+risk-096,"A company wants to calculate its Weighted Average Cost of Capital . It has $40,000,000 in equity (market value) and $60,000,000 in debt (market value), and its cost of equity is 12% and %6 interest rate and 25% tax rate. Calculate the company's WACC.","{
+""wacc"": 0.075,
+    ""wacc_percentage"": ""7.50%""
+}","Given: E=$40M, D=$60M, R_e=12%, R_d=6%, T=25%.
+Find: WACC.
+Formalize: V=E+D; w_E=E/V; w_D=D/V; WACC=w_E·R_e+w_D·R_d·(1−T)=0.40·0.12+0.60·0.06·0.75=0.075=7.50%.",Equity value + debt value + cost of equity + cost of debt + tax rate → Compute capital weights → Compute after-tax cost of debt → Weight equity and debt costs → Sum → WACC,text,Corporate Finance,Cost of Capital,WACC with after-tax cost of debt,financial_formula_application,compute total capital and capital weights → compute after-tax cost of debt → weight the equity and debt costs → sum to obtain WACC,4,scalar_parameters,none,none,none,percent_decimal_and_currency,Moderate,categorical,2,1,0,0,0,0,1,1,5,,
+risk-097,"Under the Basic Indicator Approach for operational risk capital, a bank's capital charge equals 15% of its average annual Gross Income over the last three years, using only years with POSITIVE gross income (years with negative gross income are excluded from both the sum and the count used for averaging). The bank's gross income over the last three years was: Year 1: $200,000,000. Year 2: −$50,000,000. Year 3: $260,000,000. Calculate the bank's operational risk capital charge.","{
+operational_risk_capital_charge"": 34500000.0
+}","Given: GI={200M,−50M,260M}; α=15%; include only GI_y>0.
+Find: K.
+Formalize: P={y:GI_y>0}; AvgGI=(Σ_{y∈P}GI_y)/|P|; K=α·AvgGI=34.5M.",Three annual gross-income observations + positive-only BIA rule + 15% alpha → Test each year for GI>0 → Exclude negative year from both sum and count → Average positive gross income → Multiply by 15% → Operational-risk capital charge,number,Operational Risk,Regulatory Capital,Basic Indicator Approach operational-risk capital,rule_based_accounting,check each year’s gross income against the positive-only rule → exclude the negative year from both the sum and the count → average the remaining years → apply the 15% charge rate,4,numeric_list,none,none,rule_based,percent_decimal_and_currency,Moderate,scalar_numeric,2,2,1,0,0,2,1,1,9,,
+risk-098,"A $100 million portfolio is invested 70% in Asset A and 30% in Asset B. Initially, annualized volatilities are 8% for A and 16% for B, with correlation 0.20. The mandate caps portfolio volatility at 10%. A purchase that would increase exposure to Asset B has been tentatively approved. Before execution, Asset B's volatility rises to 30% and the A–B correlation rises to 0.50. Under the mandate, no risk-increasing trade may be executed while current portfolio volatility exceeds 10%.
+Compute the portfolio volatility before and after the shock, determine whether the risk limit is breached, and state whether the proposed purchase should still be executed.","{
+    ""initial_portfolio_volatility"": 0.0807,
+    ""post_shock_portfolio_volatility"": 0.1276,
+    ""execute_purchase"": False,
+}","For state s, σ_p,s=sqrt(w_A²σ_A,s²+w_B²σ_B,s²+2w_Aw_Bρ_sσ_A,sσ_B,s).
+State 0: (σ_A,σ_B,ρ)=(0.08,0.16,0.20).
+State 1: (0.08,0.30,0.50).
+Decision rule: a risk-increasing trade is allowed only if current σ_p≤0.10.",Initial weights + volatilities + correlation + 10% mandate → Compute initial portfolio volatility → Verify initial compliance → Receive new volatility/correlation state before trade → Recompute current portfolio volatility → Compare with 10% limit → [If within limit: trade may proceed | If breached: block risk-increasing trade] → Revised execution decision,number,Market Risk,Portfolio Risk,Dynamic volatility-limit breach and decision revision,dynamic_constraint_reasoning,compute initial portfolio volatility → test limit → update volatility/correlation after event → recompute → revise trade decision,5,scenario_sequence,state_update,none,threshold_and_override,percent_decimal,High,structured_multi_output,3,3,1,2,0,3,1,2,15,,
+risk-099,"A bank holds a $50 million bond portfolio with modified duration 4.5. Ignore convexity. Market yields suddenly rise by 150 basis points. The bonds are pledged as collateral against $40 million of secured borrowing, and the lender requires collateral market value to remain at least 120% of the borrowing. The bank has $2.0 million of immediately available cash and must maintain a minimum liquidity buffer of $1.0 million.Estimate the bond loss, post-shock collateral value, resulting margin call, cash remaining after paying the margin call, and whether the liquidity buffer is breached. If breached, quantify the minimum additional liquidity required.","results = {
+    ""bond_loss"": 3375000.00,
+    ""post_shock_collateral_value"": 46625000.00,
+    ""margin_call"": 1375000.00,
+    ""cash_remaining_after_margin_call"": 625000.00,
+    ""is_liquidity_buffer_breached"": True,
+    ""minimum_additional_liquidity_required"": 375000.00,
+}","Given: C0=50M, D_mod=4.5, Δy=0.015, Borrowing=40M, collateral ratio=1.20, Cash0=2M, Cash_min=1M.
+Formalize: ΔC≈−C0D_modΔy; C1=C0+ΔC; C_req=1.20·Borrowing; MarginCall=max(C_req−C1,0); Cash1=Cash0−MarginCall; LiquidityShortfall=max(Cash_min−Cash1,0).",Bond value + modified duration + +150 bp yield shock → Bond loss → Post-shock collateral value → Required collateral = 120%×borrowing → Margin-call shortfall → Pay margin call from available cash → Remaining cash → Compare with minimum liquidity buffer → Liquidity shortfall / additional funding need,number,Banking & ALM,Liquidity Risk,Cross-risk propagation from market risk to funding liquidity,cross_risk_causal_reasoning,translate yield shock into bond loss → update collateral value → apply collateral requirement → compute margin call → update cash state → test liquidity buffer,6,scenario_sequence,state_update,none,multi_threshold,basis_points_percent_and_currency,High,structured_multi_output,4,3,1,2,0,3,2,2,17,,
+risk-100,"A counterparty has a $26 million secured exposure. It has posted securities with a current market value of $30 million. Before a credit downgrade, the collateral haircut is 10%; after the downgrade, the haircut rises to 20%. Eligible collateral equals market value × (1 − haircut). The counterparty has $1.4 million of cash but must retain at least $0.5 million for operations.
+
+
+
+
+Compute the collateral surplus/shortfall before and after the downgrade and determine the minimum external funding needed to cure the post-downgrade collateral shortfall without violating the operating-cash minimum.","{
+    ""pre_downgrade"": {   
+        ""surplus_shortfall_million"": 1.0,
+        ""status"": ""surplus"",
+    },
+    ""post_downgrade"": {
+        ""surplus_shortfall_million"": -2.0,
+        ""status"": ""shortfall"",
+    }
+    ""minimum_external_funding_needed_million"": 1.1,
+}","Given: Exposure=26M, MV=30M, h0=0.10, h1=0.20, Cash=1.4M, Cash_min=0.5M; usable cash may be posted at par.
+Formalize: EC_s=MV(1−h_s); Gap_s=Exposure−EC_s (positive=shortfall, negative=surplus); UsableCash=max(Cash−Cash_min,0); ExternalFunding=max(Gap_1−UsableCash,0).",Exposure + securities market value + pre/post-downgrade haircuts → [Eligible collateral before downgrade → surplus/shortfall | Eligible collateral after downgrade → shortfall] → Usable cash = cash−operating minimum → Apply usable cash to post-downgrade shortfall → Residual external funding need,number,Counterparty Credit Risk,Collateral Management,Downgrade-driven haircut and liquidity interaction,cross_risk_causal_reasoning,compute pre-downgrade eligible collateral and gap → apply the stressed haircut and recompute eligible collateral/shortfall → compute cash available above the operating minimum → post the usable cash against the shortfall → compute any residual external funding need,5,scenario_sequence,state_update,none,threshold_and_override,percent_decimal,High,structured_multi_output,3,3,1,2,0,3,1,2,15,,
+risk-101,"A company reports:
+- H1 revenue (Q1+Q2): $120M
+- 9M revenue (Q1+Q2+Q3): $195M
+- H1 EBITDA: $24M
+- 9M EBITDA: $36M
+
+
+
+
+An analyst writes:
+Step 1: Q3 standalone revenue = $195M − $120M = $75M.
+Step 2: Q3 standalone EBITDA = $36M − $24M = $12M.
+Step 3: Q3 EBITDA margin = $12M / $195M = 6.15%.
+Step 4: Therefore Q3 profitability collapsed from the H1 margin of 20% to 6.15%.
+
+
+
+
+Audit the analysis. Identify the first incorrect step, calculate the correct Q3 margin.","{
+    ""first_incorrect_step"": ""Step 3"",
+    ""correct_q3_margin"": ""16.00%""
+}","Revenue_Q3 = Revenue_9M−Revenue_H1.
+EBITDA_Q3 = EBITDA_9M−EBITDA_H1.
+Margin_Q3 = EBITDA_Q3/Revenue_Q3.
+Margin_H1 = EBITDA_H1/Revenue_H1.
+Audit objective: preserve valid upstream derivations, identify the first period-alignment error, and reassess downstream conclusions using corrected values.",H1 and 9M cumulative revenue/EBITDA + analyst steps → Derive standalone Q3 revenue → Derive standalone Q3 EBITDA → Verify Steps 1–2 → Check Step 3 numerator/denominator period alignment → Identify cumulative-vs-standalone denominator error → Recompute Q3 margin → Compare with H1 margin → Reassess downstream profitability conclusion,text,Corporate Finance,Financial Statement Analysis,Period-alignment auditing and denominator consistency,hierarchical_error_detection,derive standalone quarter values → verify intermediate steps → detect cumulative-vs-standalone denominator mismatch → recompute margin → reassess conclusion,5,reasoning_trace,period_alignment,none,dependency_graph,currency_scaling,High,structured_multi_output,3,3,2,3,0,2,1,2,16,,
+risk-102,"A lender estimates a borrower's prior one-year probability of default (PD) at 2%. A new warning signal is observed. Historical validation shows:
+
+P(signal | default) = 70%
+P(signal | no default) = 10%
+
+
+The exposure at default  is $10 million and loss given default  is 45%. The bank's policy rejects new lending if the updated PD exceeds 8%.
+Use Bayes' rule to compute the posterior PD after observing the signal, the updated expected loss, and the lending decision.","{
+    ""posterior_pd"": 0.125,
+    ""updated_expected_loss"": 562500.0,
+    ""lending_decision"": ""Reject""
+}","PD_post = P(S|D)P(D)/[P(S|D)P(D)+P(S|¬D)P(¬D)].
+EL = PD_post·LGD·EAD.
+Decision = reject if PD_post > 0.08; otherwise allow.",Prior PD + warning-signal likelihood under default/nondefault → Bayes numerator P(S|D)P(D) → Evidence probability P(S) → Posterior PD → Expected loss = posterior PD×LGD×EAD → Compare posterior PD with 8% policy threshold → Lending decision,number,Credit Risk,Credit Monitoring,Bayesian PD update and policy decision,bayesian_risk_updating,compute the Bayes numerator P(S|D)P(D) → compute total signal probability P(S) → normalize to posterior PD → compute expected loss using posterior PD×LGD×EAD → compare posterior PD with the lending threshold,5,scalar_parameters,state_update,bayesian_probability,threshold,percent_decimal_and_currency,High,structured_multi_output,3,3,0,2,3,2,1,2,16,,
+risk-103,"A portfolio contains two $5 million loans, A and B. LGD is 50% for both. The economy can be in:
+
+- Normal state with probability 80%: PD(A)=2%, PD(B)=3%
+- Stress state with probability 20%: PD(A)=15%, PD(B)=20%
+
+Assume A and B defaults are conditionally independent given the macro state.
+
+Compute (1) the unconditional PD of each loan, (2) total expected loss, and (3) the unconditional probability that both loans default. Compare the joint-default probability with what would be obtained by incorrectly assuming unconditional independence."," {
+    ""unconditional_pd"": {
+        ""loan_a"": 0.046,  # 4.60%
+        ""loan_b"": 0.064,  # 6.40%
+    },
+    ""expected_loss"": {
+        ""loan_a"": 115000.0,  # $115,000
+        ""loan_b"": 160000.0,  # $160,000
+        ""total"": 275000.0,  # $275,000
+    },
+    ""joint_default_probability"": {
+        ""true_conditional_model"": 0.00648,  # 0.6480%
+        ""naive_unconditional_independence"": 0.002944,  # 0.2944%
+        ""absolute_difference"": 0.003536,  # +0.3536% (Covariance)
+ 
+    },
+}","PD_i = Σ_s P(s)·PD_i|s.
+EL_total = Σ_i EAD_i·LGD_i·PD_i.
+Under conditional independence given state s:
+P(A∩B) = Σ_s P(s)·PD_A|s·PD_B|s.
+Naive unconditional-independence benchmark = PD_A·PD_B.",Macro-state probabilities + state-conditional PDs for loans A/B + EAD/LGD → [Marginalize PD(A) over states | Marginalize PD(B) over states] → Expected loss for each loan → Total expected loss; Macro states + conditional independence → State-specific joint-default probabilities → Unconditional joint-default probability → Naive product of marginal PDs → Compare dependence effect,number,Credit Risk,Portfolio Credit Risk,Systematic-factor dependence and joint default risk,probabilistic_scenario_reasoning,marginalize Loan A’s PD over macro states → marginalize Loan B’s PD over macro states → compute total expected credit loss → compute the state-weighted joint-default probability → compute the naive product of unconditional PDs → compare the two dependence estimates,6,scenario_set,single_horizon,conditional_probability,branching,percent_decimal_and_currency,High,structured_multi_output,4,3,2,1,3,2,1,2,18,,
+risk-104,"Under a simplified regulatory framework:
+
+1. A performing corporate exposure receives a 100% risk weight.
+2. A performing exposure fully secured by qualifying residential property receives a 35% risk weight.
+3. If an exposure is more than 90 days past due, this past-due rule overrides the performing-exposure rules:
+  - the qualifying secured portion receives a 100% risk weight;
+  - the unsecured portion receives a 150% risk weight.
+
+
+A $10 million corporate exposure is 60% secured by qualifying residential property and 40% unsecured. It is currently 100 days past due.
+
+Calculate total risk-weighted assets (RWA). ","{
+    ""total_rwa"": 12000000
+}","E=10M; E_sec=0.60E=6M; E_unsec=0.40E=4M.
+Since DPD>90, apply the past-due override:
+RW_sec=1.00; RW_unsec=1.50.
+RWA = E_sec·RW_sec + E_unsec·RW_unsec = 12M.",Exposure amount + secured/unsecured split + performing risk weights + >90-DPD override → Classify exposure as past due → Apply override instead of performing rules → Split exposure into secured and unsecured portions → [Secured RWA at 100% | Unsecured RWA at 150%] → Sum RWA → Explain rule precedence,number,Credit Risk,Regulatory Capital,Rule hierarchy and past-due override,rule_hierarchy_reasoning,classify exposure status → identify overriding rule → split secured/unsecured portions → apply override risk weights → aggregate RWA,5,rule_text_plus_parameters,none,none,rule_precedence,percent_decimal_and_currency,High,structured_multi_output,3,3,2,0,0,3,2,3,16,,
+risk-105,"Please perform a complete Expected Credit Loss (ECL) calculation for a corporate borrower with the following parameters:
+
+
+- Exposure at Default (EAD): $8,000,000 (assuming a 5-year bullet loan amortizing at 0% per year for simplicity, meaning EAD remains constant at $8,000,000).
+- 1-Year Probability of Default (PD): 3.0%
+- Loss Given Default (LGD): 40%
+- Effective Interest Rate (EIR): 6.0% per annum
+
+
+Please calculate:
+ A multi-step Lifetime Expected Credit Loss (Stages 2 & 3 ECL) over a 5-year horizon.
+- Assume cumulative/marginal term structure of PDs for Years 1 through 5 (e.g., Year 1: 3.0%, Year 2: 4.5%, Year 3: 6.0%, Year 4: 7.5%, Year 5: 9.0%).
+- Show the step-by-step cash flow / loss discounting table for each year using the 6.0% EIR.
+- Sum these discounted losses to provide the final total Lifetime ECL numerical value.
+
+
+Present the breakdown clearly using markdown tables and formulas.","{
+    ""pd_term_structure"": {
+        ""Year 1"": {""cumulative_pd"": 0.030, ""marginal_pd"": 0.030},
+        ""Year 2"": {""cumulative_pd"": 0.045, ""marginal_pd"": 0.015},
+        ""Year 3"": {""cumulative_pd"": 0.060, ""marginal_pd"": 0.015},
+        ""Year 4"": {""cumulative_pd"": 0.075, ""marginal_pd"": 0.015},
+        ""Year 5"": {""cumulative_pd"": 0.090, ""marginal_pd"": 0.015},
+    },
+    ""cash_flow_loss_discounting_table"": [
+        {
+            ""year"": 1,
+            ""marginal_pd"": 0.030,
+            ""gross_loss"": 3200000.0,
+            ""undiscounted_loss"": 96000.0,
+            ""discount_factor_6_pct"": 0.943396,
+            ""discounted_loss"": 90566.04,
+        },
+        {
+            ""year"": 2,
+            ""marginal_pd"": 0.015,
+            ""gross_loss"": 3200000.0,
+            ""undiscounted_loss"": 48000.0,
+            ""discount_factor_6_pct"": 0.889996,
+            ""discounted_loss"": 42719.83,
+        },
+        {
+            ""year"": 3,
+            ""marginal_pd"": 0.015,
+            ""gross_loss"": 3200000.0,
+            ""undiscounted_loss"": 48000.0,
+            ""discount_factor_6_pct"": 0.839619,
+            ""discounted_loss"": 40301.73,
+        },
+        {
+            ""year"": 4,
+            ""marginal_pd"": 0.015,
+            ""gross_loss"": 3200000.0,
+            ""undiscounted_loss"": 48000.0,
+            ""discount_factor_6_pct"": 0.792094,
+            ""discounted_loss"": 38020.50,
+        },
+        {
+            ""year"": 5,
+            ""marginal_pd"": 0.015,
+            ""gross_loss"": 3200000.0,
+            ""undiscounted_loss"": 48000.0,
+            ""discount_factor_6_pct"": 0.747258,
+            ""discounted_loss"": 35868.40,
+        },
+    ],
+    ""total_lifetime_ecl"": 247476.50,
+}
+","Let C_t be cumulative PD by year-end t, with C_0=0.
+Marginal default probability: m_t = C_t − C_{t−1}.
+EL_t = EAD_t · LGD · m_t.
+DF_t = (1+EIR)^(−t).
+Lifetime ECL = Σ_{t=1}^5 EL_t·DF_t.
+Here EAD_t=8M, LGD=0.40, EIR=0.06.",Five-year cumulative PD term structure + constant EAD + LGD + 6% EIR → Convert cumulative PDs to year-by-year marginal default probabilities → {For each year: expected loss = EAD×LGD×marginal PD} → {Discount each yearly loss at its year-specific EIR factor} → Discounted annual ECL schedule → Sum discounted losses → Lifetime ECL,table,Credit Risk,Expected Credit Loss,Lifetime ECL from a cumulative PD term structure,discounted_expected_loss,interpret cumulative PD term structure → convert to marginal PDs → compute annual expected losses → discount each loss → sum lifetime ECL,5,table,multi_period,default_term_structure,none,percent_decimal,High,table_and_numeric,3,2,1,2,3,0,1,3,15,,
+risk-106,"Calculate the 1-year probability of default using the Merton model for a firm with Market Capitalization (Equity) of $172, Face Value of Debt of $100, asset volatility of 40%, and a risk-free rate of 8%","{
+    ""probability_of_default"": 0.007568,
+    ""probability_of_default_pct"": ""0.76%""
+}","E = V_A N(d1) − D e^(−rT) N(d2),
+d1 = [ln(V_A/D)+(r+0.5σ_A²)T]/(σ_A√T),
+d2 = d1 − σ_A√T.
+Given E=172, D=100, σ_A=0.40, r=0.08, T=1, solve numerically for V_A.
+PD_1y = N(−d2).",Equity market value + debt face value + asset volatility + risk-free rate → Set up Merton equity-as-call equation → Numerically solve for latent asset value V_A → Compute d1 → Compute d2 → Normal lower-tail Φ(−d2) → One-year probability of default,number,Credit Risk,Structural Credit Models,Merton one-year probability of default,probabilistic_modeling,set up Merton equity equation → solve latent asset value → compute d1 → compute d2 → map distance-to-default to normal tail probability,5,scalar_parameters,single_horizon,structural_stochastic,threshold,percent_decimal,High,numeric_with_intermediates,3,3,0,1,3,1,1,3,15,,
+risk-107,"A derivatives counterparty has two possible macro states. In the normal state (80% probability), exposure at default is $4M and one-year PD is 2%. In the stress state (20%), exposure is $10M and PD is 12%. LGD is 60% in both states. Calculate expected credit loss using the state dependence. Then calculate the naive loss obtained by multiplying average PD, average exposure, and LGD, and quantify the understatement.","
+results = {
+    ""state_dependent_el"": 182400.0,
+    ""average_ead"": 5200000.0,
+    ""naive_el"": 124800.0,
+    ""understatement"": {
+        ""absolute"": 57600.0, 
+    },
+}
+
+","Let s∈{N,S}. EL=Σ_s p_s·PD_s·LGD·EAD_s. Naive=LGD·(Σ_s p_sPD_s)·(Σ_s p_sEAD_s). Understatement=EL−Naive.","I1={p_N,p_S}; I2={PD_N,PD_S}; I3={EAD_N,EAD_S}; I4=LGD → N1=EL_N → N2=EL_S → N3=EL=N1+N2. In parallel N4=E[PD], N5=E[EAD] → N6=Naive=LGD·N4·N5 → N7=Understatement=N3−N6.",number,Counterparty Credit Risk,Wrong-Way Risk,State-dependent exposure–default correlation,conditional_dependence_reasoning,condition expected loss on each macro state → compute the normal-state expected loss → compute the stress-state expected loss → probability-weight and sum the state losses → compute the product-of-marginals approximation → compare true state-conditioned loss with the naive approximation,6,scenario_set,single_horizon,conditional_probability,state_dependent_exposure_and_PD,percent_decimal_and_currency,High,structured_multi_output,4,4,2,1,3,3,1,3,21,Risk Propagation & Cascades,Exposure and PD co-move in the same macro state; preserving the dependency structure is essential because multiplying marginal averages understates loss.
+risk-108,"Under a simplified CSA, required collateral each day is max(Exposure−$1.0M,0). Current posted collateral changes only if the absolute difference between required and posted collateral is at least the $0.5M minimum transfer amount (MTA); otherwise no transfer occurs. Calls or returns settle immediately. Starting collateral is zero. Exposures on Days 1–5 are $2.6M, $3.4M, $3.1M, $5.1M, and $1.3M. Track required collateral, calls/returns, and posted collateral each day.","{
+    ""Day 1"": {
+        ""exposure"": 2.6,
+        ""required_collateral"": 1.6,
+        ""call_or_return"": 1.6,  # Call of $1.6M
+        ""posted_collateral"": 1.6,
+    },
+    ""Day 2"": {
+        ""exposure"": 3.4,
+        ""required_collateral"": 2.4,
+        ""call_or_return"": 0.8,  # Call of $0.8M
+        ""posted_collateral"": 2.4,
+    },
+    ""Day 3"": {
+        ""exposure"": 3.1,
+        ""required_collateral"": 2.1,
+        ""call_or_return"": 0.0,  # No transfer (below $0.5M MTA)
+        ""posted_collateral"": 2.4,
+    },
+    ""Day 4"": {
+        ""exposure"": 5.1,
+        ""required_collateral"": 4.1,
+        ""call_or_return"": 1.7,  # Call of $1.7M
+        ""posted_collateral"": 4.1,
+    },
+    ""Day 5"": {
+        ""exposure"": 1.3,
+        ""required_collateral"": 0.3,
+        ""call_or_return"": -3.8,  # Return of $3.8M
+        ""posted_collateral"": 0.3,
+    },
+}","R_t=max(E_t−1,0). Δ_t=R_t−C_{t−1}. If |Δ_t|≥0.5, Transfer_t=Δ_t and C_t=R_t; else Transfer_t=0 and C_t=C_{t−1}.",Exposure_t → required collateral R_t; R_t + prior posted C_{t−1} → difference Δ_t → MTA test → {call/return/no action} → posted collateral C_t → feed C_t into next day.,table,Counterparty Credit Risk,Collateral Management,CSA threshold and minimum-transfer state dynamics,temporal_state_machine,"compute required collateral for the day → compute the difference from prior posted collateral → apply the minimum-transfer-amount deadband → determine call, return, or no-action transfer → update posted collateral → carry the updated collateral state to the next day",6,event_sequence,sequential_periods,none,deadband_threshold,currency_scaling,High,table,4,5,2,4,0,4,1,3,23,Regime Switching & Threshold Logic,The next collateral action depends on both current required collateral and previously posted collateral; the MTA creates a no-action band.
+risk-109,"A counterparty exposure is €8M, while collateral is $9M of USD securities. Initially EUR/USD is 1.10 and the collateral haircut is 5%. In stress, EUR/USD rises to 1.25 and the haircut increases to 12%. The uncollateralized exposure limit is $1.5M. Calculate uncollateralized exposure before and after stress and determine whether the limit is breached.","result = {
+    ""uncollateralized_exposure_before_stress_usd"": 250_000.0,
+    ""uncollateralized_exposure_after_stress_usd"": 2_080_000.0,
+    ""is_limit_breached"": True,
+}","E_USD=E_EUR·FX. C_elig=MV_USD·(1−h). U=max(E_USD−C_elig,0). Breach=max(U−1.5,0).",FX state → convert exposure; haircut state → eligible collateral; exposure + collateral → unsecured amount → limit test. Compare normal and stressed states.,number,Counterparty Credit Risk,Cross-Currency Collateral Risk,FX–haircut wrong-way collateral risk,multi_factor_stress_reasoning,convert exposure currency → apply state-dependent haircut → compute unsecured exposure → compare across states → test limit,5,scenario_pair,state_transition,none,joint_stress_state,fx_currency_and_percent,High,structured_multi_output,3,4,2,2,0,3,2,3,19,Regime Switching & Threshold Logic,"The FX move increases exposure while a simultaneous haircut change reduces eligible collateral, creating a jointly amplified shortfall."
+risk-110,"A corporate-bond position has risk-free-rate DV01 of $12,000 per bp and credit-spread DV01 of $8,000 per bp. It is hedged with a short Treasury position whose rate DV01 is also $12,000 per bp and whose spread DV01 is zero. Under stress, risk-free yields rise 25 bp and the corporate credit spread widens 40 bp. Using linear DV01 approximations, calculate the bond P&L, hedge P&L, net P&L, and whether a $250,000 stress-loss limit is breached.","{
+    ""bond_pnl"": -620000,
+    ""hedge_pnl"": 300000,
+    ""net_pnl"": -320000,
+    ""limit_breached"": True
+}",ΔV_bond≈−DV01_r·Δr−DV01_s·Δs. ΔV_hedge≈+DV01_h·Δr. ΔV_net=ΔV_bond+ΔV_hedge.,Rate shock → bond rate loss + Treasury hedge gain → rate cancellation. Spread shock → corporate spread loss only. Combine residual → stress-loss limit test.,number,Market Risk,Hedging & Basis Risk,Residual spread risk after duration hedge,risk_decomposition,map shocks to sensitivities → compute component P&L → offset hedgeable factor → retain residual factor → test stress limit,5,factor_sensitivities,single_horizon,none,none,basis_points_and_currency,High,structured_multi_output,3,4,2,1,0,0,2,3,15,Risk Propagation & Cascades,The Treasury hedge neutralizes rate risk but leaves credit-spread risk; reasoning must decompose which factor is transferred and which remains.
+risk-111,"A fund has $120M of risky assets financed by $70M debt, so equity is $50M. Debt is fixed. A market shock of x% reduces the risky-asset value proportionally. The fund's maximum Assets/Equity leverage is 3.0×. What is the largest percentage asset-value shock that leaves leverage at or below 3.0×?","{
+    ""largest_percentage_asset_value_shock"": ""12.5%""
+}",A(x)=120(1−x); E(x)=A(x)−70=50−120x; L(x)=A(x)/E(x). Find x* such that L(x*)=3.,Shock variable x → stressed assets → stressed equity → leverage expression → invert leverage constraint → critical shock x* → interpret shocks above x*.,number,Market Risk,Reverse Stress Testing,Critical shock to leverage-limit breach,inverse_constraint_reasoning,parameterize stressed assets as a function of shock x → derive stressed equity with debt fixed → formulate the leverage ratio as a function of x → solve the 3× leverage boundary for the critical shock → verify and interpret the boundary,5,scalar_parameters,single_horizon,none,constraint_boundary,percent_decimal_and_currency,High,numeric_with_intermediates,3,4,0,1,0,3,1,3,15,Regime Switching & Threshold Logic,"Rather than applying a supplied shock, the task solves backward for the smallest shock that reaches the leverage boundary."
+risk-112,"A bank has CET1 capital of $12M and RWA of $120M. Under stress, a credit loss of $1.5M is deducted from CET1 and rating migration raises RWA by $20M. Internal capital regimes are Green at CET1 ratio ≥9%, Amber at 8% to <9%, and Red below 8%. Calculate the ratio and regime under (i) loss only, (ii) RWA increase only, and (iii) both effects together.","{
+    ""loss_only"": {
+        ""cet1_ratio"": 0.0875,
+        ""cet1_ratio_pct"": ""8.75%"",
+        ""regime"": ""Amber"",
+    },
+    ""rwa_increase_only"": {
+        ""cet1_ratio"": 0.085714,
+        ""cet1_ratio_pct"": ""8.57%"",
+        ""regime"": ""Amber"",
+    },
+    ""both_effects"": {
+        ""cet1_ratio"": 0.075,
+        ""cet1_ratio_pct"": ""7.50%"",
+        ""regime"": ""Red"",
+    },
+}",r=CET1/RWA. r_loss=(12−1.5)/120. r_RWA=12/(120+20). r_joint=(12−1.5)/(120+20). Map each r to regime thresholds.,"Baseline CET1,RWA → branch A: capital loss → ratio; branch B: RWA migration → ratio; joint branch combines both → ratio → regime mapping → compare interaction.",table,Regulatory & Capital Risk,Capital Adequacy,Joint numerator–denominator capital stress,interaction_effect_reasoning,update CET1 → update RWA → compute counterfactual ratios → apply regime thresholds → identify interaction-only regime change,5,counterfactual_scenarios,state_transition,none,multi_threshold_regime,percent_decimal_and_currency,High,table_and_categorical,3,4,2,2,0,3,1,3,18,Regime Switching & Threshold Logic,"Capital loss and RWA inflation interact; each alone gives Amber, while their combination crosses the Red threshold."
+risk-113,"A firm suffers three operational losses in sequence: $3M, $7M, and $12M. Insurance has a $2M deductible per event, pays 80% of the amount above the deductible, and has a $10M annual aggregate payout cap. Apply the policy sequentially. Compute insurer recovery on each event, total net loss to the firm, and whether a $11M annual net-loss risk limit is breached.","{
+    ""insurer_recovery_per_event"": {
+        ""event_1"": 0.8,
+        ""event_2"": 4.0,
+        ""event_3"": 5.2,
+    },
+    ""total_insurer_recovery"": 10.0,
+    ""total_net_loss"": 12.0,
+    ""risk_limit_breached"": True,
+}","ProvRec_i=0.8·max(L_i−2,0). Rec_i=min(ProvRec_i,10−Σ_{j<i}Rec_j). Net=ΣL_i−ΣRec_i.",Each event loss → deductible → coinsurance → provisional recovery → remaining aggregate cap → actual recovery → update cap state; after final event aggregate net loss → risk-limit test.,table,Operational Risk,Risk Transfer & Insurance,Insurance recovery waterfall with aggregate cap,waterfall_state_reasoning,apply the per-event deductible → apply the insurance coinsurance rate → compute provisional recovery for each event → cap recovery by the remaining aggregate policy limit → update remaining aggregate coverage after each event → aggregate net losses after recoveries → compare net loss with the risk limit,7,event_sequence,sequential_events,none,aggregate_cap,percent_decimal_and_currency,High,table_and_numeric,4,5,2,4,0,3,1,3,22,Risk Propagation & Cascades; Regime Switching & Threshold Logic,"Each insurance recovery consumes the remaining annual cap, changing the payout available for later events; the cap becomes a carried-forward state."
+risk-114,"A portfolio's approved VaR model reports $4.8M, while a challenger model reports $6.6M. Under the firm's model-risk policy, if (Challenger − Approved) / Approved exceeds 25%, an override activates and the effective risk number becomes the larger model output. Given a portfolio VaR limit of $6.0M, calculate and report only the Model Discrepancy Percentage, the Effective VaR, and the Limit Status (including the breached or underutilized dollar amount).","{
+""model_discrepancy_percentage"": 37.5,
+    ""effective_var_million"": 6.6,
+    ""limit_status"": {
+        ""breach_amount_million"": 0.6
+}","Gap=(V_c−V_a)/V_a. Override=1[Gap>0.25]. V_eff=max(V_a,V_c) if Override else V_a. Breach=max(V_eff−6,0).",Approved model + challenger model → disagreement ratio → governance threshold → override state → effective risk metric → portfolio limit test.,number,Model Risk,Model Governance,Challenger-model override and limit escalation,governance_rule_reasoning,compute model disagreement → apply override threshold → select effective model output → test risk limit → compare with no-override status,5,rule_text_plus_parameters,state_transition,none,governance_override,percent_decimal_and_currency,High,structured_multi_output,3,5,2,2,0,4,1,3,20,Cross-Risk Interaction & Dependency,"Model disagreement itself crosses a governance threshold, changing which risk number is authoritative and therefore the portfolio's limit status."
+risk-115,"Before a proposed OTC hedge, a desk has market VaR of $6.0M (limit: $5.0M) and counterparty PFE of $1.0M (limit: $2.5M). The hedge reduces market VaR by $2.2M and increases PFE by $2.0M. Calculate the total dollar amount (in $M) by which risk limits are breached after executing the hedge.","{
+    ""total_breach"": 0.5
+}","VaR_1=6.0−2.2=3.8. PFE_1=1.0+2.0=3.0. MarketBreach_t=max(VaR_t−5,0). CPBreach_t=max(PFE_t−2.5,0).",Pre-hedge market metric → market-limit test; pre-hedge counterparty metric → PFE-limit test. Hedge action branches to VaR reduction and PFE increase → retest both constraints → compare which constraint binds.,number,Enterprise Risk Management,Cross-Risk Trade-offs,Hedge-induced risk transfer across limits,multi_constraint_reasoning,evaluate the pre-hedge market-risk limit → evaluate the pre-hedge counterparty-risk limit → apply the hedge’s VaR reduction and PFE increase → retest both limits after the hedge → identify how the binding constraint shifts across risk dimensions,5,before_after_state,state_transition,none,multiple_constraints,currency_scaling,High,scalar_numeric,3,5,2,2,0,4,1,3,20,Regime Switching & Threshold Logic; Risk Propagation & Cascades,A hedge removes one binding risk limit but creates another; the action transfers rather than eliminates risk across constraints.
+risk-116,"Compute the ATR, overnight gap, and high-low range for the following dataset and Report for 2026-10-12,2026-10-28, 2026-10-15 :
+
+Date,Open,High,Low,Close,Volume,Daily Chg
+2026-10-01,""5,798.24"",""5,832.10"",""5,774.50"",""5,818.42"",""4,215,800,000"",+0.32%
+2026-10-02,""5,824.15"",""5,860.90"",""5,815.10"",""5,855.30"",""4,180,240,000"",+0.63%
+2026-10-05,""5,848.90"",""5,872.40"",""5,820.65"",""5,834.12"",""4,310,750,000"",-0.36%
+2026-10-06,""5,831.05"",""5,858.70"",""5,795.30"",""5,802.45"",""4,522,100,000"",-0.54%
+2026-10-07,""5,812.30"",""5,845.60"",""5,804.10"",""5,840.15"",""4,098,300,000"",+0.65%
+2026-10-08,""5,846.50"",""5,888.20"",""5,839.00"",""5,876.80"",""4,380,120,000"",+0.63%
+2026-10-09,""5,870.20"",""5,892.45"",""5,850.10"",""5,861.30"",""4,140,900,000"",-0.26%
+2026-10-12,""5,858.40"",""5,885.10"",""5,842.20"",""5,879.40"",""4,165,800,000"",+0.31%
+2026-10-13,""5,882.10"",""5,914.30"",""5,865.00"",""5,905.25"",""4,320,600,000"",+0.44%
+2026-10-14,""5,910.40"",""5,942.00"",""5,898.70"",""5,930.10"",""4,289,500,000"",+0.42%
+2026-10-15,""5,922.80"",""5,938.50"",""5,870.15"",""5,882.60"",""4,612,400,000"",-0.80%
+2026-10-16,""5,875.10"",""5,899.40"",""5,852.30"",""5,890.15"",""4,240,700,000"",+0.13%
+2026-10-19,""5,895.30"",""5,928.60"",""5,880.00"",""5,918.40"",""4,295,300,000"",+0.48%
+2026-10-20,""5,924.10"",""5,955.70"",""5,908.20"",""5,948.90"",""4,315,600,000"",+0.52%
+2026-10-21,""5,940.60"",""5,960.20"",""5,892.40"",""5,904.30"",""4,580,200,000"",-0.75%
+2026-10-22,""5,912.00"",""5,941.50"",""5,895.80"",""5,932.10"",""4,260,900,000"",+0.47%
+2026-10-23,""5,938.40"",""5,972.10"",""5,925.30"",""5,965.80"",""4,330,400,000"",+0.57%
+2026-10-26,""5,970.20"",""6,005.40"",""5,958.10"",""5,992.50"",""4,395,100,000"",+0.45%
+2026-10-27,""5,988.50"",""6,012.30"",""5,964.70"",""5,978.20"",""4,305,800,000"",-0.24%
+2026-10-28,""5,972.10"",""5,994.80"",""5,935.60"",""5,950.40"",""4,410,200,000"",-0.46%
+2026-10-29,""5,958.30"",""5,998.20"",""5,945.10"",""5,989.60"",""4,365,400,000"",+0.66%
+2026-10-30,""5,992.00"",""6,025.10"",""5,978.40"",""6,014.20"",""4,378,900,000"",+0.41%
+
+"," {
+    ""2026-10-12"": {
+        ""ATR"": None,  # Insufficient history for standard 14-period ATR (only 8 sessions)
+        ""overnight_gap"": -2.90,
+        ""high_low_range"": 42.90,
+    },
+    ""2026-10-28"": {
+        ""ATR"": 50.81,
+        ""overnight_gap"": -6.10,
+        ""high_low_range"": 59.20,
+    },
+    ""2026-10-15"": {
+        ""ATR"": None,  # Insufficient history for standard 14-period ATR (only 11 sessions)
+        ""overnight_gap"": -7.30,
+        ""high_low_range"": 68.35,
+    },
+}","Given: ordered daily OHLC data. For day t>1 define TrueRange_t=max(H_t−L_t, |H_t−C_{t−1}|, |L_t−C_{t−1}|); for the first day use H_1−L_1. Define Gap_t=O_t−C_{t−1} and Range_t=H_t−L_t.
+Find: ATR_14, overnight gap, and high-low range on the requested dates.
+Formalize: seed Wilder ATR after 14 true-range observations as ATR_14=(1/14)Σ_{i=1}^{14}TR_i; thereafter ATR_t=(13·ATR_{t−1}+TR_t)/14. If fewer than 14 true-range observations exist, ATR is undefined.",Ordered OHLC sessions → Previous-close alignment → [True range → 14-period Wilder ATR state | Open−previous-close overnight gap | High−low intraday range] → Extract requested dates and mark ATR unavailable before initialization,table,Capital Markets & Trading,Technical Analysis,"Average true range, overnight gap, and high-low range",time_series_transformation,"order trading sessions → compute previous-close alignment, true range, overnight gap, and high-low range → seed ATR from the first 14 true ranges → recursively update Wilder ATR thereafter → extract the requested dates",5,time_series,rolling_window,none,threshold,none,Moderate,table,3,2,2,3,0,1,0,1,12,,
+risk-117,"""Compute the correlation matrix for this dataset and format it as an X×X table.
+
+Date,SYN_SP500,SYN_NASDAQ,SYN_RUSSELL2000,SYN_RUSSELL1000
+2026-09-01 (Start),$500.00,$400.00,$200.00,$250.00
+2026-09-02,$502.48,$404.12,$198.85,$251.29
+2026-09-03,$498.15,$398.70,$195.42,$249.03
+2026-09-04,$501.90,$403.65,$197.80,$250.91
+2026-09-07,$505.74,$409.82,$201.15,$252.88
+2026-09-08,$503.22,$406.10,$199.30,$251.58
+2026-09-09,$507.89,$412.35,$203.45,$253.99
+2026-09-10,$512.60,$419.04,$206.12,$256.37
+2026-09-11,$509.45,$413.78,$202.90,$254.74
+2026-09-14,$511.20,$416.50,$204.88,$255.62
+2026-09-15,$508.31,$411.95,$201.76,$254.10
+2026-09-16,$504.60,$406.24,$197.40,$252.20
+2026-09-17,$506.95,$410.15,$199.65,$253.44
+2026-09-18,$510.82,$415.60,$203.10,$255.40
+2026-09-21,$513.75,$419.80,$205.75,$256.92
+2026-09-22,$511.40,$416.32,$203.05,$255.70
+2026-09-23,$508.10,$411.20,$199.80,$254.02
+2026-09-24,$512.35,$417.90,$204.50,$256.21
+2026-09-25,$515.60,$423.10,$207.95,$257.85
+2026-09-28,$518.25,$427.45,$210.30,$259.20
+2026-09-29,$516.40,$424.15,$207.60,$258.15
+2026-09-30,$520.15,$430.20,$211.45,$260.10
+"," {
+    ""SYN_SP500"": {
+        ""SYN_SP500"": 1.0,
+        ""SYN_NASDAQ"": 0.996,
+        ""SYN_RUSSELL2000"": 0.9537,
+        ""SYN_RUSSELL1000"": 0.9999,
+    },
+    ""SYN_NASDAQ"": {
+        ""SYN_SP500"": 0.996,
+        ""SYN_NASDAQ"": 1.0,
+        ""SYN_RUSSELL2000"": 0.9555,
+        ""SYN_RUSSELL1000"": 0.9964,
+    },
+    ""SYN_RUSSELL2000"": {
+        ""SYN_SP500"": 0.9537,
+        ""SYN_NASDAQ"": 0.9555,
+        ""SYN_RUSSELL2000"": 1.0,
+        ""SYN_RUSSELL1000"": 0.9542,
+    },
+    ""SYN_RUSSELL1000"": {
+        ""SYN_SP500"": 0.9999,
+        ""SYN_NASDAQ"": 0.9964,
+        ""SYN_RUSSELL2000"": 0.9542,
+        ""SYN_RUSSELL1000"": 1.0,
+    },
+}","Given: price levels P_{j,t} for four synthetic equity indexes j.
+Find: the 4×4 Pearson correlation matrix of daily simple returns.
+Formalize: r_{j,t}=P_{j,t}/P_{j,t−1}−1. For each pair (i,j), ρ_{ij}=Cov(r_i,r_j)/(σ_iσ_j); set ρ_{ii}=1 and assemble the symmetric matrix.",Four index price series → Align dates → Convert each series to daily simple returns → Compute pairwise Pearson correlations → Assemble symmetric 4×4 correlation matrix,table,Investments & Portfolio Management,Portfolio Theory,Correlation matrix across market-index price series,descriptive_statistics,align the four price series by date → convert prices to daily simple returns → compute each pairwise Pearson correlation → assemble and format the 4×4 matrix,4,time_series,sequential_periods,none,none,none,Low,table,2,1,2,1,0,0,0,0,6,,
+risk-118,"Run an OLS regression of SP500 on SYN_NASDAQ, reporting the coefficient estimates and corresponding t-values.
+
+Date,SYN_SP500,SYN_NASDAQ,SYN_RUSSELL2000,SYN_RUSSELL1000
+2026-09-01 (Start),$500.00,$400.00,$200.00,$250.00
+2026-09-02,$502.48,$404.12,$198.85,$251.29
+2026-09-03,$498.15,$398.70,$195.42,$249.03
+2026-09-04,$501.90,$403.65,$197.80,$250.91
+2026-09-07,$505.74,$409.82,$201.15,$252.88
+2026-09-08,$503.22,$406.10,$199.30,$251.58
+2026-09-09,$507.89,$412.35,$203.45,$253.99
+2026-09-10,$512.60,$419.04,$206.12,$256.37
+2026-09-11,$509.45,$413.78,$202.90,$254.74
+2026-09-14,$511.20,$416.50,$204.88,$255.62
+2026-09-15,$508.31,$411.95,$201.76,$254.10
+2026-09-16,$504.60,$406.24,$197.40,$252.20
+2026-09-17,$506.95,$410.15,$199.65,$253.44
+2026-09-18,$510.82,$415.60,$203.10,$255.40
+2026-09-21,$513.75,$419.80,$205.75,$256.92
+2026-09-22,$511.40,$416.32,$203.05,$255.70
+2026-09-23,$508.10,$411.20,$199.80,$254.02
+2026-09-24,$512.35,$417.90,$204.50,$256.21
+2026-09-25,$515.60,$423.10,$207.95,$257.85
+2026-09-28,$518.25,$427.45,$210.30,$259.20
+2026-09-29,$516.40,$424.15,$207.60,$258.15
+2026-09-30,$520.15,$430.20,$211.45,$260.10
+","{
+    ""const"": {
+        ""coef"": 222.838633,
+        ""t_value"": 48.591538
+    },
+    ""SYN_NASDAQ"": {
+        ""coef"": 0.692106,
+        ""t_value"": 62.425078
+    }
+}","Given: price-level observations y_t=SYN_SP500_t and x_t=SYN_NASDAQ_t.
+Find: OLS intercept β_0, slope β_1, and their t-statistics.
+Formalize: y_t=β_0+β_1x_t+ε_t. With design matrix X=[1,x], β̂=(X'X)^{-1}X'y. Estimate residual variance s²=SSE/(n−2), Var(β̂)=s²(X'X)^{-1}, SE_j=sqrt(Var(β̂)_{jj}), and t_j=β̂_j/SE_j.",SP500 and NASDAQ price levels → Construct dependent variable and intercept-augmented regressor matrix → OLS coefficient estimates → Residual variance and coefficient standard errors → Coefficient t-statistics,table,Investments & Portfolio Management,Statistical Modeling,OLS regression between market-index price series,statistical_modeling,select the SP500 dependent series and NASDAQ regressor → add an intercept and construct the OLS design → estimate coefficients → compute residual variance and coefficient standard errors → divide coefficients by their standard errors for t-values,5,time_series,none,none,none,none,Moderate,table,3,2,2,0,0,0,0,1,8,,
+risk-119,"Determine the asset allocations for the global minimum-variance portfolio and document the resulting weightings for long only and unconstrained.
+
+Date,SYN_SP500,SYN_NASDAQ,SYN_RUSSELL2000,SYN_RUSSELL1000
+2026-09-01 (Start),$500.00,$400.00,$200.00,$250.00
+2026-09-02,$502.48,$404.12,$198.85,$251.29
+2026-09-03,$498.15,$398.70,$195.42,$249.03
+2026-09-04,$501.90,$403.65,$197.80,$250.91
+2026-09-07,$505.74,$409.82,$201.15,$252.88
+2026-09-08,$503.22,$406.10,$199.30,$251.58
+2026-09-09,$507.89,$412.35,$203.45,$253.99
+2026-09-10,$512.60,$419.04,$206.12,$256.37
+2026-09-11,$509.45,$413.78,$202.90,$254.74
+2026-09-14,$511.20,$416.50,$204.88,$255.62
+2026-09-15,$508.31,$411.95,$201.76,$254.10
+2026-09-16,$504.60,$406.24,$197.40,$252.20
+2026-09-17,$506.95,$410.15,$199.65,$253.44
+2026-09-18,$510.82,$415.60,$203.10,$255.40
+2026-09-21,$513.75,$419.80,$205.75,$256.92
+2026-09-22,$511.40,$416.32,$203.05,$255.70
+2026-09-23,$508.10,$411.20,$199.80,$254.02
+2026-09-24,$512.35,$417.90,$204.50,$256.21
+2026-09-25,$515.60,$423.10,$207.95,$257.85
+2026-09-28,$518.25,$427.45,$210.30,$259.20
+2026-09-29,$516.40,$424.15,$207.60,$258.15
+2026-09-30,$520.15,$430.20,$211.45,$260.10
+
+"," {
+    ""unconstrained"": {
+        ""SYN_SP500"": 2.330142,
+        ""SYN_NASDAQ"": -1.085821,
+        ""SYN_RUSSELL2000"": -0.037043,
+        ""SYN_RUSSELL1000"": -0.207278,
+    },
+    ""long_only"": {
+        ""SYN_SP500"": 1.0,
+        ""SYN_NASDAQ"": 0.0,
+        ""SYN_RUSSELL2000"": 0.0,
+        ""SYN_RUSSELL1000"": 0.0,
+    },
+}","Given: four index price series P_t. Convert to daily simple-return vectors r_t and estimate the sample covariance matrix Σ.
+Find: global minimum-variance (GMV) weights under (a) only the full-investment constraint and (b) full investment plus long-only constraints.
+Formalize: unconstrained GMV w* = Σ^{-1}1/(1'Σ^{-1}1). Long-only GMV solves min_w w'Σw subject to 1'w=1 and w_i≥0 for all i.",Four index price series → Daily simple returns → Sample return covariance matrix Σ → [Closed-form unconstrained GMV weights | Constrained long-only variance minimization] → Two portfolio weight vectors,table,Investments & Portfolio Management,Portfolio Theory,Global minimum-variance portfolio under long-only and unconstrained constraints,optimization_allocation,convert aligned price series to daily simple returns → estimate the return covariance matrix → solve the full-investment unconstrained GMV formula → solve the long-only constrained variance-minimization problem → report both weight vectors,5,time_series,sequential_periods,none,rule_based,none,High,table,3,2,2,1,0,1,0,2,11,,
+risk-120,"Using the Akaike Information Criterion (AIC) or Schwarz Bayesian Information Criterion (BIC), determine the optimal lag structure for a multivariate VAR model with an intercept, testing lag orders from 0 to 3, and report the selected order for price and return.
+
+Date,SYN_SP500,SYN_NASDAQ,SYN_RUSSELL2000,SYN_RUSSELL1000
+2026-09-01 (Start),$500.00,$400.00,$200.00,$250.00
+2026-09-02,$502.48,$404.12,$198.85,$251.29
+2026-09-03,$498.15,$398.70,$195.42,$249.03
+2026-09-04,$501.90,$403.65,$197.80,$250.91
+2026-09-07,$505.74,$409.82,$201.15,$252.88
+2026-09-08,$503.22,$406.10,$199.30,$251.58
+2026-09-09,$507.89,$412.35,$203.45,$253.99
+2026-09-10,$512.60,$419.04,$206.12,$256.37
+2026-09-11,$509.45,$413.78,$202.90,$254.74
+2026-09-14,$511.20,$416.50,$204.88,$255.62
+2026-09-15,$508.31,$411.95,$201.76,$254.10
+2026-09-16,$504.60,$406.24,$197.40,$252.20
+2026-09-17,$506.95,$410.15,$199.65,$253.44
+2026-09-18,$510.82,$415.60,$203.10,$255.40
+2026-09-21,$513.75,$419.80,$205.75,$256.92
+2026-09-22,$511.40,$416.32,$203.05,$255.70
+2026-09-23,$508.10,$411.20,$199.80,$254.02
+2026-09-24,$512.35,$417.90,$204.50,$256.21
+2026-09-25,$515.60,$423.10,$207.95,$257.85
+2026-09-28,$518.25,$427.45,$210.30,$259.20
+2026-09-29,$516.40,$424.15,$207.60,$258.15
+2026-09-30,$520.15,$430.20,$211.45,$260.10
+
+","{
+    ""price_levels"": [
+        {""lag"": 0, ""AIC"": -5.964, ""BIC"": -5.765},
+        {""lag"": 1, ""AIC"": -8.102, ""BIC"": -7.108},
+        {""lag"": 2, ""AIC"": -7.917, ""BIC"": -6.127},
+        {""lag"": 3, ""AIC"": -15.104, ""BIC"": -12.519},
+    ],
+    ""returns"": [
+        {""lag"": 0, ""AIC"": -54.41, ""BIC"": -54.21},
+        {""lag"": 1, ""AIC"": -53.79, ""BIC"": -52.80},
+        {""lag"": 2, ""AIC"": -54.72, ""BIC"": -52.94},
+        {""lag"": 3, ""AIC"": -60.02, ""BIC"": -57.45},
+    ],
+}","Given: four aligned index price series and maximum candidate lag p_max=3.
+Find: the selected lag order for models fitted to price levels and to daily returns using AIC or BIC.
+Formalize: construct return vectors r_t=P_t/P_{t−1}−1. For each representation X∈{P,r} and p∈{0,1,2,3}, fit the same multivariate lag model and compute IC_X(p). Select p*_X=argmin_{p∈{0,1,2,3}} IC_X(p), separately for AIC/BIC as requested.",Aligned multivariate price series → [Price-level representation | Daily-return representation] → For each representation fit candidate lag orders 0–3 → Compute AIC/BIC for each candidate → Select minimum-IC lag → Report selected orders,table,Capital Markets & Trading,Time-Series Modeling,Lag-order selection using AIC/BIC,statistical_modeling,"prepare aligned price levels and derived daily returns → fit the candidate lag models for p=0,1,2,3 → compute AIC/BIC for every candidate → choose the minimum-IC lag for price levels → choose the minimum-IC lag for returns",5,time_series,lagged_dependency,none,none,none,High,table_and_numeric,3,2,2,3,0,0,0,2,12,,
+risk-125,"Using the daily simple returns r_t = P_t/P_{t-1} - 1 computed from the price table below, perform a Jarque–Bera normality test separately for each index return series. Use JB = n/6 × [g1^2 + g2^2/4], where g1 and g2 are moment skewness and excess kurtosis computed from central moments with 1/n normalization, and use the asymptotic chi-square distribution with 2 degrees of freedom. At alpha = 0.01, report each p-value to 4 decimals and state ""reject_normality"" if p < 0.01, otherwise ""fail_to_reject_normality"".
+Date,SYN_SP500,SYN_NASDAQ,SYN_RUSSELL2000,SYN_RUSSELL1000
+2026-09-01 (Start),$500.00,$400.00,$200.00,$250.00
+2026-09-02,$502.48,$404.12,$198.85,$251.29
+2026-09-03,$498.15,$398.70,$195.42,$249.03
+2026-09-04,$501.90,$403.65,$197.80,$250.91
+2026-09-07,$505.74,$409.82,$201.15,$252.88
+2026-09-08,$503.22,$406.10,$199.30,$251.58
+2026-09-09,$507.89,$412.35,$203.45,$253.99
+2026-09-10,$512.60,$419.04,$206.12,$256.37
+2026-09-11,$509.45,$413.78,$202.90,$254.74
+2026-09-14,$511.20,$416.50,$204.88,$255.62
+2026-09-15,$508.31,$411.95,$201.76,$254.10
+2026-09-16,$504.60,$406.24,$197.40,$252.20
+2026-09-17,$506.95,$410.15,$199.65,$253.44
+2026-09-18,$510.82,$415.60,$203.10,$255.40
+2026-09-21,$513.75,$419.80,$205.75,$256.92
+2026-09-22,$511.40,$416.32,$203.05,$255.70
+2026-09-23,$508.10,$411.20,$199.80,$254.02
+2026-09-24,$512.35,$417.90,$204.50,$256.21
+2026-09-25,$515.60,$423.10,$207.95,$257.85
+2026-09-28,$518.25,$427.45,$210.30,$259.20
+2026-09-29,$516.40,$424.15,$207.60,$258.15
+2026-09-30,$520.15,$430.20,$211.45,$260.10","{
+  ""SYN_SP500"": {
+  ""p_value"": 0.2548,
+  ""normality"": ""fail_to_reject_normality""
+  },
+  ""SYN_NASDAQ"": {
+  ""p_value"": 0.2282,
+  ""normality"": ""fail_to_reject_normality""
+  },
+  ""SYN_RUSSELL2000"": {
+  ""p_value"": 0.2783,
+  ""normality"": ""fail_to_reject_normality""
+  },
+  ""SYN_RUSSELL1000"": {
+  ""p_value"": 0.252,
+  ""normality"": ""fail_to_reject_normality""
+  }
+}","Given aligned prices P_{j,t}, define daily simple returns r_{j,t}=P_{j,t}/P_{j,t−1}−1. For each index j with n returns, let m_k=n^{-1}Σ_t(r_{j,t}−r̄_j)^k, g_1=m_3/m_2^{3/2}, and g_2=m_4/m_2^2−3. Compute JB_j=n/6·(g_1^2+g_2^2/4), p_j=1−F_{χ²_2}(JB_j), and reject normality iff p_j<0.01.",Four index price series → Daily simple returns → Moment skewness and excess kurtosis → Jarque–Bera statistic → χ²(2) p-value → α=0.01 decision,table,Investments & Portfolio Management,Return Statistics,Jarque–Bera normality test on daily return series,statistical_modeling,align prices by date → compute daily simple returns → compute moment skewness and excess kurtosis → compute Jarque–Bera statistic and χ²(2) p-value → compare p-value with 0.01 → report decision,6,time_series,sequential_periods,continuous_distribution,threshold,none,Moderate,table_and_categorical,4,2,2,1,2,1,0,1,13,,
+risk-126,"Using the daily simple returns r_t = P_t/P_{t-1} - 1 computed from the price table below, report the bias-corrected Fisher–Pearson sample skewness and the bias-corrected Fisher excess kurtosis for each return series, rounded to 4 decimals.
+Date,SYN_SP500,SYN_NASDAQ,SYN_RUSSELL2000,SYN_RUSSELL1000
+2026-09-01 (Start),$500.00,$400.00,$200.00,$250.00
+2026-09-02,$502.48,$404.12,$198.85,$251.29
+2026-09-03,$498.15,$398.70,$195.42,$249.03
+2026-09-04,$501.90,$403.65,$197.80,$250.91
+2026-09-07,$505.74,$409.82,$201.15,$252.88
+2026-09-08,$503.22,$406.10,$199.30,$251.58
+2026-09-09,$507.89,$412.35,$203.45,$253.99
+2026-09-10,$512.60,$419.04,$206.12,$256.37
+2026-09-11,$509.45,$413.78,$202.90,$254.74
+2026-09-14,$511.20,$416.50,$204.88,$255.62
+2026-09-15,$508.31,$411.95,$201.76,$254.10
+2026-09-16,$504.60,$406.24,$197.40,$252.20
+2026-09-17,$506.95,$410.15,$199.65,$253.44
+2026-09-18,$510.82,$415.60,$203.10,$255.40
+2026-09-21,$513.75,$419.80,$205.75,$256.92
+2026-09-22,$511.40,$416.32,$203.05,$255.70
+2026-09-23,$508.10,$411.20,$199.80,$254.02
+2026-09-24,$512.35,$417.90,$204.50,$256.21
+2026-09-25,$515.60,$423.10,$207.95,$257.85
+2026-09-28,$518.25,$427.45,$210.30,$259.20
+2026-09-29,$516.40,$424.15,$207.60,$258.15
+2026-09-30,$520.15,$430.20,$211.45,$260.10","{
+  ""SYN_SP500"": {
+  ""skewness"": -0.447,
+  ""excess_kurtosis"": -1.658
+  },
+  ""SYN_NASDAQ"": {
+  ""skewness"": -0.4556,
+  ""excess_kurtosis"": -1.7489
+  },
+  ""SYN_RUSSELL2000"": {
+  ""skewness"": -0.283,
+  ""excess_kurtosis"": -1.7428
+  },
+  ""SYN_RUSSELL1000"": {
+  ""skewness"": -0.4473,
+  ""excess_kurtosis"": -1.6681
+  }
+}","Given aligned prices P_{j,t}, define daily simple returns r_{j,t}=P_{j,t}/P_{j,t−1}−1. For each index j with n returns, compute adjusted Fisher–Pearson sample skewness G_1=√(n(n−1))/(n−2)·g_1 and bias-corrected Fisher excess kurtosis G_2=(n−1)/((n−2)(n−3))·[(n+1)g_2+6], where g_1=m_3/m_2^{3/2}, g_2=m_4/m_2^2−3, and m_k=n^{-1}Σ_t(r_{j,t}−r̄_j)^k.",Four index price series → Daily simple returns → Central moments → Bias-corrected sample skewness and Fisher excess kurtosis → Per-index summary table,table,Investments & Portfolio Management,Return Statistics,Bias-corrected skewness and excess kurtosis of daily return series,descriptive_statistics,align prices by date → compute daily simple returns → compute central moments → apply bias corrections for sample skewness and Fisher excess kurtosis → report per-index statistics,5,time_series,sequential_periods,none,none,none,Moderate,table,3,1,2,1,0,0,0,1,8,,

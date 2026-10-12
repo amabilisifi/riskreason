@@ -1,0 +1,1194 @@
+Eval ID,Flag,Features,User Prompt (Input),Ground Truth (Expected),formal_notation,type of answer,domain,subdomain,financial_concept,reasoning_type,operator_sequence,reasoning_steps,data_representation,temporal_reasoning,probabilistic_reasoning,conditional_reasoning,unit_conversion,required_domain_knowledge,answer_type,reasoning_depth_score,reasoning_structure_score,representation_score,temporal_score,probabilistic_score,conditional_score,unit_conversion_score,domain_knowledge_score,difficulty_score,source_task_ids,dependency_graph,graph_depth,branch_count,intermediate_variables,horizon_class
+long-001,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-099 + risk-111; market shock → collateral call → liquidity cure → leverage breach,"A bank holds a $60 million bond portfolio with modified duration 5.2. Market yields rise by 120 basis points; ignore convexity. The portfolio collateralizes $48 million of secured borrowing, and collateral value must remain at least 125% of the borrowing.
+
+
+The bank has $4.0 million of cash and must maintain at least $1.5 million. If a margin call would push cash below that minimum, the bank draws an emergency credit line for exactly the amount needed to restore the minimum cash balance. Total debt before any emergency draw is $79.5 million, including the secured borrowing; equity is $20 million, and the maximum Debt/Equity ratio is 4.0×.
+
+
+Estimate the bond loss, post-shock collateral value, margin call, cash after the call, emergency-line draw, post-draw Debt/Equity ratio, and state whether the liquidity and leverage limits are satisfied.","{
+  ""bond_loss_millions"": 3.744,
+  ""post_shock_collateral_value_millions"": 56.256,
+  ""margin_call_millions"": 3.744,
+  ""cash_after_call_before_draw_millions"": 0.256,
+  ""emergency_line_draw_millions"": 1.244,
+  ""post_draw_debt_equity_ratio"": 4.0372,
+  ""liquidity_limit_satisfied"": true,
+  ""leverage_limit_satisfied"": false
+}","ΔP/P≈−D_mod·Δy; Loss=V_0·D_mod·Δy; V_1=V_0−Loss.
+C_req=1.25·Borrowing; Margin=max(C_req−V_1,0).
+Cash_1=Cash_0−Margin; Draw=max(C_min−Cash_1,0); Cash_2=Cash_1+Draw.
+Debt_2=Debt_0+Draw; Leverage=Debt_2/Equity.
+Check Cash_2≥C_min and Leverage≤4.0.",table,Banking & ALM,Funding Liquidity & Leverage,"Interest-rate shock propagation through collateral, liquidity, emergency funding, and leverage constraints",long_horizon_cross_risk_composition,convert bps → duration loss → collateral revaluation → collateral shortfall → margin call → cash update → emergency funding → debt update → liquidity test → leverage test,10,scalar_parameters,state_transition,none,multi_threshold,basis_points_percent_and_currency,High,structured_multi_output,5,3,1,2,0,3,2,3,19,risk-099; risk-111,"convert bps -> duration loss -> collateral revaluation -> collateral shortfall -> margin call -> cash update -> emergency funding -> debt update -> {liquidity test, leverage test}",9,2,10,long
+long-002,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-102 + risk-105; Bayesian evidence → risk classification → lifetime ECL,"A borrower's prior one-year PD is 4%. A warning signal is observed with P(signal | default)=60% and P(signal | no default)=15%. Bank policy classifies the borrower as high-risk if the posterior PD exceeds 8%; high-risk borrowers use lifetime ECL rather than 12-month ECL.
+
+
+If classified high-risk, the unconditional cumulative default probabilities for Years 1–3 are 12%, 20%, and 28%. EADs at the ends of Years 1–3 are $10M, $8M, and $6M; LGD is 45% and the effective interest rate is 5%. Obtain yearly marginal PDs by differencing the cumulative PDs.
+
+
+Calculate the posterior PD, classification, discounted lifetime ECL, and resulting ECL treatment under the stated rule.","{
+  ""posterior_pd"": 0.142857,
+  ""classification"": ""high-risk"",
+  ""marginal_pds"": {
+  ""year_1"": 0.12,
+  ""year_2"": 0.08,
+  ""year_3"": 0.08
+  },
+  ""discounted_ecls"": {
+  ""year_1"": 514285.71,
+  ""year_2"": 261224.49,
+  ""year_3"": 186588.92
+  },
+  ""total_lifetime_ecl"": 962099.12,
+  ""final_decision"": ""Recognize lifetime expected credit loss provision""
+}","PD_post=P(S|D)P(D)/[P(S|D)P(D)+P(S|¬D)P(¬D)].
+HighRisk=1[PD_post>0.08]. If HighRisk=1, q_1=C_1 and q_t=C_t−C_{t−1}.
+ECL=Σ_t EAD_t·LGD·q_t/(1+EIR)^t.",table,Credit Risk,Bayesian Credit Monitoring & ECL,Bayesian PD updating followed by rule-triggered lifetime ECL calculation,bayesian_ecl_composition,Bayes update → threshold classification → interpret cumulative PDs → marginalize PD curve → compute annual EL → discount → sum ECL → decision,10,mixed,sequential_periods,bayesian_probability,threshold_and_override,percent_decimal_and_currency,High,structured_multi_output,5,3,2,3,3,3,2,3,24,risk-102; risk-105,Bayes update -> threshold classification -> interpret cumulative PDs -> marginalize PD curve -> compute annual EL -> discount -> sum ECL -> decision,10,2,10,very_long
+long-003,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-087 + risk-008 + risk-112; downgrade stress → EL deduction → RWA migration → capital decision,"A bank has $12.0 million of CET1 capital and $100 million of RWA excluding three corporate exposures. Exposure A is $20M with a current 100% risk weight, B is $15M with 75%, and C is $10M with 50%.
+
+
+Under a stress scenario, their risk weights become 150%, 100%, and 75%, and their one-year PDs become 8%, 6%, and 3%, respectively. LGD is 45% for all three. Under this simplified rule, stressed expected credit loss is deducted immediately from CET1. The minimum CET1 ratio is 7.5%, and new lending is frozen if the stressed ratio falls below the minimum.
+
+
+Calculate pre-stress total RWA and CET1 ratio, stressed expected loss, stressed RWA, post-loss CET1 ratio, and the lending decision.","{
+  ""pre_stress_total_rwa_millions"": 136.25,
+  ""pre_stress_cet1_ratio"": 0.0881,
+  ""stressed_expected_loss_millions"": 1.26,
+  ""stressed_rwa_millions"": 152.5,
+  ""post_loss_cet1_capital_millions"": 10.74,
+  ""post_loss_cet1_ratio"": 0.0704,
+  ""meets_minimum_requirement"": false,
+  ""lending_decision"": ""Freeze new lending""
+}","RWA_0=RWA_other+Σ_i EAD_i·RW_i,0; CET1Ratio_0=CET1_0/RWA_0.
+EL_stress=Σ_i EAD_i·PD_i,stress·LGD_i; CET1_1=CET1_0−EL_stress.
+RWA_1=RWA_other+Σ_i EAD_i·RW_i,stress; CET1Ratio_1=CET1_1/RWA_1.
+Freeze=1[CET1Ratio_1<0.075].",table,Credit Risk,Stress Testing & Regulatory Capital,"Credit-migration stress propagation through expected loss, RWA, CET1 capital, and lending policy",stress_capital_propagation,compute current RWA → current capital ratio → stressed EL by exposure → deduct EL from CET1 → stressed RWA → stressed capital ratio → threshold decision,9,table,state_transition,discrete_probability,threshold,percent_decimal_and_currency,High,structured_multi_output,5,3,2,2,1,2,2,3,20,risk-087; risk-008; risk-112,compute current RWA -> current capital ratio -> stressed EL by exposure -> deduct EL from CET1 -> stressed RWA -> stressed capital ratio -> threshold decision,9,2,9,long
+long-004,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-056 + risk-057 + risk-077; operating stress → leverage breach → coupon step-up → coverage breach → covenant cure,"A company has $120 million of debt and EBITDA of $40 million. In a stress scenario EBITDA falls by 20%. Its debt/EBITDA covenant requires leverage no greater than 3.5×. If that covenant is breached, the coupon on all debt steps up from 6% to 8% immediately.
+
+
+A second covenant requires EBITDA/interest expense of at least 3.5×. The company has $8 million of cash available for debt repayment.
+
+
+Once triggered, the 8% coupon remains applicable for purposes of the covenant-cure calculation.
+
+
+Calculate stressed EBITDA and leverage, determine whether the coupon step-up is triggered, calculate stepped-up interest coverage, then find the minimum debt paydown required to restore both covenants simultaneously. State whether the available cash is sufficient and give the post-cure leverage and coverage ratios.","{
+  ""stressed_ebitda_millions"": 32.0,
+  ""stressed_leverage"": 3.75,
+  ""coupon_step_up_triggered"": true,
+  ""stepped_up_interest_coverage_ratio"": 3.33,
+  ""minimum_debt_paydown_required_millions"": 8.0,
+  ""is_available_cash_sufficient"": true,
+  ""post_cure_leverage_ratio"": 3.5,
+  ""post_cure_coverage_ratio_at_8_percent"": 3.57
+}","EBITDA_1=EBITDA_0(1−0.20); Lev_1=Debt_0/EBITDA_1.
+If Lev_1>3.5, coupon=0.08 else 0.06.
+ICR_1=EBITDA_1/(coupon·Debt_0).
+DebtCap_lev=3.5·EBITDA_1; DebtCap_icr=EBITDA_1/(3.5·coupon).
+Debt_target=min(DebtCap_lev,DebtCap_icr); Paydown=Debt_0−Debt_target.
+Recompute leverage and ICR after cure.",table,Corporate Finance,Covenants & Credit Risk,"Covenant cascade with leverage breach, spread step-up, interest-coverage breach, and debt-paydown cure",covenant_cure_reasoning,stress EBITDA → leverage test → coupon regime switch → interest expense → coverage test → solve two debt caps → paydown → recompute covenants,9,scalar_parameters,state_transition,none,sequential_branching,percent_decimal_and_currency,High,structured_multi_output,5,3,1,2,0,3,2,3,19,risk-056; risk-057; risk-077,stress EBITDA -> leverage test -> coupon regime switch -> interest expense -> coverage test -> solve two debt caps -> paydown -> recompute covenants,9,2,9,long
+long-005,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-099 + risk-100 + risk-112; market shock → HQLA recognition → LCR breach → forced sale → capital impact,"A bank holds $36 million of HQLA securities. A market shock reduces their market value by 8%, after which a 5% regulatory haircut is applied to determine recognized HQLA. Its 30-day net cash outflows are normally $28 million but rise by 20% under the same stress. The minimum LCR is 100%.
+
+
+If the LCR is below 100%, the bank may sell non-HQLA bonds at a 10% discount to book value. Sale proceeds become cash and count fully as HQLA. The bank sells the minimum book value needed to restore LCR to 100%. The realized sale loss is deducted from CET1. Before the sale CET1 is $9.6 million, RWA is $110 million, and the minimum CET1 ratio is 8.5%.
+
+
+Calculate the stressed LCR, HQLA shortfall, minimum book value of bonds to sell, realized loss, post-sale CET1 ratio, and whether both the LCR and CET1 constraints are satisfied.","{
+  ""stressed_lcr"": 0.9364,
+  ""hqla_shortfall_millions"": 2.136,
+  ""min_book_value_to_sell_millions"": 2.3733,
+  ""realized_loss_millions"": 0.2373,
+  ""post_sale_cet1_millions"": 9.3627,
+  ""post_sale_cet1_ratio"": 0.0851,
+  ""constraints_satisfied"": true
+}","HQLA_1=HQLA_0(1−0.08)(1−0.05); Outflow_1=28M(1+0.20); LCR_1=HQLA_1/Outflow_1.
+CashNeed=max(Outflow_1−HQLA_1,0).
+With sale price=0.90·Book, BookSale=CashNeed/0.90; Loss=BookSale−CashNeed.
+CET1_1=CET1_0−Loss; CET1Ratio=CET1_1/RWA. Check LCR≥1 and CET1Ratio≥0.085.",table,Banking & ALM,Liquidity Coverage & Capital,Liquidity stress repaired by asset sale with realized-loss feedback into CET1 capital,liquidity_capital_cascade,shock HQLA market value → apply regulatory haircut → stress outflows → compute LCR → size liquidity shortfall → solve forced-sale book value → realize loss → update CET1 → capital-ratio test,10,scalar_parameters,state_transition,none,multi_threshold,percent_decimal_and_currency,High,structured_multi_output,5,3,1,2,0,3,2,3,19,risk-099; risk-100; risk-112,shock HQLA market value -> apply regulatory haircut -> stress outflows -> compute LCR -> size liquidity shortfall -> solve forced-sale book value -> realize loss -> update CET1 -> capital-ratio test,10,2,10,very_long
+long-006,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-111 + risk-052; market loss → leverage breach → cost-aware forced deleveraging → next-state recovery,"A leveraged fund starts with NAV of $100 million and gross risky exposure of $180 million. Gross leverage is defined as gross risky exposure divided by NAV, with a maximum of 2.0×. A market move produces a loss equal to 12% of the gross risky exposure.
+
+
+If leverage exceeds 2.0× after the loss, the fund must sell risky exposure at the close. Transaction cost is 0.5% of the amount sold and is paid from NAV. Because the transaction cost reduces NAV, size the sale so that leverage after both the sale and its transaction cost is exactly 2.0×.
+
+
+Calculate NAV and leverage after the market loss, the minimum sale amount, transaction cost, post-sale NAV and exposure. On the next day the remaining risky exposure gains 3% with no further trades; calculate ending NAV and leverage.","{
+  ""post_shock_state"": {
+  ""market_loss_million"": 21.6,
+  ""nav_million"": 78.4,
+  ""exposure_million"": 158.4,
+  ""leverage"": 2.020408
+  },
+  ""rebalancing_sale"": {
+  ""limit_exceeded"": true,
+  ""minimum_sale_amount_million"": 1.616162,
+  ""transaction_cost_million"": 0.008081,
+  ""post_sale_nav_million"": 78.391919,
+  ""post_sale_exposure_million"": 156.783838
+  },
+  ""next_day_state"": {
+  ""gain_million"": 4.703515,
+  ""ending_nav_million"": 83.095434,
+  ""ending_exposure_million"": 161.487354,
+  ""ending_leverage"": 1.943396
+  }
+}","Loss=0.12·Gross_0; Gross_1=Gross_0−Loss; NAV_1=NAV_0−Loss; Lev_1=Gross_1/NAV_1.
+If Lev_1>2, choose minimum x≥0 such that (Gross_1−x)/(NAV_1−τx)≤2, τ=0.005.
+At the minimum, equality holds. Gross_2=Gross_1−x; NAV_2=NAV_1−τx.
+Next day: Gain=0.03·Gross_2; Gross_3=Gross_2+Gain; NAV_3=NAV_2+Gain; Lev_3=Gross_3/NAV_3.",table,Investments & Portfolio Management,Leverage & Forced Deleveraging,Path-dependent leverage breach and transaction-cost-aware forced deleveraging,path_dependent_deleveraging,market loss → update risky exposure → NAV update → leverage test → formulate post-cost leverage equation → solve minimum sale → transaction cost → post-sale state → next-day P&L → final leverage,10,event_sequence,path_dependency,none,state_transition,percent_decimal_and_currency,Moderate,structured_multi_output,5,3,2,3,0,3,2,2,20,risk-111; risk-052,market loss -> update risky exposure -> NAV update -> leverage test -> post-cost leverage equation -> minimum sale -> transaction cost -> post-sale state -> next-day P&L -> final leverage,10,1,10,very_long
+long-007,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-059 + risk-104 + risk-008; payment allocation → DPD → default → collateral recovery → ECL → RWA,"A loan has $100,000 monthly installments due on the first day of each month. The borrower makes no payments on January 1, February 1, March 1, or April 1, 2025, then pays $200,000 on April 20. Payments are applied to the oldest unpaid installment first.
+
+
+After the April 20 payment, determine the oldest unpaid installment and days past due (DPD). Assume no further payments. Under a simplified policy the exposure enters default at 90 DPD; determine the first default date.
+
+
+At default, EAD is $5.0 million. Collateral has market value of $3.0 million and a 20% haircut is applied. Treat the haircut-adjusted collateral as the recoverable secured amount; the remainder is unsecured loss exposure. Because default has occurred, lifetime ECL equals the full expected loss implied by that recovery. For simplified RWA, apply 100% to the recoverable secured portion and 150% to the unsecured portion.
+
+
+Calculate post-payment DPD, default date, haircut-adjusted recovery, LGD, lifetime ECL, and total RWA.","{
+  ""oldest_unpaid_installment"": ""2025-03-01"",
+  ""post_payment_dpd"": 50,
+  ""default_date"": ""2025-05-30"",
+  ""haircut_adjusted_recovery_m"": 2.4,
+  ""unsecured_exposure_m"": 2.6,
+  ""lgd"": 0.52,
+  ""lifetime_ecl_m"": 2.6,
+  ""secured_rwa_m"": 2.4,
+  ""unsecured_rwa_m"": 3.9,
+  ""total_rwa_m"": 6.3
+}","Allocate payment to oldest unpaid installments first.
+DPD(t)=t−due_date(oldest unpaid installment).
+DefaultDate=min{t:DPD(t)≥90}.
+Recovery=CollateralMV(1−Haircut); Unsecured=max(EAD−Recovery,0); LGD=Unsecured/EAD.
+At default, ECL=EAD·LGD=Unsecured.
+RWA=Recovery·1.00+Unsecured·1.50.",table,Credit Risk,"Delinquency, Default & Capital","Payment-allocation path leading to 90-DPD default, collateral-adjusted LGD, lifetime ECL, and defaulted-exposure RWA",default_classification_cascade,allocate payment → identify oldest unpaid installment → calculate DPD → determine 90-DPD default date → haircut collateral → calculate recovery → calculate unsecured exposure/LGD → calculate lifetime ECL → apply RWA weights → total RWA,10,event_sequence,path_dependency,none,threshold_and_override,calendar_day_count,High,structured_multi_output,5,3,2,3,0,3,2,3,21,risk-059; risk-104; risk-008,allocate payment -> oldest unpaid installment -> DPD -> 90-DPD default date -> haircut collateral -> recovery -> unsecured exposure/LGD -> lifetime ECL -> secured/unsecured RWA -> total RWA,10,2,10,very_long
+long-008,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-026 + risk-073 + risk-056,"A defined-benefit pension plan has $80M of assets and $90M of liabilities. A stress event causes the plan assets to fall by 10%. At the same time, the liability discount rate falls by 50 basis points. Liability modified duration is 12; ignore convexity and approximate the liability change using ΔL/L ≈ −D·Δy.
+
+
+Plan policy requires a funded ratio of at least 90%. The sponsor has $15M of cash, must retain at least $5M for operations, has $94M of debt, and EBITDA of $32M. Any pension contribution uses cash above the minimum first; any remaining contribution is financed with new debt. The corporate debt/EBITDA covenant is 3.0×.
+
+
+Calculate the stressed pension assets and liabilities, the minimum pension contribution, its cash/debt funding mix, post-contribution corporate leverage, and—if the covenant is breached—the minimum equity injection required to pay down debt and restore leverage to 3.0×.","{
+  ""stressed_assets_millions"": 72.0,
+  ""stressed_liabilities_millions"": 95.4,
+  ""minimum_pension_contribution_millions"": 13.86,
+  ""funding_mix"": {
+  ""cash_used_millions"": 10.0,
+  ""new_debt_used_millions"": 3.86
+  },
+  ""post_contribution_metrics"": {
+  ""new_total_debt_millions"": 97.86,
+  ""corporate_leverage_ratio"": 3.058,
+  ""covenant_breached"": true
+  },
+  ""minimum_equity_injection_millions"": 1.86
+}","ΔL/L ≈ −D_L·Δy; A_1=A_0(1−0.10); L_1=L_0(1−D_LΔy).
+RequiredAssets=0.90L_1; Contribution=max(RequiredAssets−A_1,0).
+CashUse=min(Contribution,Cash−Cash_min); NewDebt=Contribution−CashUse.
+Debt_1=Debt_0+NewDebt; Leverage=Debt_1/EBITDA.
+EquityCure=max(Debt_1−3·EBITDA,0).",table,Retirement & Pensions,Pension Funding & Sponsor Credit,Pension funding shock propagated into sponsor leverage and covenant cure,cross_balance_sheet_cascade,revalue plan assets → duration-revalue liabilities → compute 90% required assets → funded-ratio test → size contribution → allocate sponsor cash → add debt financing → leverage test → solve equity cure → recompute leverage,10,scalar_parameters,stress_then_cure,none,funding_and_covenant_rules,financial_units,High,structured_multi_output,5,3,1,2,0,3,2,3,19,risk-026; risk-073; risk-056,revalue plan assets -> duration-revalue liabilities -> compute required assets -> funded-ratio test -> contribution -> sponsor cash -> debt financing -> leverage test -> equity cure -> recompute leverage,10,2,10,very_long
+long-009,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-099 + risk-100 + risk-111,"A bank has $100M of total assets, $10M of equity, and $3M of cash. It pledges a $50M bond portfolio against $38M of repo borrowing. The bonds have modified duration 4.0. Market yields rise by 100 basis points; ignore convexity. At the same time, the repo haircut rises from 20% to 25%.
+
+
+After the shock, required collateral market value equals repo borrowing divided by (1−haircut). Any collateral shortfall is met with a cash margin payment. The bank must maintain at least $1M of cash; if the margin payment would push cash below that level, it borrows unsecured funds just sufficient to restore the $1M minimum.
+
+
+The bond loss reduces both assets and equity. New unsecured borrowing adds cash and liabilities but does not change equity. The maximum assets/equity leverage ratio is 12×. Assume any equity injection is retained as cash and therefore increases both assets and equity dollar-for-dollar.
+
+
+Calculate the bond loss and stressed collateral value, new collateral requirement, margin call, cash after the call, unsecured funding needed, post-funding assets/equity and leverage, and the minimum equity injection required to restore leverage to 12×.","{
+  ""bond_loss_m"": 2.0,
+  ""stressed_collateral_value_m"": 48.0,
+  ""new_collateral_requirement_m"": 50.666666666666664,
+  ""margin_call_m"": 2.6666666666666665,
+  ""cash_after_call_m"": 0.3333333333333333,
+  ""unsecured_funding_needed_m"": 0.6666666666666666,
+  ""post_funding_equity_m"": 8.0,
+  ""post_funding_assets_m"": 98.66666666666667,
+  ""post_funding_leverage_ratio"": 12.333333333333334,
+  ""minimum_equity_injection_m"": 0.24242424242424243,
+  ""post_equity_cure_leverage_ratio"": 12.0
+}","ΔP≈−D_mod·Δy·P; C_1=P_1.
+C_req=Borrowing/(1−h_1); Margin=max(C_req−C_1,0).
+Cash_1=Cash_0−Margin; Funding=max(Cash_min−Cash_1,0).
+A_1=A_0−BondLoss+Funding; E_1=E_0−BondLoss.
+Leverage=A_1/E_1. Solve min x≥0 such that (A_1+x)/(E_1+x)≤12.",table,Banking & ALM,Repo Liquidity & Leverage,"Rate shock and haircut jump propagated through margin liquidity, funding, and leverage",market_liquidity_leverage_cascade,duration loss → collateral revaluation → haircut-based requirement → margin call → cash update → emergency funding → balance-sheet update → leverage test → solve equity injection → recompute post-cure leverage,10,scalar_parameters,stress_then_funding_then_recapitalization,none,margin_cash_and_leverage_rules,financial_units,High,structured_multi_output,5,3,1,2,0,3,2,3,19,risk-099; risk-100; risk-111,duration loss -> collateral revaluation -> haircut requirement -> margin call -> cash update -> emergency funding -> balance-sheet update -> leverage test -> equity injection -> post-cure leverage,10,2,10,very_long
+long-010,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-013 + risk-051 + risk-111,"A bank has a trading position with delta exposure of +$40M to an equity index and a gamma coefficient of $150M. For a one-day index return r, approximate trading P&L (in millions) as:
+P&L ≈ 40r + 0.5×150r².
+
+
+The index falls 6%. Any trading loss is paid immediately as variation margin. Before the move, the bank has $80M of assets, $8M of equity, and $2.5M of cash. It must maintain at least $1M of cash. If variation margin pushes cash below the minimum, the bank borrows unsecured funds just sufficient to restore $1M.
+
+
+The trading loss reduces assets and equity; new borrowing adds cash and liabilities but not equity. The maximum assets/equity ratio is 12×. Assume any equity injection is retained as cash and therefore increases both assets and equity dollar-for-dollar.
+
+
+Calculate delta P&L, gamma P&L, total P&L, variation-margin payment, cash after payment, funding required, post-funding assets and equity, leverage, and the minimum equity injection required to restore the leverage limit.","{
+  ""delta_pnl_millions"": -2.4,
+  ""gamma_pnl_millions"": 0.27,
+  ""total_pnl_millions"": -2.13,
+  ""variation_margin_payment_millions"": 2.13,
+  ""cash_after_payment_millions"": 0.37,
+  ""funding_required_millions"": 0.63,
+  ""post_funding_assets_millions"": 78.5,
+  ""post_funding_equity_millions"": 5.87,
+  ""post_funding_leverage_ratio"": 13.3731,
+  ""minimum_equity_injection_millions"": 0.732727,
+  ""post_equity_cure_leverage_ratio"": 12.0
+}","PnL=Δ·r+0.5Γr²; VM=max(−PnL,0).
+Cash_1=Cash_0−VM; Funding=max(Cash_min−Cash_1,0).
+A_1=A_0+PnL+Funding; E_1=E_0+PnL.
+Solve min x≥0: (A_1+x)/(E_1+x)≤12.",table,Market Risk,Derivatives Margin & Balance-Sheet Risk,"Delta-gamma market loss propagated through variation margin, funding, and leverage",derivative_margin_funding_cascade,delta P&L → gamma P&L → net loss → variation margin → cash update → funding cure → assets/equity update → leverage test → equity cure → recompute post-cure leverage,10,scalar_parameters,intraday_shock_then_margin_then_funding,none,cash_floor_and_leverage_limit,financial_units,High,structured_multi_output,5,3,1,2,0,3,2,3,19,risk-013; risk-051; risk-111,delta P&L -> gamma P&L -> net loss -> variation margin -> cash update -> funding cure -> assets/equity update -> leverage test -> equity cure -> post-cure leverage,10,2,10,very_long
+long-011,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-069 + risk-073 + risk-100 + risk-087 + risk-112,"A bank has $100M of rate-sensitive loans and $80M of interest-bearing deposits. A 200-bp rate increase passes through 70% to loan yields and 40% to deposit costs. Separately, the bank holds $30M of HQLA bonds with modified duration 5.0; ignore convexity.
+
+
+The same stress causes deposit runoff of 10% of the $80M deposit base. Base 30-day net cash outflows are $20M, and runoff is added to those outflows. After the bond price shock, a 5% regulatory haircut is applied to the stressed bond market value to determine recognized HQLA. The minimum LCR is 100%.
+
+
+If LCR is below 100%, the bank sells 100%-risk-weighted loans at a 2% discount. Sale proceeds become cash and count fully as HQLA. Sell the minimum book value necessary to restore LCR to 100%.
+
+
+Initial CET1 is $10M and RWA is $90M. The bond loss and loan-sale discount loss reduce CET1; the loan sale reduces RWA by the sold book value. The minimum CET1 ratio is 8%.
+
+
+Calculate the annualized NII change, bond loss, recognized HQLA, stressed outflows and LCR, required loan sale and sale loss, post-sale CET1 and RWA, CET1 ratio, and any capital injection needed to reach 8%.
+
+
+Assume any required capital injection is treated as CET1 and is held as 0%-risk-weighted cash, so it does not increase RWA.","{
+  ""annualized_nii_change_millions"": 0.76,
+  ""bond_loss_millions"": 3.0,
+  ""stressed_bond_value_millions"": 27.0,
+  ""recognized_hqla_millions"": 25.65,
+  ""deposit_runoff_millions"": 8.0,
+  ""stressed_outflows_millions"": 28.0,
+  ""pre_sale_lcr"": 0.916071,
+  ""lcr_breached"": true,
+  ""required_loan_sale_millions"": 2.39796,
+  ""loan_sale_proceeds_millions"": 2.35,
+  ""sale_loss_millions"": 0.04796,
+  ""post_sale_cet1_millions"": 6.95204,
+  ""post_sale_rwa_millions"": 87.60204,
+  ""post_sale_cet1_ratio"": 0.079359,
+  ""required_cet1_at_8_percent_millions"": 7.00816,
+  ""minimum_capital_injection_millions"": 0.05612,
+  ""post_injection_cet1_millions"": 7.00816,
+  ""final_cet1_ratio"": 0.08
+}","ΔNII=A·β_A·Δr−D·β_D·Δr.
+BondLoss≈P·D_mod·Δy; HQLA=0.95(P−BondLoss).
+Outflows=Outflows_0+Runoff; LCR=HQLA/Outflows.
+Solve x: HQLA+0.98x=Outflows.
+CET1_1=CET1_0−BondLoss−0.02x; RWA_1=RWA_0−x.
+Capital=max(0.08RWA_1−CET1_1,0).",table,Banking & ALM,"Interest-Rate Risk, LCR & Capital",Rate shock with NII branch and HQLA/LCR repair feeding back into CET1 capital,alm_branching_cascade,asset repricing → deposit repricing → NII change || duration bond loss → HQLA haircut → runoff outflows → LCR test → solve loan sale → realized sale loss → CET1/RWA update → capital-ratio test → capital cure,12,scalar_parameters,stress_then_liquidity_repair_then_capital_test,none,lcr_and_capital_limits,financial_units,High,structured_multi_output,5,3,1,2,0,3,2,3,19,risk-069; risk-073; risk-100; risk-087; risk-112,"rate shock -> {asset repricing, deposit repricing} -> NII change || rate shock -> bond loss -> HQLA haircut; deposit stress -> runoff -> outflows; {HQLA,outflows} -> LCR -> loan sale -> realized loss -> CET1/RWA -> capital-ratio test -> capital cure",9,3,12,long
+long-012,Long-Horizon Financial Risk,Long-horizon composition; new cross-domain composition; current semantic links: risk-081 + risk-057,"A securitization has $100M of collateral supporting three tranches: $70M senior, $20M mezzanine, and $10M equity. A credit event creates an $18M principal loss, allocated first to equity, then mezzanine, then senior.
+
+
+After loss allocation, a trigger is breached if the remaining mezzanine balance is below $15M. If breached, the next $12M of principal collections is diverted entirely to the senior tranche and the senior coupon steps up from 4.0% to 4.5%. The mezzanine coupon is 7.0%.
+
+
+Assume the next interest period is one year. For that interest period, calculate interest on balances after the $12M principal distribution. Available interest cash is only $3.2M and is paid senior first, then mezzanine; unpaid mezzanine interest is a shortfall.
+
+
+Determine loss allocation, post-loss tranche balances, whether the trigger fires, balances after principal collections, contractual senior and mezzanine interest, actual interest paid to each tranche, and any mezzanine interest shortfall.","{
+  ""principal_loss_allocation_m"": {
+  ""equity"": 10.0,
+  ""mezzanine"": 8.0,
+  ""senior"": 0.0
+  },
+  ""post_loss_balances_m"": {
+  ""senior"": 70.0,
+  ""mezzanine"": 12.0,
+  ""equity"": 0.0
+  },
+  ""trigger_breached"": true,
+  ""post_distribution_balances_m"": {
+  ""senior"": 58.0,
+  ""mezzanine"": 12.0,
+  ""equity"": 0.0
+  },
+  ""coupon_rates"": {
+  ""senior"": 0.045,
+  ""mezzanine"": 0.07
+  },
+  ""contractual_interest_m"": {
+  ""senior"": 2.61,
+  ""mezzanine"": 0.84
+  },
+  ""actual_interest_paid_m"": {
+  ""senior"": 2.61,
+  ""mezzanine"": 0.59
+  },
+  ""mezzanine_interest_shortfall_m"": 0.25
+}","Loss_eq=min(L,Eq_0); L_1=L−Loss_eq.
+Loss_mezz=min(L_1,Mezz_0); L_2=L_1−Loss_mezz.
+Loss_sen=min(L_2,Sen_0).
+Update tranche balances after loss. If Mezz_balance<15, trigger=1 and the next $12M principal distribution is diverted to senior.
+If trigger=1, coupons become 4.5% senior and 7.0% mezzanine.
+I_s=Coupon_s·Senior_balance; I_m=Coupon_m·Mezz_balance.
+Pay_s=min(InterestCash,I_s); Pay_m=min(max(InterestCash−Pay_s,0),I_m).
+Shortfall_m=max(I_m−Pay_m,0).",table,Credit Risk,Securitization Waterfalls,Credit-loss waterfall with trigger-driven principal diversion and interest-payment shortfall,waterfall_trigger_cascade,allocate equity loss → allocate mezzanine loss → allocate senior residual loss → update tranche balances → trigger test → divert principal → coupon step-up → compute senior interest → compute mezzanine interest → apply payment priority → calculate shortfall,11,waterfall_schedule,loss_event_then_next_cashflow_period,none,subordination_trigger_and_payment_priority,financial_units,High,structured_multi_output,5,3,2,2,0,3,2,3,20,risk-081; risk-057,equity loss -> mezzanine loss -> senior residual loss -> update balances -> trigger -> principal diversion -> coupon step-up -> senior interest -> mezzanine interest -> payment priority -> mezzanine shortfall,11,2,11,very_long
+long-013,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-108 + risk-107 + risk-008 + risk-115,"A counterparty netting set contains derivative mark-to-market values to the bank of +$12M, −$4M, +$9M, and +$3M. Under the CSA, required collateral equals max(net positive mark-to-market − $2M threshold, 0). The bank currently holds $12M of collateral.
+
+
+A stress event generates the mark-to-market values above and simultaneously raises the counterparty PD to 10% and LGD to 70%. The counterparty can post at most $4M of any additional collateral call. After collateral posting, unsecured EAD equals max(net mark-to-market − total collateral held, 0).
+
+
+The bank's internal counterparty risk metric is:
+Risk metric = EAD + 5×ECL,
+where ECL = EAD×PD×LGD.
+The limit on this metric is $5M.
+
+
+A hedge can reduce EAD one-for-one without changing collateral, PD, or LGD. Calculate the net mark-to-market, required collateral, collateral call, actual new posting, residual EAD, ECL, risk metric, whether the limit is breached, and the minimum hedge notional required to restore compliance.","{
+  ""net_mark_to_market_millions"": 20.0,
+  ""required_collateral_millions"": 18.0,
+  ""collateral_call_millions"": 6.0,
+  ""actual_new_posting_millions"": 4.0,
+  ""total_collateral_held_millions"": 16.0,
+  ""residual_ead_millions"": 4.0,
+  ""ecl_millions"": 0.28,
+  ""risk_metric_millions"": 5.4,
+  ""limit_breached"": true,
+  ""minimum_hedge_notional_millions"": 0.296296
+}","MtM_net=ΣMtM_i; C_req=max(MtM_net−Threshold,0).
+Call=max(C_req−C_held,0); Post=min(Call,PostCap).
+EAD=max(MtM_net−(C_held+Post),0).
+ECL=EAD·PD·LGD; Metric=EAD+5ECL.
+For hedge h: EAD'=EAD−h. Solve EAD'(1+5PDLGD)≤5.",table,Counterparty Credit Risk,Wrong-Way Risk & Exposure Limits,Collateral shortfall with stressed PD/LGD and ECL-adjusted counterparty limit,wrong_way_risk_cascade,net MtMs → collateral requirement → collateral call → posting cap → update total collateral → residual EAD → stressed ECL → risk metric → limit test → solve hedge,10,scalar_parameters,stress_then_collateral_then_hedge,stressed_pd_lgd,collateral_cap_and_risk_limit,financial_units,High,structured_multi_output,5,3,1,2,2,3,2,3,21,risk-108; risk-107; risk-008; risk-115,net MtMs -> collateral requirement -> collateral call -> posting cap -> total collateral -> residual EAD -> stressed ECL -> risk metric -> limit test -> hedge,10,2,10,very_long
+long-014,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-056 + risk-057 + risk-077,"A company has EBITDA of $60M and debt of $180M. Forty percent of EBITDA is directly commodity-price-sensitive and changes proportionally with the commodity price; the remaining 60% is unaffected. The commodity price falls 25%.
+
+
+The company's debt/EBITDA covenant is at most 3.0×. Debt carries a 6% coupon, but if the leverage covenant is breached the coupon immediately steps up by 200 basis points for the full year. A second covenant requires EBITDA/interest expense of at least 4.0×. Once triggered, the coupon step-up remains in effect for the year even after a debt cure.
+
+
+If either covenant is breached after the step-up, debt is paid down until both covenants are satisfied. The company has $25M of cash but must keep at least $10M. Use available cash first and equity for any remaining paydown.
+
+
+Calculate stressed EBITDA, pre-step leverage and interest coverage, whether the spread step-up triggers, post-step interest coverage, the maximum debt allowed by each covenant, the binding debt level, required paydown, cash used, equity raise, and post-cure covenant ratios.","{
+  ""stressed_ebitda_millions"": 54.0,
+  ""pre_step_leverage_x"": 3.33,
+  ""pre_step_interest_coverage_x"": 5.0,
+  ""spread_step_up_triggered"": true,
+  ""post_step_interest_coverage_x"": 3.75,
+  ""max_debt_leverage_covenant_millions"": 162.0,
+  ""max_debt_interest_covenant_millions"": 168.75,
+  ""binding_debt_level_millions"": 162.0,
+  ""required_paydown_millions"": 18.0,
+  ""cash_used_millions"": 15.0,
+  ""equity_raise_millions"": 3.0,
+  ""post_cure_leverage_x"": 3.0,
+  ""post_cure_interest_coverage_x"": 4.17
+}","Let s=0.25 denote the positive commodity-price decline magnitude.
+EBITDA_1=EBITDA_0[(1−SensitiveShare)+SensitiveShare(1−s)].
+Lev=D/EBITDA_1. If Lev>3, coupon steps from 6% to 8% and remains 8% for the cure.
+Coverage=EBITDA_1/(D·Coupon).
+DebtCap_lev=3·EBITDA_1; DebtCap_cov=EBITDA_1/(4·Coupon).
+TargetDebt=min(DebtCap_lev,DebtCap_cov); Paydown=max(D−TargetDebt,0).
+CashUse=min(Paydown,Cash−Cash_min); EquityRaise=Paydown−CashUse.
+Recompute leverage and coverage at TargetDebt.",table,Corporate Finance,Commodity Risk & Covenants,"Commodity EBITDA shock causing leverage breach, spread step-up, coverage breach, and financing cure",covenant_feedback_cascade,commodity shock → EBITDA sensitivity → leverage test → coupon regime switch → interest expense → coverage test → solve leverage debt cap → solve coverage debt cap → choose binding cap → calculate required paydown → funding-priority cure → recompute covenants,12,scalar_parameters,stress_then_stepup_then_cure,none,sequential_covenant_feedback,financial_units,High,structured_multi_output,5,3,1,2,0,3,2,3,19,risk-056; risk-057; risk-077,commodity shock -> EBITDA sensitivity -> leverage test -> coupon regime switch -> interest expense -> coverage test -> leverage debt cap -> coverage debt cap -> binding cap -> required paydown -> funding-priority cure -> recompute covenants,12,2,12,extended_long
+long-015,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-051 + risk-052,"A futures position starts with $20M of notional, a margin-account equity balance of $2.0M, and a separate $1.0M cash reserve available for margin calls. Initial margin is 10% of current notional and maintenance margin is 7% of current notional. Daily futures P&L equals daily return times the current notional.
+
+
+Daily returns are:
+Day 1: −4%
+Day 2: −3%
+Day 3: +2%
+Day 4: −5%
+
+
+At each day-end, if margin-account equity is below maintenance margin, transfer external cash to restore the account to initial margin. If remaining external cash is insufficient, use all remaining cash and immediately liquidate enough futures notional so that, after a transaction cost equal to 0.2% of liquidated notional, margin-account equity is at least 10% of the remaining notional. Equality with maintenance margin does not trigger a call.
+
+
+Track the account through all four days, including P&L, margin calls, cash-reserve usage, and—if required—the minimum Day-4 liquidation, final notional, final account equity, and final margin ratio.","{
+  ""day_1"": {
+  ""return"": -0.04,
+  ""pnl"": -800000.0,
+  ""equity_before"": 1200000.0,
+  ""maintenance_margin"": 1400000.0,
+  ""initial_margin"": 2000000.0,
+  ""margin_call_triggered"": true,
+  ""cash_transferred"": 800000.0,
+  ""cash_reserve_end"": 200000.0,
+  ""liquidated_notional"": 0.0,
+  ""transaction_cost"": 0.0,
+  ""notional_end"": 20000000.0,
+  ""equity_end"": 2000000.0,
+  ""margin_ratio_end"": 0.1
+  },
+  ""day_2"": {
+  ""return"": -0.03,
+  ""pnl"": -600000.0,
+  ""equity_before"": 1400000.0,
+  ""maintenance_margin"": 1400000.0,
+  ""initial_margin"": 2000000.0,
+  ""margin_call_triggered"": false,
+  ""cash_transferred"": 0.0,
+  ""cash_reserve_end"": 200000.0,
+  ""liquidated_notional"": 0.0,
+  ""transaction_cost"": 0.0,
+  ""notional_end"": 20000000.0,
+  ""equity_end"": 1400000.0,
+  ""margin_ratio_end"": 0.07
+  },
+  ""day_3"": {
+  ""return"": 0.02,
+  ""pnl"": 400000.0,
+  ""equity_before"": 1800000.0,
+  ""maintenance_margin"": 1400000.0,
+  ""initial_margin"": 2000000.0,
+  ""margin_call_triggered"": false,
+  ""cash_transferred"": 0.0,
+  ""cash_reserve_end"": 200000.0,
+  ""liquidated_notional"": 0.0,
+  ""transaction_cost"": 0.0,
+  ""notional_end"": 20000000.0,
+  ""equity_end"": 1800000.0,
+  ""margin_ratio_end"": 0.09
+  },
+  ""day_4"": {
+  ""return"": -0.05,
+  ""pnl"": -1000000.0,
+  ""equity_before"": 800000.0,
+  ""maintenance_margin"": 1400000.0,
+  ""initial_margin"": 2000000.0,
+  ""margin_call_triggered"": true,
+  ""cash_transferred"": 200000.0,
+  ""cash_reserve_end"": 0.0,
+  ""liquidated_notional"": 10204081.632653061,
+  ""transaction_cost"": 20408.16326530612,
+  ""notional_end"": 9795918.367346939,
+  ""equity_end"": 979591.8367346938,
+  ""margin_ratio_end"": 0.1
+  }
+}","Equity_t=Equity_{t−1}+r_tN_t.
+Maintenance_t=0.07N_t; Initial_t=0.10N_t.
+If Equity_t<Maintenance_t, Deposit=min(Initial_t−Equity_t,CashReserve).
+If Deposit insufficient, set CashReserve=0 and solve x:
+Equity_t+Deposit−0.002x ≥ 0.10(N_t−x).
+Then N_{t+}=N_t−x.",table,Capital Markets & Trading,Futures Margin & Forced Liquidation,Multi-day margin state with limited liquidity and transaction-cost-aware forced liquidation,path_dependent_margin_liquidation,Day-1 P&L → Day-1 maintenance test → margin call/cash transfer → Day-2 P&L → Day-2 maintenance test → Day-3 P&L → Day-3 maintenance test → Day-4 P&L → Day-4 maintenance test → exhaust remaining cash → solve liquidation → transaction cost → final margin state,13,event_sequence,multi_day_state_tracking,none,maintenance_call_and_forced_liquidation,financial_units,High,structured_multi_output,5,3,2,2,0,3,2,3,20,risk-051; risk-052,Day-1 P&L -> Day-1 maintenance test -> margin call/cash transfer -> Day-2 P&L -> Day-2 maintenance test -> Day-3 P&L -> Day-3 maintenance test -> Day-4 P&L -> Day-4 maintenance test -> exhaust cash -> liquidation -> transaction cost -> final margin state,13,2,13,extended_long
+long-016,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-105 + risk-008,"A four-year amortizing corporate loan has EADs of $10M, $8M, $6M, and $4M in Years 1–4. Unconditional cumulative PDs at the end of Years 1–4 are 2%, 5%, 9%, and 12%. Treat yearly marginal default probabilities as differences in cumulative PD.
+
+
+LGD is 35% in Years 1–2. A collateral downgrade at the start of Year 3 raises LGD to 50% in Years 3–4. Discount expected losses at an effective rate of 5% per year.
+
+
+First calculate lifetime ECL under the original amortization schedule. Then suppose the borrower prepays $2M at the end of Year 1, reducing EAD in Years 2–4 by $2M each (to $6M, $4M, and $2M) while PDs and LGDs remain unchanged. Recalculate lifetime ECL and the reduction caused by the prepayment.
+
+
+Assume expected losses occur at each year-end for discounting purposes.","{
+  ""original_schedule"": {
+  ""ead"": [
+  10000000.0,
+  8000000.0,
+  6000000.0,
+  4000000.0
+  ],
+  ""marginal_pd"": [
+  0.02,
+  0.03,
+  0.04,
+  0.03
+  ],
+  ""lgd"": [
+  0.35,
+  0.35,
+  0.5,
+  0.5
+  ],
+  ""undiscounted_el"": [
+  70000.0,
+  84000.0,
+  120000.0,
+  60000.0
+  ],
+  ""discounted_el"": [
+  66666.67,
+  76190.48,
+  103660.51,
+  49362.15
+  ],
+  ""lifetime_ecl"": 295879.81
+  },
+  ""revised_schedule"": {
+  ""ead"": [
+  10000000.0,
+  6000000.0,
+  4000000.0,
+  2000000.0
+  ],
+  ""marginal_pd"": [
+  0.02,
+  0.03,
+  0.04,
+  0.03
+  ],
+  ""lgd"": [
+  0.35,
+  0.35,
+  0.5,
+  0.5
+  ],
+  ""undiscounted_el"": [
+  70000.0,
+  63000.0,
+  80000.0,
+  30000.0
+  ],
+  ""discounted_el"": [
+  66666.67,
+  57142.86,
+  69107.01,
+  24681.07
+  ],
+  ""lifetime_ecl"": 217597.61
+  },
+  ""prepayment_reduction"": 78282.2
+}","mPD_1=CPD_1; mPD_t=CPD_t−CPD_{t−1}.
+LGD_t=0.35 for t≤2, 0.50 for t≥3.
+ECL=Σ_t EAD_t·mPD_t·LGD_t/(1.05)^t.
+Counterfactual EAD'={10,6,4,2}; recompute ECL' and ΔECL=ECL−ECL'.",table,Credit Risk,Lifetime ECL & Amortization,Lifetime ECL with collateral-driven LGD regime change and prepayment counterfactual,term_structure_counterfactual,convert cumulative to marginal PD → map EAD schedule → map LGD regime → compute yearly ELs → discount baseline losses → sum baseline ECL → apply prepayment to future EADs → recompute yearly ELs → rediscount revised losses → sum revised ECL → calculate ECL reduction → compare schedules,12,cash_flow_schedule,multi_year_with_regime_change,cumulative_to_marginal_default,lgd_regime_change,financial_units,High,structured_multi_output,5,3,2,2,3,3,2,3,23,risk-105; risk-008,convert cumulative to marginal PD -> map EAD schedule -> map LGD regime -> yearly ELs -> discount yearly losses -> sum baseline ECL -> update future EADs after prepayment -> recompute ELs -> rediscount -> sum revised ECL -> compare,12,2,12,extended_long
+long-017,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-042 + risk-099,"A firm starts Day 1 with $5.0M of cash and must maintain at least $2.0M after every cash event. It has an undrawn revolving-credit facility of $3.0M. After each event, if cash is below $2.0M, draw only the minimum revolver amount needed to restore cash to $2.0M, subject to remaining capacity.
+
+
+Cash events are:
+- Day 1: supplier payment −$1.5M
+- Day 2: margin call −$2.0M
+- Day 3: customer inflow +$1.0M
+- Day 4: debt maturity −$3.0M
+- Day 5: customer receipt +$1.5M
+- Day 6: tax payment −$2.0M
+- Day 7: second margin call −$1.0M
+
+
+Track cash, revolver draws, and remaining revolver capacity after every event. Identify total revolver drawn, the first day on which the $2.0M minimum cannot be restored, and the resulting liquidity shortfall.","{
+  ""total_revolver_drawn"": 3.0,
+  ""first_day_minimum_cannot_be_restored"": ""Day 7"",
+  ""liquidity_shortfall"": 1.0,
+  ""history"": [
+  {
+  ""day"": ""Day 1"",
+  ""event_amount"": -1.5,
+  ""cash_pre_draw"": 3.5,
+  ""revolver_draw"": 0.0,
+  ""cash_final"": 3.5,
+  ""total_revolver_drawn"": 0.0,
+  ""remaining_capacity"": 3.0
+  },
+  {
+  ""day"": ""Day 2"",
+  ""event_amount"": -2.0,
+  ""cash_pre_draw"": 1.5,
+  ""revolver_draw"": 0.5,
+  ""cash_final"": 2.0,
+  ""total_revolver_drawn"": 0.5,
+  ""remaining_capacity"": 2.5
+  },
+  {
+  ""day"": ""Day 3"",
+  ""event_amount"": 1.0,
+  ""cash_pre_draw"": 3.0,
+  ""revolver_draw"": 0.0,
+  ""cash_final"": 3.0,
+  ""total_revolver_drawn"": 0.5,
+  ""remaining_capacity"": 2.5
+  },
+  {
+  ""day"": ""Day 4"",
+  ""event_amount"": -3.0,
+  ""cash_pre_draw"": 0.0,
+  ""revolver_draw"": 2.0,
+  ""cash_final"": 2.0,
+  ""total_revolver_drawn"": 2.5,
+  ""remaining_capacity"": 0.5
+  },
+  {
+  ""day"": ""Day 5"",
+  ""event_amount"": 1.5,
+  ""cash_pre_draw"": 3.5,
+  ""revolver_draw"": 0.0,
+  ""cash_final"": 3.5,
+  ""total_revolver_drawn"": 2.5,
+  ""remaining_capacity"": 0.5
+  },
+  {
+  ""day"": ""Day 6"",
+  ""event_amount"": -2.0,
+  ""cash_pre_draw"": 1.5,
+  ""revolver_draw"": 0.5,
+  ""cash_final"": 2.0,
+  ""total_revolver_drawn"": 3.0,
+  ""remaining_capacity"": 0.0
+  },
+  {
+  ""day"": ""Day 7"",
+  ""event_amount"": -1.0,
+  ""cash_pre_draw"": 1.0,
+  ""revolver_draw"": 0.0,
+  ""cash_final"": 1.0,
+  ""total_revolver_drawn"": 3.0,
+  ""remaining_capacity"": 0.0
+  }
+  ]
+}","Cash_t=Cash_{t−1}+Flow_t+Draw_t.
+Draw_t=min(max(Cash_min−(Cash_{t−1}+Flow_t),0),Capacity_{t−1}).
+Capacity_t=Capacity_{t−1}−Draw_t.
+Shortfall_t=max(Cash_min−Cash_t,0).",table,Corporate Finance,Treasury & Liquidity,Path-dependent cash ladder with contingent revolver draws and exhaustion,liquidity_state_cascade,Day-1 flow → cash-floor test → Day-2 flow → revolver draw → Day-3 flow → Day-4 flow → revolver draw → Day-5 flow → Day-6 flow → final revolver draw/capacity exhaustion → Day-7 flow and unrepaired breach,11,event_sequence,multi_day_state_tracking,none,cash_floor_with_capacity_constraint,financial_units,Moderate,structured_multi_output,5,3,2,3,0,3,2,2,20,risk-042; risk-099,Day-1 flow -> cash-floor test -> Day-2 flow -> draw -> Day-3 flow -> Day-4 flow -> draw -> Day-5 flow -> Day-6 flow -> final draw/capacity exhaustion -> Day-7 unrepaired breach,11,1,11,extended_long
+long-018,Long-Horizon Financial Risk,Long-horizon composition; new cross-domain composition; current semantic links: risk-081 + risk-077,"A project-finance borrower begins with a $4.0M debt-service reserve account (DSRA). Annual debt service is $12M. Cash taxes are 20% of EBITDA when EBITDA is positive, and CFADS is defined as EBITDA minus cash taxes.
+
+
+In Year 1, base revenue of $50M falls by 15%; operating costs remain $30M. If CFADS is below debt service, the DSRA is drawn to ensure debt service is paid. A distribution lockup applies whenever DSCR = CFADS/debt service is below 1.20×.
+
+
+In Year 2, revenue recovers to $48M while operating costs remain $30M. Any CFADS remaining after debt service must first restore the DSRA to $4.0M; only the residual can be distributed, and only if Year-2 DSCR is at least 1.20×.
+
+
+Calculate EBITDA, taxes, CFADS, DSCR, DSRA draw/ending balance and distribution status in Year 1; then calculate the same operating metrics for Year 2, the amount used to refill the DSRA, ending DSRA, and the maximum Year-2 distribution.","{
+  ""year_1"": {
+  ""revenue"": 42.5,
+  ""operating_costs"": 30.0,
+  ""ebitda"": 12.5,
+  ""cash_taxes"": 2.5,
+  ""cfads"": 10.0,
+  ""debt_service"": 12.0,
+  ""dscr"": 0.8333,
+  ""dsra_beginning"": 4.0,
+  ""dsra_draw"": 2.0,
+  ""dsra_ending"": 2.0,
+  ""distribution_lockup"": true,
+  ""distribution"": 0.0
+  },
+  ""year_2"": {
+  ""revenue"": 48.0,
+  ""operating_costs"": 30.0,
+  ""ebitda"": 18.0,
+  ""cash_taxes"": 3.6,
+  ""cfads"": 14.4,
+  ""debt_service"": 12.0,
+  ""dscr"": 1.2,
+  ""surplus_cfads_after_debt"": 2.4,
+  ""dsra_beginning"": 2.0,
+  ""dsra_refill"": 2.0,
+  ""dsra_ending"": 4.0,
+  ""distribution_allowed"": true,
+  ""maximum_distribution"": 0.4
+  }
+}","EBITDA_t=Revenue_t−Opex; Tax_t=0.20max(EBITDA_t,0).
+CFADS_t=EBITDA_t−Tax_t; DSCR_t=CFADS_t/DebtService.
+Draw_1=min(DSRA_0,max(DebtService−CFADS_1,0)); DSRA_1=DSRA_0−Draw_1.
+Excess_2=max(CFADS_2−DebtService,0).
+Refill_2=min(max(DSRA_target−DSRA_1,0),Excess_2).
+Distribution_2=max(Excess_2−Refill_2,0)·1[DSCR_2≥1.20].",table,Credit Risk,Project Finance DSCR & Reserve Waterfall,"Two-period DSCR stress with reserve draw, lockup, and recovery waterfall",project_finance_state_waterfall,year1 revenue shock → EBITDA → taxes → CFADS → DSCR test → DSRA draw → distribution lockup → year2 recovery → EBITDA/tax/CFADS → DSCR → excess cash → DSRA refill → residual distribution,13,cash_flow_schedule,two_period_state_transition,none,dscr_lockup_and_reserve_priority,financial_units,High,structured_multi_output,5,3,2,2,0,3,2,3,20,risk-081; risk-077,year1 revenue shock -> EBITDA -> taxes -> CFADS -> DSCR test -> DSRA draw -> distribution lockup -> year2 recovery -> EBITDA/tax/CFADS -> DSCR -> excess cash -> DSRA refill -> residual distribution,13,2,13,extended_long
+long-019,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-113 + risk-112 + risk-087,"A bank starts with $12M of CET1 and $120M of RWA. A cyber/fraud event causes a $3M operating loss, which is deducted from CET1.
+
+
+An insurance policy has a $0.5M deductible and covers 80% of the loss above the deductible. Only 60% of the insurance recovery entitlement is collected this quarter; cash actually collected increases CET1 in this simplified framework.
+
+
+The incident also adds $15M of operational-risk RWA. The minimum CET1 ratio is 8%.
+
+
+If the ratio is below 8%, the bank can sell 100%-risk-weighted loans. A sale of x million book value reduces RWA by x, but the loans are sold at a 2% discount, so the realized loss of 0.02x also reduces CET1. Find the minimum loan sale needed to restore the 8% CET1 ratio.
+
+
+Calculate the insurance entitlement and cash collected, CET1 after loss/recovery, the ratio before and after the additional operational RWA, the minimum loan sale, post-sale CET1 and RWA, and final ratio.","{
+  ""loss_above_deductible"": 2.5,
+  ""insurance_entitlement"": 2.0,
+  ""cash_collected"": 1.2,
+  ""cet1_after_loss_recovery"": 10.2,
+  ""rwa_after_op_rwa"": 135.0,
+  ""ratio_before_op_rwa"": 0.085,
+  ""ratio_after_op_rwa"": 0.0756,
+  ""minimum_loan_sale_x"": 10.0,
+  ""post_sale_cet1"": 10.0,
+  ""post_sale_rwa"": 125.0,
+  ""final_ratio"": 0.08
+}","Recovery_ent=Cover·max(Loss−Deductible,0).
+Recovery_cash=CollectRate·Recovery_ent.
+CET1_1=CET1_0−Loss+Recovery_cash.
+RWA_1=RWA_0+OpRWA_add.
+If CET1_1/RWA_1<0.08, solve min x:
+(CET1_1−0.02x)/(RWA_1−x)≥0.08.",table,Banking & ALM,"Operational Loss, Insurance & Capital","Operational loss with partial insurance recovery, RWA shock, and loss-making asset-shedding cure",operational_capital_cascade,operating loss → insurance deductible → coverage entitlement → cash collectibility → CET1 update → pre-op-RWA CET1 ratio → add operational RWA → post-op-RWA ratio → formulate asset sale → sale-loss feedback → solve minimum sale → recompute capital ratio,12,scalar_parameters,incident_then_recovery_then_rwa_update_then_cure,none,capital_limit_and_asset_sale,financial_units,High,structured_multi_output,5,3,1,2,0,3,2,3,19,risk-113; risk-112; risk-087,operating loss -> deductible -> insurance entitlement -> cash collection -> CET1 update -> pre-op-RWA ratio -> add operational RWA -> post-op-RWA ratio -> asset sale equation -> sale-loss feedback -> minimum sale -> final capital ratio,12,2,12,extended_long
+long-020,Long-Horizon Financial Risk,Long-horizon composition; current semantic links: risk-057 + risk-056,"A company has $200M of floating-rate debt priced at SOFR + 2%, EBITDA of $25M, and an interest-rate swap on $120M notional under which it pays fixed 4% and receives SOFR. SOFR rises to 6%.
+
+
+Interest coverage is defined as EBITDA divided by net cash interest, where net cash interest equals gross debt interest minus the swap's net receipt. The minimum coverage covenant is 2.0×.
+
+
+If coverage is breached, the loan margin increases by 1 percentage point on all debt for the full year. The penalty margin remains even after a cure. To cure the covenant, the company pays down debt. It has $25M of cash but must retain $10M; any additional paydown is financed with an equity raise. The swap remains at $120M notional after the paydown.
+
+
+Calculate gross interest before the penalty, the swap net receipt, net interest and coverage, determine whether the penalty triggers, recompute net interest and coverage after the margin step-up, solve the maximum debt balance consistent with 2.0× coverage under the penalty rate, and determine the paydown, cash used, equity raise, and post-cure net interest/coverage.
+
+
+Assume all stated interest rates and swap cash flows apply over a full one-year accrual period, with no day-count or discounting adjustment.","{
+  ""initial"": {
+  ""debt_balance"": 200.0,
+  ""sofr"": 0.06,
+  ""margin"": 0.02,
+  ""debt_rate"": 0.08,
+  ""gross_interest"": 16.0,
+  ""swap_notional"": 120.0,
+  ""swap_fixed_rate"": 0.04,
+  ""swap_net_receipt"": 2.4,
+  ""net_cash_interest"": 13.6,
+  ""ebitda"": 25.0,
+  ""interest_coverage"": 1.838,
+  ""penalty_triggered"": true
+  },
+  ""penalty"": {
+  ""new_margin"": 0.03,
+  ""debt_rate"": 0.09,
+  ""gross_interest"": 18.0,
+  ""swap_net_receipt"": 2.4,
+  ""net_cash_interest"": 15.6,
+  ""interest_coverage"": 1.603
+  },
+  ""cure_and_post_cure"": {
+  ""target_coverage"": 2.0,
+  ""target_net_cash_interest"": 12.5,
+  ""target_gross_interest"": 14.9,
+  ""max_debt"": 165.556,
+  ""total_paydown"": 34.444,
+  ""total_cash"": 25.0,
+  ""min_cash_retained"": 10.0,
+  ""cash_used"": 15.0,
+  ""equity_raise"": 19.444,
+  ""post_cure_gross_interest"": 14.9,
+  ""post_cure_swap_net_receipt"": 2.4,
+  ""post_cure_net_cash_interest"": 12.5,
+  ""post_cure_coverage"": 2.0
+  }
+}","GrossInt_0=D(SOFR+m); SwapReceipt=N_swap(SOFR−K).
+NetInt_0=GrossInt_0−SwapReceipt; Coverage_0=EBITDA/NetInt_0.
+If Coverage_0<2, m'=m+0.01.
+For cured debt D': NetInt'=D'(SOFR+m')−SwapReceipt.
+Solve EBITDA/NetInt'≥2.
+Paydown=D−D'; CashUse=min(Paydown,Cash−Cash_min); Equity=Paydown−CashUse.",table,Corporate Finance,Interest-Rate Hedging & Covenants,"Floating-rate debt and swap hedge feeding into coverage breach, margin step-up, and financing cure",hedge_covenant_feedback,rate shock → gross debt interest → swap receipt → net interest → coverage test → penalty margin switch → recompute interest/coverage → solve debt cap → cash-priority paydown → equity cure → recompute coverage,12,scalar_parameters,rate_shock_then_penalty_then_cure,none,coverage_trigger_and_funding_priority,financial_units,High,structured_multi_output,5,3,1,2,0,3,2,3,19,risk-057; risk-056,rate shock -> gross debt interest -> swap receipt -> net interest -> coverage test -> penalty margin switch -> recompute interest/coverage -> solve debt cap -> cash-priority paydown -> equity cure -> recompute coverage,12,2,11,extended_long
+long-021,Long-Horizon Financial Risk,feedback loop; repo haircut; fire-sale price impact; collateral constraint; leverage remediation; current semantic links: risk-099 + risk-100 + risk-111,"A leveraged fixed-income fund holds $100M of bonds financed with $70M of repo and has $2M of cash. It must keep at least $1.5M of cash. A market shock reduces the bond portfolio's market value by 10%, and the repo haircut rises to 25%. Under the repo rule, borrowing may not exceed (1−haircut) times the market value of pledged bonds.
+
+
+To cure any repo deficiency, the fund first uses the $0.5M of cash available above its minimum and then sells bonds. Let x be the stressed pre-impact market value of bonds sold, in millions. All sale proceeds are used to repay repo. The sale itself depresses the value of the remaining bonds by an additional 0.1% for each $1M sold, so remaining collateral value is (90−x)(1−0.001x).
+
+
+Find the minimum bond sale that restores the repo constraint. Then calculate the fire-sale price-impact loss, final repo borrowing, final bond value, cash, equity, and assets/equity leverage. The fund's maximum leverage is 3.75×; if it is still breached, find the minimum equity injection required, assuming new equity is held as cash.","{
+  ""minimum_bond_sale_M"": 10.505359,
+  ""fire_sale_price_impact_loss_M"": 0.83512,
+  ""final_repo_borrowing_M"": 58.994641,
+  ""final_bond_value_M"": 78.659521,
+  ""cash_M"": 1.5,
+  ""total_assets_M"": 80.159521,
+  ""final_equity_M"": 21.16488,
+  ""assets_to_equity_leverage"": 3.787384,
+  ""minimum_equity_injection_M"": 0.287716
+}","Post-shock V0=90, B0=70, cash usable=0.5. After cash cure B1=69.5. For sale x:
+V(x)=(90−x)(1−0.001x), B(x)=69.5−x.
+Repo constraint: B(x)≤0.75V(x). Choose x*=min{x≥0: constraint holds}.
+ImpactLoss=(90−x*)−V(x*).
+A=V(x*)+1.5; E=A−B(x*); L=A/E.
+If L>3.75, solve (A+y)/(E+y)=3.75 for y≥0.",multi_numeric + decision,Market Risk,Funding Liquidity / Repo,"Fire-sale feedback between collateral haircuts, repo deleveraging, market impact, and leverage",feedback_loop_reasoning,market shock → haircut constraint → cash cure → nonlinear sale/price-impact feedback → solve binding repo equation → balance-sheet update → leverage test → equity cure,14,scalar_parameters,sequential_state_updates,none,nested_thresholds_and_feedback,percent_decimal,High,multi_numeric_decision,5,3,1,2,0,3,1,3,18,risk-099; risk-100; risk-111,rate shock → bond MV → repo haircut capacity → cash cure → bond sale x → market impact on remaining collateral ↔ repo constraint → final balance sheet → leverage → equity cure,14,3,13,extended_long
+long-022,Long-Horizon Financial Risk,policy comparison; deposit beta; runoff trigger; LCR; forced asset sale; CET1; NII trade-off; current semantic links: risk-069 + risk-073 + risk-099 + risk-112,"A bank has $100M of floating-rate loans yielding 5.0%, $80M of interest-bearing deposits costing 1.5%, $25M of HQLA bonds with modified duration 4, CET1 of $10M, and RWA of $90M. A 200-bp rate shock occurs. Loan yields pass through 70% of the shock. The HQLA bonds reprice using modified duration; ignore convexity, and only 95% of their stressed market value is recognized as HQLA.
+
+
+Management is choosing between two deposit-pricing policies:
+- Low pass-through: deposit costs rise by 40% of the rate shock. Because the increase is less than 100 bp, 15% of deposits run off during the 30-day stress window.
+- High pass-through: deposit costs rise by 60% of the shock, and no runoff occurs.
+
+
+Base 30-day net cash outflows are $12M; any deposit runoff is added to them. Treat the HQLA bond market-value loss as an immediate dollar-for-dollar reduction in CET1. If LCR is below 100%, the bank sells the minimum amount of 100%-risk-weighted loans at a 2% discount. Sale proceeds count fully as HQLA; the discount loss reduces CET1 and the sold book value reduces RWA. For annualized NII, use the post-runoff deposit balance and post-sale loan balance; sale cash earns zero.
+
+
+For each policy, calculate stressed outflows, LCR, any required loan sale, post-sale CET1 ratio, and annualized NII. Both policies must satisfy an 8% CET1 minimum. Which policy leaves the bank with the higher NII while meeting both LCR and CET1 constraints?","{
+  ""baseline_adjustments"": {
+  ""new_loan_yield_percent"": 6.4,
+  ""hqla_market_value_loss_M"": 2.0,
+  ""stressed_hqla_market_value_M"": 23.0,
+  ""recognized_hqla_M"": 21.85,
+  ""pre_sale_cet1_M"": 8.0,
+  ""pre_sale_rwa_M"": 90.0
+  },
+  ""policies"": {
+  ""low_pass_through"": {
+  ""new_deposit_cost_percent"": 2.3,
+  ""deposit_runoff_M"": 12.0,
+  ""post_runoff_deposit_balance_M"": 68.0,
+  ""stressed_outflows_M"": 24.0,
+  ""pre_sale_lcr_percent"": 91.04,
+  ""required_loan_sale_M"": 2.194,
+  ""post_sale_loan_balance_M"": 97.806,
+  ""discount_loss_M"": 0.044,
+  ""post_sale_cet1_M"": 7.956,
+  ""post_sale_rwa_M"": 87.806,
+  ""post_sale_cet1_ratio_percent"": 9.06,
+  ""annualized_nii_M"": 4.696,
+  ""satisfies_cet1_minimum"": true,
+  ""satisfies_lcr_minimum"": true
+  },
+  ""high_pass_through"": {
+  ""new_deposit_cost_percent"": 2.7,
+  ""deposit_runoff_M"": 0.0,
+  ""post_runoff_deposit_balance_M"": 80.0,
+  ""stressed_outflows_M"": 12.0,
+  ""pre_sale_lcr_percent"": 182.08,
+  ""required_loan_sale_M"": 0.0,
+  ""post_sale_loan_balance_M"": 100.0,
+  ""discount_loss_M"": 0.0,
+  ""post_sale_cet1_M"": 8.0,
+  ""post_sale_rwa_M"": 90.0,
+  ""post_sale_cet1_ratio_percent"": 8.89,
+  ""annualized_nii_M"": 4.24,
+  ""satisfies_cet1_minimum"": true,
+  ""satisfies_lcr_minimum"": true
+  }
+  },
+  ""optimal_policy"": ""low_pass_through"",
+  ""optimal_nii_M"": 4.696
+}","Δy=0.02; loan yield'=0.05+0.70Δy. BondMV'=25(1−4Δy); HQLA=0.95BondMV'.
+For policy p: dep_rate'=0.015+β_pΔy; runoff_p∈{0.15·80,0}; outflows=12+runoff.
+If HQLA<outflows, sell x=(outflows−HQLA)/0.98.
+CET1'=10−bond_loss−0.02x; RWA'=90−x.
+NII=(100−x)loan_yield'−(80−runoff)dep_rate'.
+Choose feasible p maximizing NII.",scenario comparison + decision,Banking & ALM,Deposit Pricing / Liquidity Risk,"Deposit-pricing trade-off across NII, runoff, LCR repair, and CET1",branching_policy_optimization,rate shock → loan repricing + bond loss → policy-specific deposit repricing → runoff trigger → LCR branch → forced sale → CET1 update → NII comparison → constrained decision,14,scenario_set,stress_window_state_update,none,policy_branching_and_thresholds,bps_percent_decimal,High,multi_scenario_numeric_decision,5,3,2,2,0,3,2,3,20,risk-069; risk-073; risk-099; risk-112,"rate shock → {loan yield, bond MV} ; deposit policy → {deposit cost, runoff} → outflows → LCR → loan sale → {CET1,RWA,loan balance}; all branches → NII and feasibility → policy choice",11,4,16,extended_long
+long-023,Long-Horizon Financial Risk,wrong-way risk; endogenous downgrade; leverage trigger; CSA threshold; collateral haircut; ECL; hedge sizing; current semantic links: risk-077 + risk-100 + risk-107 + risk-108 + risk-115,"A commodity producer has EBITDA of $50M and debt of $150M. Sixty percent of EBITDA is commodity-sensitive and changes proportionally with the commodity price; the rest is unaffected. The commodity price falls 25%.
+
+
+The bank also has a derivative with the producer. Before the shock its positive MTM to the bank is $6M; the MTM increases by $0.4M for each 1% commodity-price decline. The producer has posted $15M face value of corporate bonds as collateral.
+
+
+If debt/EBITDA exceeds 3.5×, the producer is downgraded. On downgrade:
+- one-year PD rises from 2% to 9%;
+- the CSA threshold falls from $4M to $1M;
+- the haircut on posted bond collateral rises from 10% to 30%.
+
+
+Required collateral is max(MTM−threshold,0). The producer can post at most $2.5M of additional cash collateral after the shock. Cash collateral has no haircut. LGD is 60%.
+
+
+The bank's risk metric is EAD + 8×ECL, where ECL=EAD×PD×LGD, and the limit is $4M. A hedge can reduce residual EAD one-for-one without changing PD, LGD, or collateral.
+
+
+Calculate stressed EBITDA and leverage, determine whether the downgrade occurs, then calculate stressed MTM, recognized collateral, collateral call, actual posting, residual EAD, ECL and risk metric. If the limit is breached, solve for the minimum hedge notional.","{
+  ""stressed_ebitda_millions"": 42.5,
+  ""stressed_leverage"": 3.53,
+  ""downgrade_occurred"": true,
+  ""post_downgrade_pd"": 0.09,
+  ""post_downgrade_threshold_millions"": 1.0,
+  ""post_downgrade_bond_haircut"": 0.3,
+  ""stressed_mtm_millions"": 16.0,
+  ""required_collateral_millions"": 15.0,
+  ""recognized_bond_collateral_millions"": 10.5,
+  ""collateral_call_millions"": 4.5,
+  ""actual_cash_posted_millions"": 2.5,
+  ""total_recognized_collateral_millions"": 13.0,
+  ""residual_ead_millions"": 3.0,
+  ""ecl_millions"": 0.162,
+  ""risk_metric_millions"": 4.296,
+  ""limit_breach_millions"": 0.296,
+  ""minimum_hedge_notional_millions"": 0.2067
+}","EBITDA'=50−0.60·50·0.25; Lev=150/EBITDA'. If Lev>3.5, set PD=.09, T=1, haircut=.30.
+MTM'=6+0.4·25.
+Coll_bond=15(1−haircut); Req=max(MTM'−T,0); Call=max(Req−Coll_bond,0); CashPost=min(Call,2.5).
+EAD=max(MTM'−Coll_bond−CashPost,0); ECL=EAD·PD·0.60; Metric=EAD+8ECL.
+Choose h=min h≥0 s.t. max(EAD−h,0)(1+8PD·LGD)≤4.",multi_numeric + triggered regime + optimization,Counterparty Credit Risk,Wrong-Way Risk / Collateral,"Endogenous credit downgrade linking commodity stress, collateral terms, ECL, and hedge sizing",endogenous_regime_switch,commodity shock → EBITDA → leverage trigger → downgrade state → MTM shock + haircut/threshold reset → collateral shortfall → EAD → ECL → risk metric → hedge solve,13,scalar_parameters,state_transition,PD_based_expected_loss,endogenous_rule_switch,percent_decimal,High,multi_numeric_decision,5,3,1,2,2,3,1,3,20,risk-077; risk-100; risk-107; risk-108; risk-115,"commodity shock → EBITDA → leverage → downgrade → {PD,CSA threshold,collateral haircut}; commodity shock → derivative MTM; downgrade+MTM → collateral call → EAD → ECL → risk metric → hedge",12,3,13,extended_long
+long-024,Long-Horizon Financial Risk,extension-risk duration regime switch; repo haircut; liquidity cure; forced sale; leverage; current semantic links: risk-073 + risk-099 + risk-100 + risk-111,"A fund holds $60M of agency MBS and $4M of cash, financed by $45M of repo. Before stress the MBS modified duration is 3.0. Under the fund's simplified extension-risk rule, if rates rise by at least 75 bp, prepayment slows enough that duration becomes 5.5 before the price shock is calculated. Ignore convexity.
+
+
+Rates rise 100 bp. At the same time the repo haircut rises to 30%. Repo borrowing must not exceed 70% of pledged MBS market value. The fund must retain at least $1M of cash. It first uses cash above the floor to repay repo. If the repo constraint is still breached, it sells MBS at the stressed market price and applies all proceeds to repo. Ignore additional price impact from the sale.
+
+
+Calculate the duration state, MBS loss and stressed value, repo deficiency after the shock, cash used, minimum MBS sale, final MBS value, repo, cash, equity, and assets/equity leverage. If leverage exceeds 3.0×, find the minimum equity injection required, assuming the new equity is held in cash.","{
+  ""stressed_duration"": 5.5,
+  ""mbs_loss_millions"": 3.3,
+  ""stressed_mbs_value_millions"": 56.7,
+  ""repo_deficiency_millions"": 5.31,
+  ""cash_used_millions"": 3.0,
+  ""minimum_mbs_sale_millions"": 7.7,
+  ""final_mbs_value_millions"": 49.0,
+  ""final_repo_millions"": 34.3,
+  ""final_cash_millions"": 1.0,
+  ""final_equity_millions"": 15.7,
+  ""assets_to_equity_leverage"": 3.185,
+  ""minimum_equity_injection_millions"": 1.45
+}","If Δy≥0.0075, D=5.5 else D=3.0. V=60(1−DΔy).
+Repo capacity=.70V. CashUse=min(45−.70V,3).
+B1=45−CashUse.
+If B1>.70V, sell x satisfying B1−x=.70(V−x).
+A=V−x+1; E=A−(B1−x); L=A/E.
+If L>3, solve (A+y)/(E+y)=3.",multi_numeric + state trigger,Market Risk,Mortgage / Funding Liquidity,"MBS extension risk propagated into repo margin, forced sale, and leverage",state_dependent_collateral_reasoning,rate-threshold test → duration regime → price loss → haircut capacity → cash cure → forced sale solve → balance sheet → leverage → equity cure,13,scalar_parameters,state_transition,none,threshold_regime_and_cure,bps_percent_decimal,High,multi_numeric_decision,5,3,1,2,0,3,2,3,19,risk-073; risk-099; risk-100; risk-111,"rate shock → duration regime → MBS loss → repo collateral capacity → cash repayment → sale x → {remaining collateral,repo} → balance sheet → leverage → equity injection",13,3,12,extended_long
+long-025,Long-Horizon Financial Risk,borrowing base; eligibility transition; mandatory repayment; liquidity floor; redraw capacity; event sequence; current semantic links: risk-042 + risk-100 + risk-059,"A company has $25M of eligible accounts receivable, $20M of inventory, $5M of cash, and $24M drawn on a $30M revolver. It must maintain at least $2M of cash. The borrowing base is 80% of eligible receivables plus an inventory advance rate, and revolver borrowing cannot exceed the lesser of the $30M commitment and the borrowing base.
+
+
+A stress sequence occurs:
+1. Twenty percent of the $25M receivables become more than 90 days past due and are therefore ineligible.
+2. An inventory-quality trigger reduces the inventory advance rate from 50% to 30%.
+3. Any borrowing-base deficiency must be repaid immediately from cash.
+4. A $2M supplier payment occurs.
+5. The company then collects the entire $5M of receivables that had become ineligible. Because those receivables were already excluded, this collection increases cash but does not reduce eligible receivables.
+6. The company generates $4M of new eligible receivables on credit.
+7. A $5M margin call occurs. If cash falls below $2M, draw only enough revolver to restore the cash floor, subject to both commitment and borrowing-base headroom.
+
+
+Track the borrowing base, revolver balance and cash through the sequence. Identify the first unremedied liquidity breach, whether it later recovers, the headroom after the new receivables are generated, and the final state after the margin call.","{
+  ""sequence"": [
+  {
+  ""step"": 0,
+  ""event"": ""Initial State"",
+  ""borrowing_base_m"": 30.0,
+  ""revolver_drawn_m"": 24.0,
+  ""cash_m"": 5.0
+  },
+  {
+  ""step"": 1,
+  ""event"": ""AR Aging (>90 days)"",
+  ""borrowing_base_m"": 26.0,
+  ""revolver_drawn_m"": 24.0,
+  ""cash_m"": 5.0
+  },
+  {
+  ""step"": 2,
+  ""event"": ""Inventory IAR Reduction"",
+  ""borrowing_base_m"": 22.0,
+  ""revolver_drawn_m"": 24.0,
+  ""cash_m"": 5.0
+  },
+  {
+  ""step"": 3,
+  ""event"": ""Deficiency Repayment"",
+  ""borrowing_base_m"": 22.0,
+  ""revolver_drawn_m"": 22.0,
+  ""cash_m"": 3.0
+  },
+  {
+  ""step"": 4,
+  ""event"": ""Supplier Payment ($2M)"",
+  ""borrowing_base_m"": 22.0,
+  ""revolver_drawn_m"": 22.0,
+  ""cash_m"": 1.0
+  },
+  {
+  ""step"": 5,
+  ""event"": ""Ineligible AR Collection"",
+  ""borrowing_base_m"": 22.0,
+  ""revolver_drawn_m"": 22.0,
+  ""cash_m"": 6.0
+  },
+  {
+  ""step"": 6,
+  ""event"": ""New Receivables ($4M)"",
+  ""borrowing_base_m"": 25.2,
+  ""revolver_drawn_m"": 22.0,
+  ""cash_m"": 6.0
+  },
+  {
+  ""step"": 7,
+  ""event"": ""Margin Call ($5M)"",
+  ""borrowing_base_m"": 25.2,
+  ""revolver_drawn_m"": 23.0,
+  ""cash_m"": 2.0
+  }
+  ],
+  ""key_outcomes"": {
+  ""first_unremedied_breach_step"": 4,
+  ""breach_recovery_step"": 5,
+  ""step_6_headroom_m"": 3.2,
+  ""final_state"": {
+  ""borrowing_base_m"": 25.2,
+  ""revolver_drawn_m"": 23.0,
+  ""cash_m"": 2.0,
+  ""remaining_headroom_m"": 2.2
+  }
+  }
+}","BB_t=.80·EligibleAR_t + AdvInv_t·Inventory.
+Borrow_t≤min(Commitment,BB_t).
+If Borrow>BB, repay Borrow−BB from cash.
+For each cash event update Cash.
+Headroom=max(min(Commitment,BB_t)−Borrow,0).
+If Cash<2, Draw=min(max(2−Cash,0),Headroom).
+Track eligibility changes separately from cash collections of already-ineligible A/R.",state trace + decision,Corporate Finance,Treasury & Liquidity / Asset-Based Lending,Borrowing-base deficiency and path-dependent liquidity under changing collateral eligibility,borrowing_base_state_tracking,eligibility shock → borrowing base → mandatory repayment → supplier payment → cash-floor breach with zero headroom → collection recovery → new eligible receivable → base rebuild → margin call → constrained redraw,14,event_sequence,multi_event_state_tracking,none,repeated_capacity_constraints,percent_decimal,High,state_trace_multi_numeric,5,3,2,3,0,3,1,3,20,risk-042; risk-100; risk-059,A/R eligibility + inventory trigger -> borrowing base -> mandatory repayment -> cash -> supplier payment -> cash-floor breach with zero borrowing-base headroom -> collection recovery -> new eligible A/R -> rebuilt headroom -> margin call -> constrained redraw,14,3,15,extended_long
+long-026,Long-Horizon Financial Risk,multi-period project finance; DSCR trigger; DSRA draw/refill; coupon step-up; principal schedule; cash sweep; current semantic links: risk-057 + risk-077 + risk-081,"A project-finance loan begins Year 1 with $60M of debt and a $4M debt-service reserve account (DSRA). Scheduled principal amortization is $8M per year. The Year-1 coupon is 8%. DSCR is CFADS divided by scheduled interest plus scheduled principal.
+
+
+Year-1 CFADS is $10M. If DSCR is below 1.10×, the DSRA is drawn as needed to pay scheduled debt service, distributions are locked, and the coupon steps up by 2 percentage points for Year 2. The coupon step-up remains for all of Year 2 even if Year-2 DSCR recovers.
+
+
+Year-2 CFADS is $18M. Year-2 interest is calculated on debt outstanding at the start of Year 2. After scheduled Year-2 debt service, excess CFADS first refills the DSRA to $4M. If Year-2 DSCR is at least 1.20×, 50% of any cash remaining after the DSRA refill is swept to additional principal and the other 50% may be distributed; otherwise all remaining cash is trapped.
+
+
+Calculate Year-1 interest, debt service, DSCR, DSRA draw, ending DSRA and debt. Then calculate Year-2 coupon, interest, debt service, DSCR, DSRA refill, cash sweep, distribution, and ending debt.","{
+  ""Year_1"": {
+  ""Interest_M"": 4.8,
+  ""Debt_Service_M"": 12.8,
+  ""DSCR"": 0.78,
+  ""DSRA_Draw_M"": 2.8,
+  ""Ending_DSRA_M"": 1.2,
+  ""Ending_Debt_M"": 52.0
+  },
+  ""Year_2"": {
+  ""Coupon"": 0.1,
+  ""Interest_M"": 5.2,
+  ""Debt_Service_M"": 13.2,
+  ""DSCR"": 1.36,
+  ""DSRA_Refill_M"": 2.8,
+  ""Cash_Sweep_M"": 1.0,
+  ""Distribution_M"": 1.0,
+  ""Ending_Debt_M"": 43.0
+  }
+}","Y1: Int1=.08D0; DS1=Int1+8; DSCR1=CFADS1/DS1.
+If DSCR1<1.10: Draw1=min(DSRA0,max(DS1−CFADS1,0)); DSRA1=DSRA0−Draw1; c2=.10; distributions locked.
+D1=D0−8.
+Y2: Int2=c2D1; DS2=Int2+8; DSCR2=18/DS2.
+Excess=max(18−DS2,0); Refill=min(max(4−DSRA1,0),Excess); DSRA2=DSRA1+Refill.
+Residual=Excess−Refill.
+If DSCR2≥1.20: Sweep=.5Residual; Dist=.5Residual; else Sweep=0; Dist=0.
+D2=D1−8−Sweep.",two-period state trace,Credit Risk,Project Finance,DSCR-triggered reserve draw and coupon step-up with next-period DSRA refill and cash sweep,multi_period_waterfall,Year-1 interest → Year-1 debt service → Year-1 DSCR trigger → DSRA draw → ending DSRA → scheduled principal/debt update → persistent coupon step-up → Year-2 interest → Year-2 debt service/DSCR → excess CFADS → DSRA refill/ending DSRA → residual cash → sweep/distribution split → ending debt,14,cash_flow_schedule,multi_period_state_dependency,none,trigger_persistence_and_waterfall,percent_decimal,High,multi_period_numeric,5,3,2,3,0,3,1,3,20,risk-057; risk-077; risk-081,"Y1 debt → interest → DSCR → {DSRA draw, coupon step-up, lock} → Y1 ending debt/DSRA → Y2 interest → DSCR → excess cash → DSRA refill → conditional sweep/distribution → Y2 ending debt",14,3,15,extended_long
+long-027,Long-Horizon Financial Risk,cross-currency hedge; variation margin; liquidity draw; leverage trigger; interest coverage; equity cure; current semantic links: risk-051 + risk-042 + risk-057 + risk-077,"A USD-reporting company has €100M of debt whose principal is economically hedged at $1.10/€ with a cross-currency swap. For covenant purposes, the hedged euro debt therefore counts as $110M. The company has $12M of cash, must retain at least $5M, has a $10M undrawn revolver, and EBITDA of $40M.
+
+
+Spot falls from $1.10/€ to $0.94/€. Under a simplified mark-to-market rule, the swap becomes a liability equal to (€100M)×($1.10−spot), and the full amount must be posted immediately as variation margin. Use cash above the minimum first and the revolver for the remainder.
+
+
+The maximum debt/EBITDA ratio is 2.80×. If that covenant is breached, the revolver coupon steps from 8% to 11% for the full year. Annual cash interest on the hedged euro debt is fixed at $5.5M. A second covenant requires EBITDA/total cash interest of at least 6.5×. The coupon step-up remains even after cure.
+
+
+If either covenant is breached, cure by raising equity and using it to repay revolver debt; cash is already at its minimum and cannot be used. Determine the swap margin call, liquidity funding mix, post-margin revolver balance, both covenants after any coupon step-up, the maximum revolver balance allowed by each covenant, the binding balance, equity raise, and post-cure ratios.","{
+  ""swap_margin_call_M"": 16.0,
+  ""liquidity_funding_mix"": {
+  ""cash_used_M"": 7.0,
+  ""revolver_drawn_M"": 9.0
+  },
+  ""post_margin_revolver_balance_M"": 9.0,
+  ""pre_cure_metrics"": {
+  ""total_debt_M"": 119.0,
+  ""debt_to_ebitda_ratio"": 2.975,
+  ""debt_to_ebitda_breached"": true,
+  ""total_interest_M"": 6.49,
+  ""ebitda_to_interest_ratio"": 6.16,
+  ""ebitda_to_interest_breached"": true,
+  ""step_up_revolver_rate"": 0.11
+  },
+  ""maximum_revolver_capacity_M"": {
+  ""limit_per_debt_to_ebitda"": 2.0,
+  ""limit_per_ebitda_to_interest"": 5.944,
+  ""binding_balance"": 2.0
+  },
+  ""cure_and_post_cure_metrics"": {
+  ""equity_raise_required_M"": 7.0,
+  ""post_cure_total_debt_M"": 112.0,
+  ""post_cure_debt_to_ebitda"": 2.8,
+  ""post_cure_total_interest_M"": 5.72,
+  ""post_cure_ebitda_to_interest"": 6.99
+  }
+}","VM=100(1.10−0.94). CashUse=min(VM,12−5); R0=VM−CashUse.
+Debt=110+R0; Lev=Debt/40.
+If Lev>2.8, r_R=.11 else .08.
+Coverage=40/(5.5+r_RR0).
+R_lev≤2.8·40−110.
+R_cov≤[(40/6.5)−5.5]/r_R.
+R*=min(R_lev,R_cov). Equity=max(R0−R*,0).",multi_numeric + dual-covenant cure,Corporate Finance,FX / Liquidity / Covenants,Cross-currency hedge liquidity risk feeding into leverage and interest-coverage covenants,hedge_liquidity_tradeoff,FX move → swap MTM → variation margin → cash/revolver funding → leverage test → coupon regime switch → coverage test → dual debt caps → binding cure → recompute,13,scalar_parameters,state_transition,none,triggered_coupon_and_dual_constraints,currency_and_percent,High,multi_numeric_decision,5,3,1,2,0,3,2,3,19,risk-051; risk-042; risk-057; risk-077,"FX move → swap liability → margin call → {cash use,revolver draw} → leverage → coupon step-up → coverage → {leverage debt cap,coverage debt cap} → binding revolver target → equity cure",13,3,13,extended_long
+long-028,Long-Horizon Financial Risk,CCP default waterfall; mutualized assessment; liquidity; HQLA sale; capital ratio feedback; current semantic links: risk-081 + risk-099 + risk-112,"A bank is a clearing member of a CCP. Another member defaults and leaves a $22M close-out loss. Under the simplified CCP waterfall, apply resources in this order:
+1. defaulting member initial margin: $10M;
+2. defaulting member default-fund contribution: $2M;
+3. CCP capital (""skin in the game""): $3M;
+4. any residual loss is assessed to surviving members in fixed shares.
+
+
+The bank's share of any residual assessment is 15%. Separately, the bank has a $0.8M prefunded CCP default-fund asset that is fully written off when the mutualized layer is used. Both the write-off and the bank's assessment reduce CET1; the assessment is also an immediate cash payment.
+
+
+Before the event the bank has CET1 of $10M, RWA of $120M, and $2.5M of cash. It must keep at least $2.0M cash. If the assessment pushes cash below the floor, the bank sells 0%-risk-weighted HQLA securities at 98% of book value, selling the minimum book amount needed to restore cash to $2M. The sale discount is a realized loss that also reduces CET1. The minimum CET1 ratio is 7%.
+
+
+Calculate the CCP waterfall, the bank's assessment, cash shortfall, HQLA sale, total CET1 impact, post-event CET1 ratio, and minimum capital injection if needed.
+
+
+Assume the assessment and default-fund write-off do not otherwise change RWA, and any capital injection increases CET1 dollar-for-dollar without changing RWA.","{
+  ""ccp_waterfall"": {
+  ""total_close_out_loss"": 22.0,
+  ""defaulter_initial_margin"": -10.0,
+  ""defaulter_default_fund"": -2.0,
+  ""ccp_skin_in_the_game"": -3.0,
+  ""residual_mutualized_loss"": 7.0
+  },
+  ""bank_liquidity_impact"": {
+  ""assessment_share_percentage"": 15.0,
+  ""assessment_amount"": 1.05,
+  ""starting_cash"": 2.5,
+  ""post_assessment_cash"": 1.45,
+  ""cash_floor_requirement"": 2.0,
+  ""cash_shortfall"": 0.55
+  },
+  ""hqla_sale"": {
+  ""cash_raised"": 0.55,
+  ""sale_price_percentage"": 98.0,
+  ""book_value_sold"": 0.5612,
+  ""realized_loss"": 0.0112
+  },
+  ""bank_capital_impact"": {
+  ""default_fund_write_off"": 0.8,
+  ""total_cet1_reduction"": 1.8612,
+  ""starting_cet1"": 10.0,
+  ""post_event_cet1"": 8.1388,
+  ""rwa"": 120.0,
+  ""post_event_cet1_ratio"": 0.0678,
+  ""minimum_cet1_ratio_requirement"": 0.07,
+  ""minimum_capital_injection_required"": 0.2612
+  }
+}","Residual=max(22−10−2−3,0); Assessment=.15Residual.
+Cash1=2.5−Assessment; NeedCash=max(2−Cash1,0); HQLAsale=NeedCash/.98; SaleLoss=.02HQLAsale.
+CET1'=10−.8−Assessment−SaleLoss; RWA'=120.
+CapitalRaise=max(.07RWA'−CET1',0).",waterfall + liquidity + capital,Counterparty Credit Risk,Central Counterparty / Clearing,CCP default waterfall propagated through member liquidity and CET1 capital,default_waterfall_capital_propagation,CCP waterfall → residual allocation → bank assessment + prefund write-off → cash update → HQLA sale → realized loss → CET1 update → ratio test → capital cure,13,rule_text_plus_parameters,sequential_waterfall_state,none,waterfall_and_liquidity_threshold,percent_decimal,High,multi_numeric_decision,5,3,2,2,0,3,1,3,19,risk-081; risk-099; risk-112,"CCP loss → waterfall layers → residual → assessment + own default-fund write-off → {cash,CET1} → HQLA sale → sale loss → CET1 ratio → capital injection",12,3,12,extended_long
+long-029,Long-Horizon Financial Risk,dual regulatory constraints; asset-sale optimization; sale-loss feedback; CET1 and leverage ratios; current semantic links: risk-087 + risk-111 + risk-112 + risk-095,"After a stress event, a bank has CET1 of $9M, RWA of $170M, and leverage exposure of $210M. It must satisfy both a 6% CET1 ratio and a 5% leverage ratio (CET1/leverage exposure).
+
+
+The bank can shrink two asset classes:
+- corporate loans: sell c million of book value; they carry a 100% risk weight and are sold at a 1% discount;
+- Treasury securities: sell t million of book value; they carry a 0% risk weight and are sold at a 0.5% discount.
+
+
+There is at least $50M of each asset available. Sale proceeds are used immediately to repay non-equity liabilities, so leverage exposure falls by the full book amount sold. Realized sale discounts reduce CET1. Corporate-loan sales reduce RWA by c; Treasury sales do not change RWA.
+
+
+Management wants to restore both ratios while minimizing total realized sale loss. Find the optimal c and t, the minimized realized loss, and the final CET1, RWA, leverage exposure, CET1 ratio, and leverage ratio.","{
+  ""corporate_loans_sold_M"": 25.10204,
+  ""treasuries_sold_M"": 11.02041,
+  ""minimized_realized_loss_M"": 0.30612,
+  ""final_CET1_M"": 8.69388,
+  ""final_RWA_M"": 144.89796,
+  ""final_leverage_exposure_M"": 173.87755,
+  ""final_CET1_ratio"": 0.06,
+  ""final_leverage_ratio"": 0.05
+}","Minimize L=.01c+.005t subject to:
+CET1=9−.01c−.005t;
+RWA=170−c; LE=210−c−t;
+CET1/RWA≥.06; CET1/LE≥.05;
+0≤c≤50; 0≤t≤50.
+Equivalent ratio constraints: 10c−t≥240; .04c+.045t≥1.5.
+Solve the linear program; the minimum-loss feasible point occurs at the intersection of the two binding regulatory constraints for this instance.",constrained optimization,Regulatory & Capital Risk,Capital Adequacy / Balance-Sheet Optimization,Minimum-loss balance-sheet remediation under simultaneous CET1 and leverage constraints,constrained_financial_optimization,form post-sale CET1 → form post-sale RWA → form post-sale leverage exposure → derive CET1-ratio constraint → derive leverage-ratio constraint → impose asset-sale bounds → formulate realized-loss objective → identify binding constraints → solve intersection → verify feasibility → compute minimized loss → compute final balance-sheet values → verify both final ratios,13,scalar_parameters,post_stress_remediation,none,simultaneous_constraints,percent_decimal,High,optimization_numeric,5,3,1,1,0,3,1,3,17,risk-087; risk-111; risk-112; risk-095,"asset-sale choices {c,t} → sale losses → CET1 ; c→RWA ; {c,t}→leverage exposure → two regulatory inequalities → loss-minimizing intersection → final ratios",10,4,11,very_long
+long-030,Long-Horizon Financial Risk,asset-liability duration; lapse liquidity; forced sale discount; liability release; SCR interaction; solvency cure; current semantic links: risk-073,"An insurer holds $120M of interest-rate-sensitive bonds and $10M of cash against $100M of interest-rate-sensitive policy liabilities. Bond modified duration is 6 and liability modified duration is 3. Interest rates rise 125 bp; ignore convexity and use ΔV/V≈−DΔy for both assets and liabilities.
+
+
+Immediately after repricing, policyholders surrender contracts requiring a $25M cash payment. Paying these surrenders simultaneously releases $25M of policy liabilities. The insurer must still hold at least $2M of cash after the payout. To fund the payout and cash floor, it sells bonds. Bonds are sold at a 3% discount to their already-stressed market value; the realized discount loss reduces own funds.
+
+
+Base SCR is $20M. The market-rate stress increases SCR by 10%, and the lapse event increases the resulting SCR by a further 25% (apply the multipliers sequentially). The required solvency ratio is 100%.
+
+
+Calculate stressed bond value and liabilities, own funds before lapses, the minimum bond amount sold at stressed market value, sale loss, post-lapse assets/liabilities/own funds, stressed SCR, solvency ratio, and minimum capital injection.
+
+
+Assume any capital injection increases own funds dollar-for-dollar and does not change SCR.","{
+  ""stressed_bond_value_M"": 111.0,
+  ""stressed_liabilities_M"": 96.25,
+  ""own_funds_before_lapses_M"": 24.75,
+  ""bond_stressed_market_value_sold_M"": 17.526,
+  ""cash_sale_proceeds_M"": 17.0,
+  ""sale_loss_M"": 0.526,
+  ""post_lapse_cash_M"": 2.0,
+  ""post_lapse_bonds_M"": 93.474,
+  ""post_lapse_total_assets_M"": 95.474,
+  ""post_lapse_liabilities_M"": 71.25,
+  ""post_lapse_own_funds_M"": 24.224,
+  ""stressed_scr_M"": 27.5,
+  ""solvency_ratio_percentage"": 88.09,
+  ""minimum_capital_injection_M"": 3.276
+}","Bonds'=120(1−6·.0125); Liab'=100(1−3·.0125).
+OF_pre=Bonds'+10−Liab'.
+Required sale proceeds=25+2−10=17; x=17/.97; SaleLoss=.03x.
+Assets_post=(Bonds'−x)+2; Liab_post=Liab'−25; OF_post=Assets_post−Liab_post.
+SCR'=20·1.10·1.25; Capital=max(SCR'−OF_post,0).",multi_numeric + solvency decision,Insurance & Actuarial,ALM / Lapse Liquidity,Rate-duration stress combined with lapse-driven forced sale and solvency feedback,asset_liability_liquidity_feedback,rate shock → asset duration loss + liability duration change → own funds → lapse cash need → bond-sale sizing → sale loss → liability release → own funds → SCR multipliers → solvency → capital cure,14,event_sequence,sequential_stress_events,none,liquidity_and_solvency_thresholds,bps_percent_decimal,High,multi_numeric_decision,5,3,2,3,0,2,2,3,20,risk-073,"rate shock → {bond value,liability value} → own funds → lapse payout + cash floor → forced bond sale → sale loss → liability release → post-event own funds → SCR multipliers → solvency → capital injection",13,3,13,extended_long
